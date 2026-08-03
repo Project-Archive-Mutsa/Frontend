@@ -1,0 +1,7 @@
+interface:
+  display_name: "Frontend Architecture Guardrails"
+  short_description: "Frontend structure checks"
+  default_prompt: "Use $frontend-architecture-guardrails to design, implement, review, or refactor frontend code with clear ownership, cohesive feature structure, route/server-client boundaries, loading and error behavior, Suspense placement, abstractions, providers, and tests."
+
+policy:
+  allow_implicit_invocation: true
