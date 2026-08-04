@@ -60,7 +60,7 @@ const eslintConfig = defineConfig([
         {
           selector: "parameter",
           filter: {
-            regex: "^[A-Z]",
+            regex: "^_?[A-Z]",
             match: true,
           },
           format: ["PascalCase"],
