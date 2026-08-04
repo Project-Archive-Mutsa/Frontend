@@ -3,11 +3,13 @@ import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import checkFile from "eslint-plugin-check-file";
 
+const sourceFileGlob = "**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}";
+
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   {
-    files: ["**/*.{js,jsx,ts,tsx}"],
+    files: [sourceFileGlob],
     plugins: {
       "check-file": checkFile,
     },
@@ -16,7 +18,7 @@ const eslintConfig = defineConfig([
       "check-file/filename-naming-convention": [
         "error",
         {
-          "**/*.{js,jsx,ts,tsx}": "KEBAB_CASE",
+          [sourceFileGlob]: "KEBAB_CASE",
         },
         {
           ignoreMiddleExtensions: true,
@@ -33,10 +35,18 @@ const eslintConfig = defineConfig([
       "@typescript-eslint/naming-convention": [
         "error",
 
-        // 일반 변수와 상수
+        // 상수 + React 컴포넌트
         {
           selector: "variable",
+          modifiers: ["const"],
           format: ["camelCase", "UPPER_CASE", "PascalCase"],
+          leadingUnderscore: "allow",
+        },
+
+        // 일반 변수
+        {
+          selector: "variable",
+          format: ["camelCase"],
           leadingUnderscore: "allow",
         },
 
@@ -46,7 +56,18 @@ const eslintConfig = defineConfig([
           format: ["camelCase", "PascalCase"],
         },
 
-        // 함수 매개변수
+        // JSX에서 사용하는 컴포넌트 매개변수
+        {
+          selector: "parameter",
+          filter: {
+            regex: "^[A-Z]",
+            match: true,
+          },
+          format: ["PascalCase"],
+          leadingUnderscore: "allow",
+        },
+
+        // 일반 함수 매개변수
         {
           selector: "parameter",
           format: ["camelCase"],
