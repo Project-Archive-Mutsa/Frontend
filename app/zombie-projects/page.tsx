@@ -1,4 +1,4 @@
-export default function JombieProjectPage() {
+export default function ZombieProjectPage() {
   return (
     <div>
       <div>좀비 프로젝트 페이지</div>
