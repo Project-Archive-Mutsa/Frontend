@@ -9,13 +9,13 @@ export default function PopularProjectItem({
   project,
 }: PopularProjectItemProps) {
   return (
-    <article className="flex flex-col">
+    <article className="flex w-60 flex-col border">
       <p>프로젝트 대표 이미지:</p>
       <Image
         src={project.representativeImage.src}
         alt={project.representativeImage.alt}
-        width={400}
-        height={240}
+        width={240}
+        height={144}
       />
       <p>카테고리: {project.category}</p>
       <h3>프로젝트 제목: {project.name}</h3>
