@@ -81,6 +81,29 @@
 구매 가격, 인증 배지와 거래 버튼은 기능 가능성을 표현한 더미 요소다. 실제 구현 전 권리 확인,
 거래 정책과 MVP 범위를 먼저 결정해야 한다.
 
+## 프로젝트 등록 흐름 구상
+
+![기본 정보 입력](assets/wireframes/project-registration/basic-information.png)
+
+![등록 목적 선택](assets/wireframes/project-registration/purpose.png)
+
+![가격과 자료 공개 범위 설정](assets/wireframes/project-registration/pricing-and-disclosure.png)
+
+![파일과 링크 첨부](assets/wireframes/project-registration/attachments.png)
+
+![상세 설명과 대표 이미지 입력](assets/wireframes/project-registration/description.png)
+
+현재 담긴 아이디어:
+
+- 기본 정보, 등록 목적, 가격 및 공개 범위, 첨부, 상세 설명, TSA 인증의 단계형 입력
+- 판매, 기부, 팀원 모집 중 등록 목적 선택
+- 기획 문서, UI/UX 디자인, 소스코드, 배포 문서의 선택형 첨부와 자료별 공개 범위 설정
+- 파일 업로드와 Figma·GitHub 같은 외부 링크 지원
+- 임시 저장 후 이어서 작성
+
+개발 기간, 팀 구성, 수상 이력, 가격, 첨부 자료와 TSA 인증은 프로젝트 종류와 등록 목적에 따라
+존재하지 않을 수 있다. 화면에 단계가 보인다는 이유로 모든 필드를 필수로 취급하지 않는다.
+
 ## 아직 디자인으로 확정하지 않은 것
 
 - 브랜드 컬러와 로고
