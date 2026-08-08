@@ -1,15 +1,15 @@
 import { Suspense } from "react";
 import SectionErrorBoundary from "@/shared/components/section-error-boundary/section-error-boundary";
 import SectionLoadingSpinner from "@/shared/components/section-loading-spinner/section-loading-spinner";
-import IdeaList from "./idea-list";
+import RecentAwardProjectList from "./recent-award-project-list";
 
-export default function IdeaSearchSection() {
+export default function RecentAwardProjectSection() {
   return (
-    <section className="max-w-3xl mx-auto py-10 px-5">
-      <h1>아이디어 검색 결과</h1>
-      <SectionErrorBoundary message="아이디어 검색 결과를 불러오지 못했습니다.">
+    <section>
+      <h2>최근 수상작</h2>
+      <SectionErrorBoundary message="최근 수상작을 불러오지 못했습니다.">
         <Suspense fallback={<SectionLoadingSpinner />}>
-          <IdeaList />
+          <RecentAwardProjectList />
         </Suspense>
       </SectionErrorBoundary>
     </section>

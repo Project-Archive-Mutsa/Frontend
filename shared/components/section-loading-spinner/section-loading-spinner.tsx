@@ -1,8 +1,15 @@
-// 로딩 스피너 공용 컴포넌트 (데이터를 불러오는 동안 화면에 표시됨)
+"use client";
+
+import { ClipLoader } from "react-spinners";
+
 export default function SectionLoadingSpinner() {
   return (
-    <div className="flex justify-center items-center py-20 text-slate-500">
-      데이터를 불러오는 중입니다...
+    <div
+      className="flex min-h-40 w-full items-center justify-center"
+      role="status"
+    >
+      <ClipLoader size={32} aria-hidden />
+      <span className="sr-only">콘텐츠를 불러오는 중입니다.</span>
     </div>
   );
 }

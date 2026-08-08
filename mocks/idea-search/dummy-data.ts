@@ -9,7 +9,7 @@ export const searchMockData: SearchData = {
       keywords: ["ai", "해커톤", "해외"],
       description: "해당 프로젝트는 개인별 맞춤 운동이라는 점에서 유사함",
       type: "판매",
-      imageUrl: "/images/project-1.png", // 이미지 추가됨
+      imageUrl: "/window.svg",
     },
     {
       id: 2,
@@ -17,7 +17,7 @@ export const searchMockData: SearchData = {
       keywords: ["헬스", "AI", "추천"],
       description: "사용자 루틴 분석 방식이 유사함",
       type: "기부",
-      imageUrl: "/images/project-2.png", // 이미지 추가됨
+      imageUrl: "/globe.svg",
     },
     {
       id: 3,
@@ -25,7 +25,7 @@ export const searchMockData: SearchData = {
       keywords: ["운동", "플랫폼", "글로벌"],
       description: "운동 데이터 시각화 기능이 겹침",
       type: "판매",
-      imageUrl: "/images/project-3.png", // 이미지 추가됨
+      imageUrl: "/file.svg",
     },
     {
       id: 4,
