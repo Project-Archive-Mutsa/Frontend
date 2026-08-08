@@ -1,10 +1,10 @@
 export interface Idea {
     id: number;
-    image: string;
     projectName: string;
-    keywords: string;
+    keywords: readonly string[];
     description: string;
     type: '판매' | '기부';
+    imageUrl?: string; // 이미지가 있을 수도 있고 없을 수도 있음
   }
   
   export interface SearchData {
