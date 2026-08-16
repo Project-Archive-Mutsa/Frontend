@@ -1,9 +1,29 @@
-import { popularProjects } from "@/mocks/popular-projects/dummy-data";
-import type { PopularProject } from "@/mocks/popular-projects/types";
+import type {
+  PopularProject,
+  PopularProjectsResponse,
+} from "@/features/popular-projects/types";
 
-export async function getPopularProjects(): Promise<
-  readonly PopularProject[]
-> {
-  // TODO: 백엔드 연결 시 mock 반환을 Axios 요청으로 교체
-  return popularProjects;
+const POPULAR_PROJECTS_PATH = "/api/projects/popular";
+
+export async function getPopularProjects(): Promise<readonly PopularProject[]> {
+  const response = await fetch(
+    `${process.env.API_BASE_URL}${POPULAR_PROJECTS_PATH}`,
+    {
+      cache: "no-store",
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`인기 프로젝트 조회에 실패했습니다. (${response.status})`);
+  }
+
+  const result = (await response.json()) as PopularProjectsResponse;
+
+  if (!result.success || !Array.isArray(result.data)) {
+    throw new Error(
+      result.message ?? "인기 프로젝트 응답 형식이 올바르지 않습니다.",
+    );
+  }
+
+  return result.data;
 }

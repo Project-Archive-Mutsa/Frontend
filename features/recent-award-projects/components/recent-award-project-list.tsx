@@ -9,9 +9,9 @@ export default async function RecentAwardProjectList() {
   }
 
   return (
-    <ul className="flex gap-5 justify-between">
+    <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
       {projects.map((project) => (
-        <li key={project.id}>
+        <li key={project.id} className="h-full">
           <RecentAwardProjectItem project={project} />
         </li>
       ))}
