@@ -1,6 +1,4 @@
-"use client";
-
-import { ClipLoader } from "react-spinners";
+import LoadingSpinner from "@/shared/components/loading-spinner/loading-spinner";
 
 export default function SectionLoadingSpinner() {
   return (
@@ -8,7 +6,7 @@ export default function SectionLoadingSpinner() {
       className="flex min-h-40 w-full items-center justify-center"
       role="status"
     >
-      <ClipLoader size={32} aria-hidden />
+      <LoadingSpinner />
       <span className="sr-only">콘텐츠를 불러오는 중입니다.</span>
     </div>
   );
