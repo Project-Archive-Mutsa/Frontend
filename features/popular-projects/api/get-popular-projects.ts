@@ -2,6 +2,7 @@ import type {
   PopularProject,
   PopularProjectsResponse,
 } from "@/features/popular-projects/types";
+import { mapPopularProject } from "./map-popular-project";
 
 const POPULAR_PROJECTS_PATH = "/api/projects/popular";
 
@@ -25,5 +26,5 @@ export async function getPopularProjects(): Promise<readonly PopularProject[]> {
     );
   }
 
-  return result.data;
+  return result.data.map(mapPopularProject);
 }

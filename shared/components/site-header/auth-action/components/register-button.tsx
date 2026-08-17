@@ -4,7 +4,7 @@ export default function RegisterButton() {
   return (
     <Link
       href="/register"
-      className="rounded-xl bg-[#64b5ed] px-3.5 py-2.5 text-xs font-bold text-[#0f3b64] shadow-[0_8px_20px_-12px_rgba(100,181,237,0.9)] transition-colors hover:bg-[#83c8f5] sm:text-sm"
+      className="rounded-lg px-3 py-2 text-xs font-semibold text-[#e7f2fc] transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:text-sm"
     >
       회원가입
     </Link>

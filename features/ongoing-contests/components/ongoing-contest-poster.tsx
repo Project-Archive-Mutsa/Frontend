@@ -28,6 +28,7 @@ export default function OngoingContestPoster({
         src={contest.imageUrl}
         alt={`${contest.title} 공모전 포스터`}
         fill
+        unoptimized={contest.imageUrl.endsWith(".svg")}
         sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
         className="object-cover"
         onError={() => setHasImageError(true)}

@@ -2,6 +2,7 @@ import type {
   OngoingContest,
   OngoingContestsResponse,
 } from "@/features/ongoing-contests/types";
+import { mapOngoingContest } from "./map-ongoing-contest";
 
 const ONGOING_CONTESTS_PATH = "/api/contests/active";
 
@@ -29,5 +30,5 @@ export async function getOngoingContests(): Promise<
     );
   }
 
-  return result.data;
+  return result.data.map(mapOngoingContest);
 }
