@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Noto_Sans_KR } from "next/font/google";
 import SiteHeader from "@/shared/components/site-header/site-header";
 import "./globals.css";
 import Providers from "./providers";
 
-const geistSans = Geist({
-  subsets: ["latin"],
+const notoSansKr = Noto_Sans_KR({
+  display: "swap",
+  preload: false,
+  weight: "variable",
 });
 
 export const metadata: Metadata = {
@@ -22,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="ko" className="h-full scroll-smooth antialiased">
       <body
-        className={`${geistSans.className} flex min-h-full flex-col bg-[#f8fbff] text-[#102a43]`}
+        className={`${notoSansKr.className} flex min-h-full flex-col bg-slate-50 text-slate-900`}
       >
         <Providers>
           <SiteHeader />

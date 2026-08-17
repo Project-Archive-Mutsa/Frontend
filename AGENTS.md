@@ -56,14 +56,17 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## UI/UX Skill Workflow
 
 - 화면, 컴포넌트, 디자인 시스템, 반응형 레이아웃, 접근성, 인터랙션 또는 시각적
-  완성도를 설계·구현·검토할 때는 다음 두 스킬을 함께 사용합니다.
+  완성도를 설계·구현·검토할 때는 다음 세 스킬을 함께 사용합니다.
   - `.agents/skills/ui-ux-pro-max/SKILL.md`: 디자인 근거 탐색, UX·접근성 검증,
     색상·타이포그래피·레이아웃·인터랙션 가이드
+  - `.agents/skills/kill-ai-slop/SKILL.md`: 기계적으로 생성된 듯한 장식과 문구를
+    피하고, 의도 없는 그라디언트·과도한 카드·배지·라운딩 등을 점검하는 기준
   - `.agents/skills/frontend-architecture-guardrails/SKILL.md`: 컴포넌트 책임,
     기능 경계, Server/Client Component, 데이터 흐름과 추상화 구조
 - 작업 순서는 제품 문맥과 와이어프레임 확인 → 기존 UI와 디자인 규칙 확인 →
-  `ui-ux-pro-max`의 필요한 범위만 검색 → 아키텍처 가드레일에 맞춰 구현 →
-  접근성·요청된 화면 크기·상태 UI 검증 순서로 진행합니다.
+  `ui-ux-pro-max`의 필요한 범위만 검색 → `kill-ai-slop` 원칙으로 불필요한 장식을
+  걷어낸 디자인 결정 → 아키텍처 가드레일에 맞춰 구현 → 접근성·요청된 화면 크기·
+  상태 UI와 AI slop 징후 검증 순서로 진행합니다.
 - 새 페이지나 제품 전반의 시각 방향을 설계할 때는 `ui-ux-pro-max`의
   `--design-system`을 사용합니다. 기존 화면의 일부를 수정할 때는 전체 디자인을
   다시 생성하지 않고 해당 `--domain`과 `--stack nextjs` 검색만 사용합니다.
@@ -73,5 +76,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - 이 프로젝트는 Next.js 웹 서비스이므로 모바일 네이티브 전용 지침은 적용하지
   않습니다. 새 패키지나 아이콘 라이브러리는 스킬 추천만으로 설치하지 않고 기존
   의존성과 컴포넌트를 먼저 사용합니다.
+- 일반적인 UI 설계·구현 요청에서는 `kill-ai-slop`의 원칙과 탐지 기준을 구현 전후
+  체크리스트로 사용하고, 변경한 화면 범위만 스캐너로 확인합니다. 스캐너 결과를
+  자동 수정 근거로 취급하지 않고 실제 코드와 제품 의도를 확인해 판정합니다.
+- 사용자가 명시적으로 AI 느낌 제거, de-slop 또는 전체 UI 감사를 요청한 경우에는
+  `kill-ai-slop`의 전체 스캔 → 수동 판정 → 보고 → 사용자 확인 → 수정 순서를
+  그대로 따릅니다. 의도적인 브랜드 표현과 디자이너의 명시적 선택은 임의로
+  제거하지 않습니다.
 - 디자인 시스템 결과를 `design-system/`에 저장하거나 기존 파일을 덮어쓸 때는
   사용자의 명시적인 요청을 먼저 확인합니다.
