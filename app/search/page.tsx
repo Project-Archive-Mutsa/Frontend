@@ -1,9 +1,18 @@
-import IdeaSearchSection from '@/features/idea-search/components/idea-search-section';
+import ProjectDiscoverySection from "@/features/project-discovery/components/project-discovery-section";
 
-export default function SearchPage() {
+interface SearchPageProps {
+  searchParams: Promise<{
+    q?: string | string[];
+  }>;
+}
+
+export default async function SearchPage({ searchParams }: SearchPageProps) {
+  const { q } = await searchParams;
+  const query = (Array.isArray(q) ? q[0] : q)?.trim() ?? "";
+
   return (
-    <main className="min-h-screen bg-slate-50 py-10">
-      <IdeaSearchSection />
+    <main className="min-h-dvh bg-[#f7fafc]">
+      <ProjectDiscoverySection query={query} />
     </main>
   );
 }
