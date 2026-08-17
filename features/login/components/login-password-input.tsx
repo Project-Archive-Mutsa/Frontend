@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 interface PasswordInputProps {
   value: string;
   onValueChange: (value: string) => void;
@@ -7,42 +11,39 @@ export default function PasswordInput({
   value,
   onValueChange,
 }: PasswordInputProps) {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
   return (
-    <label className="block" htmlFor="login-password">
-      <span className="mb-2.5 block text-sm font-bold text-[#274f77]">
+    <div>
+      <label
+        className="text-brand mb-2 block text-sm font-bold"
+        htmlFor="login-password"
+      >
         비밀번호
-      </span>
-      <span className="relative block">
+      </label>
+      <div className="relative">
         <input
           id="login-password"
-          type="password"
+          type={isPasswordVisible ? "text" : "password"}
           name="password"
           value={value}
           placeholder="비밀번호를 입력해주세요."
           autoComplete="current-password"
-          className="h-14 w-full rounded-xl border border-[#c7d6e2] bg-[#fbfdff] px-4 pr-14 text-base text-[#163a5d] outline-none transition-colors placeholder:text-[#75899d] hover:border-[#a9bfd0] focus:border-[#397fba] focus:ring-4 focus:ring-[#579fd8]/14"
+          className="focus:border-brand-accent focus:ring-brand-soft h-12 w-full rounded-lg border border-slate-300 bg-white px-4 pr-16 text-base text-slate-900 outline-none transition-colors placeholder:text-slate-400 hover:border-slate-400 focus:ring-2"
           onChange={(event) => {
             onValueChange(event.currentTarget.value);
           }}
         />
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute top-1/2 right-4 flex size-6 -translate-y-1/2 items-center justify-center text-[#6d8296]"
+        <button
+          type="button"
+          aria-pressed={isPasswordVisible}
+          aria-label={isPasswordVisible ? "비밀번호 숨기기" : "비밀번호 보기"}
+          className="hover:text-brand absolute top-1/2 right-2 flex min-h-10 min-w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-md text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand-accent"
+          onClick={() => setIsPasswordVisible((isVisible) => !isVisible)}
         >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="size-5"
-          >
-            <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
-            <circle cx="12" cy="12" r="2.5" />
-          </svg>
-        </span>
-      </span>
-    </label>
+          {isPasswordVisible ? "숨기기" : "보기"}
+        </button>
+      </div>
+    </div>
   );
 }

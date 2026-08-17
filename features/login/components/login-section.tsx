@@ -11,19 +11,16 @@ export default function LoginSection() {
 
   return (
     <form className="w-full" onSubmit={handleSubmit}>
-      <div>
-        <p className="text-xs font-bold tracking-[0.18em] text-[#3978b5] uppercase">
-          Welcome back
-        </p>
-        <h1 className="mt-3 text-4xl font-bold tracking-[-0.04em] text-[#123f70]">
+      <header>
+        <h1 className="text-brand text-3xl font-bold tracking-[-0.03em]">
           로그인
         </h1>
-        <p className="mt-3 text-base leading-7 text-[#5f7386]">
-          계정 정보를 입력해 아카이브를 계속 둘러보세요.
+        <p className="mt-2 text-base leading-6 text-slate-600">
+          프로젝트 검색과 등록을 계속하려면 계정 정보를 입력해 주세요.
         </p>
-      </div>
+      </header>
 
-      <div className="mt-8 space-y-5">
+      <div className="mt-6 space-y-4">
         <EmailInput
           value={values.email}
           onValueChange={(email) => updateField("email", email)}
@@ -35,25 +32,21 @@ export default function LoginSection() {
         />
       </div>
 
-      <div className="mt-4 flex items-center justify-between gap-4 text-sm font-medium text-[#617589]">
-        <span>로그인 유지</span>
-        <span>비밀번호 찾기</span>
-      </div>
-
-      <div className="mt-4 min-h-6">
+      <div className="mt-3 min-h-6">
         {error ? (
           <p
             role="alert"
-            className="text-sm leading-6 font-medium text-[#a83f3f]"
+            className="text-sm leading-6 font-medium text-red-700"
           >
             {error.message}
           </p>
         ) : null}
       </div>
 
-      <div className="mt-4">
+      <div className="mt-3">
         <LoginButton isPending={isPending} />
       </div>
+
     </form>
   );
 }

@@ -1,14 +1,9 @@
-import type {
-  LoginRequest,
-  LoginResponse,
-} from "../model/types";
+import type { LoginRequest, LoginResponse } from "../model/types";
 
 const LOGIN_PATH = "/api/auth/login";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export async function login(
-  loginValue: LoginRequest,
-): Promise<LoginResponse> {
+export async function login(loginValue: LoginRequest): Promise<LoginResponse> {
   const response = await fetch(`${API_BASE_URL}${LOGIN_PATH}`, {
     method: "POST",
     credentials: "include",
@@ -22,7 +17,9 @@ export async function login(
   const result = (await response.json()) as LoginResponse;
 
   if (!response.ok || !result.success) {
-    throw new Error(result.message || `로그인에 실패했습니다. (${response.status})`);
+    throw new Error(
+      result.message || `로그인에 실패했습니다. (${response.status})`,
+    );
   }
 
   return result;
