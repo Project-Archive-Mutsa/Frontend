@@ -19,10 +19,6 @@ const filterGroups = [
     label: "현재 활동 상태",
     options: ["진행 중", "일시 중단", "활동 종료"],
   },
-  {
-    label: "등록 목적",
-    options: ["아카이브", "좀비 공개", "프로젝트 판매", "팀원 모집"],
-  },
 ] as const;
 
 export default function ProjectExplorerFilters() {

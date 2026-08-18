@@ -4,12 +4,24 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navigationItems = [
-  { label: "프로젝트 탐색", href: "/projects" },
-  { label: "AI 프로젝트 검색", href: "/search" },
-  { label: "좀비 프로젝트", href: "/zombie-projects" },
-  { label: "프로젝트 마켓", href: "/project-market" },
-  { label: "팀원 모집", href: "/team-recruitment" },
+  {
+    label: "프로젝트 탐색",
+    href: "/projects",
+    activePaths: ["/projects", "/zombie-projects", "/project-market"],
+  },
+  { label: "AI 프로젝트 검색", href: "/search", activePaths: ["/search"] },
+  {
+    label: "팀원 모집",
+    href: "/team-recruitment",
+    activePaths: ["/team-recruitment"],
+  },
 ];
+
+function isPathActive(pathname: string, activePaths: readonly string[]) {
+  return activePaths.some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`),
+  );
+}
 
 export function MainNavigation() {
   const pathname = usePathname();
@@ -20,8 +32,7 @@ export function MainNavigation() {
       className="order-4 mt-3 flex w-full items-center gap-x-6 overflow-x-auto border-t border-white/10 pt-3 text-xs font-medium whitespace-nowrap lg:order-none lg:mt-0 lg:w-auto lg:flex-1 lg:border-0 lg:pt-0"
     >
       {navigationItems.map((item) => {
-        const isActive =
-          pathname === item.href || pathname.startsWith(`${item.href}/`);
+        const isActive = isPathActive(pathname, item.activePaths);
 
         return (
           <Link

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import ZombieProjectSection from "@/features/zombie-projects/components/zombie-project-section";
 
 export const metadata: Metadata = {
-  title: "좀비 프로젝트 | Project Archive",
+  title: "좀비 프로젝트 | 프로젝트 탐색 | Project Archive",
   description: "공개된 자산과 기존 시도를 바탕으로 다시 계승할 프로젝트를 찾아보세요.",
 };
 

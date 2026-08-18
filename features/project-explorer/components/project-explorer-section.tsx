@@ -3,6 +3,7 @@ import type { ProjectExplorerSearchState } from "@/features/project-explorer/mod
 import SectionErrorBoundary from "@/shared/components/section-error-boundary/section-error-boundary";
 import SectionLoadingSpinner from "@/shared/components/section-loading-spinner/section-loading-spinner";
 import ProjectExplorerFilters from "./project-explorer-filters";
+import ProjectExplorerHeader from "./project-explorer-header";
 import ProjectExplorerResults from "./project-explorer-results";
 import ProjectExplorerSearch from "./project-explorer-search";
 
@@ -19,17 +20,19 @@ export default function ProjectExplorerSection({
       aria-labelledby="project-explorer-heading"
     >
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
-        <header className="max-w-3xl">
-          <h1
-            id="project-explorer-heading"
-            className="text-balance break-keep text-3xl font-bold tracking-[-0.04em] text-slate-950 sm:text-4xl"
-          >
-            프로젝트 탐색
-          </h1>
-          <p className="mt-3 text-pretty break-keep text-base leading-7 text-slate-600">
-            공모전·대회·해커톤·캡스톤에서 나온 실제 출품작과 아이디어를 한곳에서 살펴보세요.
+        <ProjectExplorerHeader
+          activeView="all"
+          headingId="project-explorer-heading"
+        />
+
+        <div className="mt-10 max-w-3xl">
+          <h2 className="font-display text-2xl font-bold tracking-[-0.02em] text-slate-950">
+            전체 프로젝트
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            공모전·대회·해커톤·캡스톤에서 나온 실제 출품작을 검색하고 비교합니다.
           </p>
-        </header>
+        </div>
 
         <ProjectExplorerSearch query={state.query} />
 

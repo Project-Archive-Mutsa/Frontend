@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import ProjectMarketSection from "@/features/project-market/components/project-market-section";
 
 export const metadata: Metadata = {
-  title: "프로젝트 마켓 | Project Archive",
+  title: "판매 중인 프로젝트 | 프로젝트 탐색 | Project Archive",
   description: "판매할 프로젝트의 자산, 권리 범위와 희망 가격을 확인하세요.",
 };
 
