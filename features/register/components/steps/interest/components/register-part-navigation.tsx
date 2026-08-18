@@ -1,9 +1,10 @@
+import type { RegisterInterest } from "../../../../model/types";
 import type { RegisterPart } from "../model/types";
 
 interface RegisterPartNavigationProps {
   parts: RegisterPart[];
   activePartId: number;
-  selectedTagIds: number[];
+  selectedInterests: RegisterInterest[];
   isDisabled: boolean;
   onPartChange: (partId: number) => void;
 }
@@ -11,7 +12,7 @@ interface RegisterPartNavigationProps {
 export default function RegisterPartNavigation({
   parts,
   activePartId,
-  selectedTagIds,
+  selectedInterests,
   isDisabled,
   onPartChange,
 }: RegisterPartNavigationProps) {
@@ -23,8 +24,9 @@ export default function RegisterPartNavigation({
         <ul className="register-scrollbar mt-2 min-h-0 flex-1 space-y-1 overflow-y-auto pr-1">
           {parts.map((part) => {
             const isActive = part.partId === activePartId;
-            const selectedCount = part.tags.filter((tag) =>
-              selectedTagIds.includes(tag.tagId),
+            const selectedCount = selectedInterests.filter(
+              (selectedInterest) =>
+                selectedInterest.partId === part.partId,
             ).length;
 
             return (

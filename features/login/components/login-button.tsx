@@ -13,9 +13,7 @@ export default function LoginButton({ isPending }: LoginButtonProps) {
       className="bg-brand hover:bg-brand-hover flex h-12 w-full cursor-pointer items-center justify-center rounded-lg px-5 text-base font-bold text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-accent disabled:cursor-not-allowed disabled:opacity-50"
     >
       {isPending ? (
-        <span className="[&>span]:!border-white [&>span]:!border-b-transparent">
-          <LoadingSpinner size={20} />
-        </span>
+        <LoadingSpinner size={20} />
       ) : (
         "로그인"
       )}

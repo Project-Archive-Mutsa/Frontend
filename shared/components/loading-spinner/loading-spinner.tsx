@@ -1,7 +1,3 @@
-"use client";
-
-import { ClipLoader } from "react-spinners";
-
 interface LoadingSpinnerProps {
   size?: number;
 }
@@ -9,5 +5,11 @@ interface LoadingSpinnerProps {
 export default function LoadingSpinner({
   size = 32,
 }: LoadingSpinnerProps) {
-  return <ClipLoader size={size} aria-hidden />;
+  return (
+    <span
+      aria-hidden
+      style={{ width: size, height: size }}
+      className="loading-spinner inline-block shrink-0 rounded-full"
+    />
+  );
 }

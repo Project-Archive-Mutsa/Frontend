@@ -6,7 +6,7 @@ import {
   initialRegisterWizardState,
   registerWizardReducer,
 } from "../model/register-wizard";
-import type { RegisterScalarField } from "../model/types";
+import type { RegisterInterest, RegisterScalarField } from "../model/types";
 
 export default function useRegisterWizard() {
   const [state, dispatch] = useReducer(
@@ -18,8 +18,8 @@ export default function useRegisterWizard() {
     dispatch({ type: "UPDATE_FIELD", field, value });
   }
 
-  function toggleTag(tagId: number) {
-    dispatch({ type: "TOGGLE_TAG", tagId });
+  function toggleInterest(interest: RegisterInterest) {
+    dispatch({ type: "TOGGLE_INTEREST", interest });
   }
 
   function goToPreviousStep() {
@@ -35,7 +35,7 @@ export default function useRegisterWizard() {
     values: state.values,
     goToNextStep,
     goToPreviousStep,
-    toggleTag,
+    toggleInterest,
     updateField,
   };
 }

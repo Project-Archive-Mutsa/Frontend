@@ -18,7 +18,7 @@ describe("RegisterInterestTagSelector", () => {
     render(
       <RegisterInterestTagSelector
         part={frontendPart}
-        selectedTagIds={[1]}
+        selectedInterests={[{ partId: 1, tagId: 1 }]}
         isDisabled={false}
         onTagToggle={onTagToggle}
       />,
@@ -38,7 +38,7 @@ describe("RegisterInterestTagSelector", () => {
     render(
       <RegisterInterestTagSelector
         part={frontendPart}
-        selectedTagIds={[]}
+        selectedInterests={[]}
         validationError="관심 태그를 하나 이상 선택해 주세요."
         isDisabled={false}
         onTagToggle={vi.fn()}
