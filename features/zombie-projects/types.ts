@@ -1,11 +1,11 @@
-// 중단 프로젝트 API가 반환하는 ZIP 파일 정보
+// 좀비 프로젝트 API가 반환하는 ZIP 파일 정보
 export interface ZombieProjectZipFileResponse {
   originalFileName: string;
   fileSize: number;
   downloadUrl: string;
 }
 
-// 중단 프로젝트 API가 반환하는 항목
+// 좀비 프로젝트 API가 반환하는 항목
 export interface ZombieProjectResponseItem {
   projectId: number;
   projectName: string;
@@ -20,16 +20,27 @@ export interface ZombieProjectResponseItem {
   price: number;
   zipFile: ZombieProjectZipFileResponse | null;
   detailPath: string;
+  informationCompletenessScore?: number | null;
+  category?: string | null;
+  registrationPurpose?: ProjectRegistrationPurpose | null;
+  eventName?: string | null;
+  eventDate?: string | null;
+  resultLevel?: ProjectResultLevel | null;
+  activityStatus?: ProjectActivityStatus | null;
+  assetCount?: number | null;
+  assetCategories?: readonly string[];
+  awards?: readonly { title: string; awardedAt?: string | null }[];
+  publicAssets?: readonly ZombiePublicAssetSummary[];
 }
 
-// 중단 프로젝트 목록 API의 공통 응답 형식
+// 좀비 프로젝트 목록 API의 공통 응답 형식
 export interface ZombieProjectsResponse {
   success: boolean;
   data: readonly ZombieProjectResponseItem[];
   message: string | null;
 }
 
-// 중단 프로젝트 목록 화면에서 사용하는 프로젝트 정보
+// 좀비 프로젝트 목록 화면에서 사용하는 프로젝트 정보
 export interface ZombieProject {
   id: number;
   detailPath: string;
@@ -52,6 +63,17 @@ export interface ZombieProject {
     name: string;
     sizeInBytes: number;
   } | null;
+  informationCompletenessScore?: number | null;
+  category?: string | null;
+  registrationPurpose?: ProjectRegistrationPurpose | null;
+  eventName?: string | null;
+  eventDate?: string | null;
+  resultLevel?: ProjectResultLevel | null;
+  activityStatus?: ProjectActivityStatus | null;
+  assetCount?: number | null;
+  assetCategories?: readonly string[];
+  awardTitles?: readonly string[] | null;
+  publicAssets?: readonly ZombiePublicAssetSummary[] | null;
 }
 
 // 프로젝트 검색 API가 반환하는 분석 대상 파일
@@ -96,4 +118,16 @@ export interface ZombieProjectSearchResults {
   query: string;
   totalCount: number;
   projects: readonly ZombieProjectSearchItem[];
+}
+import type {
+  ProjectActivityStatus,
+  ProjectRegistrationPurpose,
+  ProjectResultLevel,
+} from "@/shared/project-summary/types";
+
+export interface ZombiePublicAssetSummary {
+  name: string;
+  category: string;
+  licenseName: string | null;
+  reuseTerms: string | null;
 }

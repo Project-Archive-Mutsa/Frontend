@@ -68,7 +68,7 @@ function SearchSubmitButton({
       type="submit"
       disabled={isPending}
       aria-busy={isPending}
-      className="flex h-12 min-w-28 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md bg-brand px-6 text-sm font-bold text-white transition-colors hover:bg-brand-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-accent disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transition-none"
+      className="flex h-12 min-w-28 shrink-0 cursor-pointer items-center justify-center gap-2 bg-brand px-6 text-sm font-bold text-white transition-colors hover:bg-brand-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-accent disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transition-none"
     >
       {isPending ? (
         <>
@@ -159,11 +159,11 @@ export default function ZombieProjectSearchForm({
     <div className="mt-8" onBlur={handleFocusLeave}>
       <label
         htmlFor="zombie-project-search"
-        className="text-sm font-bold text-[#24445f]"
+        className="text-sm font-bold text-slate-700"
       >
         프로젝트 이름 검색
       </label>
-      <p id="zombie-project-search-description" className="mt-1 text-sm text-[#60778b]">
+      <p id="zombie-project-search-description" className="mt-1 text-sm text-slate-600">
         입력한 문자열이 프로젝트명에 포함된 결과를 찾습니다.
       </p>
 
@@ -173,7 +173,7 @@ export default function ZombieProjectSearchForm({
           scroll={false}
           role="search"
           onSubmit={handleSubmit}
-          className="flex items-center gap-2 border border-[#b8cbd9] bg-white p-2 focus-within:border-brand-accent focus-within:ring-2 focus-within:ring-brand-soft"
+          className="flex items-center gap-2 border border-slate-300 bg-white p-2 focus-within:border-brand-accent focus-within:ring-2 focus-within:ring-brand-soft"
         >
           <input
             id="zombie-project-search"
@@ -189,7 +189,7 @@ export default function ZombieProjectSearchForm({
             aria-describedby="zombie-project-search-description"
             aria-controls={hasRecentSearches ? "recent-zombie-searches" : undefined}
             placeholder="프로젝트 이름을 입력해 주세요"
-            className="h-12 min-w-0 flex-1 px-4 text-base text-[#102a43] outline-none placeholder:text-[#778b9d]"
+            className="h-12 min-w-0 flex-1 px-4 text-base text-slate-950 outline-none placeholder:text-slate-500"
           />
           <SearchSubmitButton isNavigationPending={isNavigationPending} />
         </Form>
@@ -197,9 +197,9 @@ export default function ZombieProjectSearchForm({
         {hasRecentSearches ? (
           <div
             id="recent-zombie-searches"
-            className="absolute inset-x-0 top-full z-20 mt-2 border border-[#b8cbd9] bg-white shadow-sm"
+            className="absolute inset-x-0 top-full z-20 mt-2 border border-slate-300 bg-white shadow-sm"
           >
-            <p className="border-b border-[#e0e8ee] px-4 py-2 text-xs font-bold text-[#60778b]">
+            <p className="border-b border-slate-200 px-4 py-2 text-xs font-bold text-slate-600">
               최근 검색어
             </p>
             <ul>
@@ -208,7 +208,7 @@ export default function ZombieProjectSearchForm({
                   <button
                     type="button"
                     onClick={() => handleRecentSearchClick(recentSearch)}
-                    className="min-h-11 w-full cursor-pointer px-4 py-2 text-left text-sm text-[#294963] transition-colors hover:bg-brand-canvas focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-accent motion-reduce:transition-none"
+                    className="min-h-11 w-full cursor-pointer px-4 py-2 text-left text-sm text-slate-800 transition-colors hover:bg-brand-canvas focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-accent motion-reduce:transition-none"
                   >
                     {recentSearch}
                   </button>

@@ -1,101 +1,117 @@
-import Image from "next/image";
-import Link from "next/link";
-import { formatFileSize } from "@/features/zombie-projects/lib/format-file-size";
 import type { ZombieProject } from "@/features/zombie-projects/types";
+import ProjectListCard from "@/shared/components/project-list-card/project-list-card";
+import {
+  getProjectActivityStatusLabel,
+  getProjectPurposeLabel,
+  getProjectResultLevelLabel,
+} from "@/shared/project-summary/types";
 
 interface ZombieProjectItemProps {
   project: ZombieProject;
+  headingLevel?: 2 | 3;
+}
+
+function getPublicAssetSummary(project: ZombieProject) {
+  if (project.publicAssets && project.publicAssets.length > 0) {
+    return project.publicAssets
+      .slice(0, 2)
+      .map((asset) => `${asset.name} · ${asset.category}`)
+      .join(", ");
+  }
+  if (project.zipFile) return project.zipFile.name;
+  return "연동 전";
+}
+
+function getAssetCount(project: ZombieProject) {
+  if (project.publicAssets) return `${project.publicAssets.length}개`;
+  if (project.assetCount !== null && project.assetCount !== undefined) {
+    return `${project.assetCount}개`;
+  }
+  if (project.zipFile) return "1개";
+  return "연동 전";
+}
+
+function getAwardSummary(project: ZombieProject) {
+  if (project.awardTitles === undefined || project.awardTitles === null) {
+    return "연동 전";
+  }
+  return project.awardTitles.length > 0
+    ? project.awardTitles.slice(0, 2).join(", ")
+    : "없음";
 }
 
 export default function ZombieProjectItem({
   project,
+  headingLevel = 2,
 }: ZombieProjectItemProps) {
+  const eventYear = project.eventDate?.slice(0, 4);
+  const firstPublicAsset = project.publicAssets?.[0];
+
   return (
-    <Link
-      href={project.detailPath}
-      aria-label={`${project.name} 상세 보기`}
-      className="group block px-2 py-7 outline-none transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2 sm:px-3 sm:py-9 motion-reduce:transition-none"
+    <ProjectListCard
+      title={project.name}
+      summary={project.description}
+      contextItems={[
+        {
+          label:
+            getProjectPurposeLabel(project.registrationPurpose) ??
+            "좀비 프로젝트",
+        },
+        {
+          label: project.eventName
+            ? `${project.eventName}${eventYear ? ` · ${eventYear}년 출품` : ""}`
+            : "출품 행사 연동 전",
+        },
+        { label: `${project.registeredAt} 등록`, dateTime: project.registeredAt },
+      ]}
+      tags={[
+        ...new Set([project.category ?? "", ...project.tags].filter(Boolean)),
+      ]}
+      facts={[
+        {
+          label: "결과물 단계",
+          value: getProjectResultLevelLabel(project.resultLevel),
+        },
+        {
+          label: "현재 활동 상태",
+          value: getProjectActivityStatusLabel(project.activityStatus),
+        },
+        { label: "공개 재사용 자산", value: getAssetCount(project) },
+        { label: "수상 이력", value: getAwardSummary(project) },
+      ]}
+      representativeImage={project.representativeImage}
+      informationCompletenessScore={project.informationCompletenessScore}
+      registrantName={project.sellerName}
+      stats={[
+        { label: "조회", value: project.stats.viewCount },
+        { label: "좋아요", value: project.stats.likeCount },
+        { label: "저장", value: project.stats.bookmarkCount },
+      ]}
+      headingLevel={headingLevel}
     >
-      <article className="grid gap-7 lg:grid-cols-[minmax(0,1fr)_15rem] lg:gap-10">
-        <div className="min-w-0">
-          <time dateTime={project.registeredAt} className="text-xs text-[#63788c]">
-            {project.registeredAt} 등록
-          </time>
-          <h2 className="mt-2 text-pretty break-keep text-2xl font-bold tracking-[-0.035em] text-[#173a59] transition-colors group-hover:text-[#0f65a5] sm:text-3xl motion-reduce:transition-none">
-            {project.name}
-          </h2>
-          <p className="mt-3 line-clamp-3 max-w-3xl text-pretty break-keep text-sm leading-7 text-[#5d7285] sm:text-base">
-            {project.description}
-          </p>
-
-          {project.tags.length > 0 ? (
-            <ul
-              className="mt-5 flex flex-wrap gap-x-3 gap-y-2 text-xs text-[#52697d]"
-              aria-label="프로젝트 태그"
-            >
-              {project.tags.map((tag) => (
-                <li key={tag} className="border-b border-[#aac3d6] pb-0.5">
-                  {tag}
-                </li>
-              ))}
-            </ul>
-          ) : null}
-
-          <ul
-            className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs text-[#63788c]"
-            aria-label="프로젝트 통계"
-          >
-            <li>조회 {project.stats.viewCount.toLocaleString("ko-KR")}</li>
-            <li>좋아요 {project.stats.likeCount.toLocaleString("ko-KR")}</li>
-            <li>저장 {project.stats.bookmarkCount.toLocaleString("ko-KR")}</li>
-          </ul>
-        </div>
-
-        <aside className="border-t border-[#dbe5ed] pt-6 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-7">
-          {project.representativeImage ? (
-            <div className="relative mb-5 aspect-[16/9] overflow-hidden bg-brand-soft">
-              <Image
-                src={project.representativeImage.src}
-                alt={project.representativeImage.alt}
-                fill
-                unoptimized
-                sizes="240px"
-                className="object-cover"
-              />
-            </div>
-          ) : null}
-
-          <dl className="grid grid-cols-2 gap-x-5 gap-y-4 text-sm lg:grid-cols-1">
-            <div className="min-w-0">
-              <dt className="text-xs text-[#6b7f91]">판매자</dt>
-              <dd className="mt-1 truncate font-medium text-[#294963]">
-                {project.sellerName}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs text-[#6b7f91]">등록 가격</dt>
-              <dd className="mt-1 font-bold text-[#174f7a]">
-                {project.price.toLocaleString("ko-KR")}원
-              </dd>
-            </div>
-            <div className="col-span-2 min-w-0 lg:col-span-1">
-              <dt className="text-xs text-[#6b7f91]">ZIP 파일</dt>
-              <dd className="mt-1 text-[#405b71] [overflow-wrap:anywhere]">
-                {project.zipFile ? (
-                  <>
-                    {project.zipFile.name}
-                    <span className="whitespace-nowrap text-[#6b7f91]">
-                      {" "}· {formatFileSize(project.zipFile.sizeInBytes)}
-                    </span>
-                  </>
-                ) : (
-                  "등록된 파일 없음"
-                )}
-              </dd>
-            </div>
-          </dl>
-        </aside>
-      </article>
-    </Link>
+      <section aria-label="공개 계승 조건">
+        <h3 className="text-sm font-bold text-slate-900">공개 계승 조건</h3>
+        <dl className="mt-4 grid gap-x-7 gap-y-5 text-sm sm:grid-cols-3">
+          <div>
+            <dt className="text-xs text-slate-500">공개 자산</dt>
+            <dd className="mt-1 line-clamp-2 leading-6 text-slate-700">
+              {getPublicAssetSummary(project)}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs text-slate-500">라이선스</dt>
+            <dd className="mt-1 font-bold text-slate-800">
+              {firstPublicAsset?.licenseName ?? "연동 전"}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs text-slate-500">재사용 조건</dt>
+            <dd className="mt-1 line-clamp-2 leading-6 text-slate-700">
+              {firstPublicAsset?.reuseTerms ?? "연동 전"}
+            </dd>
+          </div>
+        </dl>
+      </section>
+    </ProjectListCard>
   );
 }

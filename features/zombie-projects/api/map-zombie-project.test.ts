@@ -28,7 +28,7 @@ function createResponseItem(
 }
 
 describe("mapZombieProject", () => {
-  it("API 응답을 중단 프로젝트 화면 모델로 변환하고 다운로드 URL을 제외한다", () => {
+  it("API 응답을 좀비 프로젝트 화면 모델로 변환하고 다운로드 URL을 제외한다", () => {
     const result = mapZombieProject(createResponseItem());
 
     expect(result).toEqual({

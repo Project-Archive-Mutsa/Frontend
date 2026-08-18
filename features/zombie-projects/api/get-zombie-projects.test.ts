@@ -45,7 +45,7 @@ function createResponse({
   } as unknown as Response;
 }
 
-describe("중단 프로젝트 목록 API", () => {
+describe("좀비 프로젝트 목록 API", () => {
   const fetchMock = vi.fn<typeof fetch>();
 
   beforeEach(() => {
@@ -59,7 +59,7 @@ describe("중단 프로젝트 목록 API", () => {
     vi.unstubAllGlobals();
   });
 
-  it("중단 프로젝트 엔드포인트를 캐시 없이 호출한다", async () => {
+  it("좀비 프로젝트 엔드포인트를 캐시 없이 호출한다", async () => {
     fetchMock.mockResolvedValue(
       createResponse({ ok: true, status: 200, body: successResponse }),
     );
@@ -79,7 +79,7 @@ describe("중단 프로젝트 목록 API", () => {
     const { getZombieProjects } = await import("./get-zombie-projects");
 
     await expect(getZombieProjects()).rejects.toThrow(
-      "중단 프로젝트 조회에 실패했습니다. (503)",
+      "좀비 프로젝트 조회에 실패했습니다. (503)",
     );
   });
 
@@ -91,14 +91,14 @@ describe("중단 프로젝트 목록 API", () => {
         body: {
           success: false,
           data: null,
-          message: "중단 프로젝트를 조회할 수 없습니다.",
+          message: "좀비 프로젝트를 조회할 수 없습니다.",
         },
       }),
     );
     const { getZombieProjects } = await import("./get-zombie-projects");
 
     await expect(getZombieProjects()).rejects.toThrow(
-      "중단 프로젝트를 조회할 수 없습니다.",
+      "좀비 프로젝트를 조회할 수 없습니다.",
     );
   });
 
@@ -117,7 +117,7 @@ describe("중단 프로젝트 목록 API", () => {
     const { getZombieProjects } = await import("./get-zombie-projects");
 
     await expect(getZombieProjects()).rejects.toThrow(
-      "중단 프로젝트 응답 형식이 올바르지 않습니다.",
+      "좀비 프로젝트 응답 형식이 올바르지 않습니다.",
     );
   });
 });
