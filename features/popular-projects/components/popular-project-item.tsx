@@ -10,7 +10,7 @@ export default function PopularProjectItem({
 }: PopularProjectItemProps) {
   return (
     <Link
-      href={project.detailUrl}
+      href={`/project-market/${project.id}`}
       className="group block rounded-lg py-6 outline-none focus-visible:ring-2 focus-visible:ring-[#317bb8] focus-visible:ring-offset-4 sm:py-7"
     >
       <article className="grid gap-5 sm:grid-cols-[10rem_minmax(0,1fr)] sm:items-center sm:gap-7">

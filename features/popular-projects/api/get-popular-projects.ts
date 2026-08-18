@@ -7,8 +7,11 @@ import { mapPopularProject } from "./map-popular-project";
 const POPULAR_PROJECTS_PATH = "/api/projects/popular";
 
 export async function getPopularProjects(): Promise<readonly PopularProject[]> {
+  const API_BASE_URL =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "https://project-archive-api-zf90.onrender.com";
+
   const response = await fetch(
-    `${process.env.API_BASE_URL}${POPULAR_PROJECTS_PATH}`,
+    `${API_BASE_URL}${POPULAR_PROJECTS_PATH}`,
     {
       cache: "no-store",
     },
