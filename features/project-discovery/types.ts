@@ -22,6 +22,18 @@ export interface ProjectDiscoveryResultItem {
   images: readonly ProjectDiscoveryImage[]; // 추가 이미지 목록
   detailPath: string; // 상세 페이지 경로
   similarityScore: number; // AI 유사도 점수
+  informationCompletenessScore?: number | null; // 프로젝트 등록 정보 충실도 점수
+  registrationPurpose?: ProjectRegistrationPurpose | null;
+  eventName?: string | null;
+  eventDate?: string | null;
+  resultLevel?: ProjectResultLevel | null;
+  activityStatus?: ProjectActivityStatus | null;
+  assetCount?: number | null;
+  assetCategories?: readonly string[];
+  awards?: readonly { title: string; awardedAt?: string | null }[];
+  similarityReasons?: readonly string[];
+  differences?: readonly string[];
+  validationSuggestions?: readonly string[];
 }
 
 // AI 프로젝트 검색 결과 데이터
@@ -41,3 +53,8 @@ export interface ProjectDiscoveryResultsResponse {
   data: ProjectDiscoveryResultsData | null; // 검색 결과 데이터
   message: string | null; // 서버 응답 메시지
 }
+import type {
+  ProjectActivityStatus,
+  ProjectRegistrationPurpose,
+  ProjectResultLevel,
+} from "@/shared/project-summary/types";

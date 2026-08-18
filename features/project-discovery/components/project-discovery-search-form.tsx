@@ -10,7 +10,7 @@ export default function ProjectDiscoverySearchForm({
       action="/search"
       method="get"
       role="search"
-      className="flex flex-col gap-3 border border-brand-soft bg-white p-2 shadow-[0_14px_36px_-28px_rgba(18,63,112,0.65)] sm:flex-row sm:items-center"
+      className="flex flex-col gap-3 border border-slate-300 bg-white p-2 focus-within:border-brand-accent focus-within:ring-2 focus-within:ring-brand-soft sm:flex-row sm:items-center"
     >
       <label className="min-w-0 flex-1">
         <span className="sr-only">AI 프로젝트 검색어</span>
@@ -20,7 +20,7 @@ export default function ProjectDiscoverySearchForm({
           required
           defaultValue={defaultQuery}
           placeholder="만들려는 서비스나 기능을 검색해 보세요"
-          className="h-12 w-full bg-transparent px-4 text-base text-[#102a43] outline-none placeholder:text-[#7d91a8]"
+          className="h-12 w-full bg-transparent px-4 text-base text-slate-950 outline-none placeholder:text-slate-500"
         />
       </label>
       <button
