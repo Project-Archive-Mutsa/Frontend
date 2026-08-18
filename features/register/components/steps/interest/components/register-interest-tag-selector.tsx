@@ -1,9 +1,10 @@
+import type { RegisterInterest } from "../../../../model/types";
 import type { RegisterPart } from "../model/types";
 import RegisterInterestTagChip from "./register-interest-tag-chip";
 
 interface RegisterInterestTagSelectorProps {
   part: RegisterPart;
-  selectedTagIds: number[];
+  selectedInterests: RegisterInterest[];
   validationError?: string;
   isDisabled: boolean;
   onTagToggle: (tagId: number) => void;
@@ -11,7 +12,7 @@ interface RegisterInterestTagSelectorProps {
 
 export default function RegisterInterestTagSelector({
   part,
-  selectedTagIds,
+  selectedInterests,
   validationError,
   isDisabled,
   onTagToggle,
@@ -46,7 +47,11 @@ export default function RegisterInterestTagSelector({
               <RegisterInterestTagChip
                 key={tag.tagId}
                 tag={tag}
-                isSelected={selectedTagIds.includes(tag.tagId)}
+                isSelected={selectedInterests.some(
+                  (selectedInterest) =>
+                    selectedInterest.partId === part.partId &&
+                    selectedInterest.tagId === tag.tagId,
+                )}
                 isDisabled={isDisabled}
                 onToggle={onTagToggle}
               />

@@ -2,6 +2,8 @@ import type { RegisterRequest } from "./register.schema";
 
 export type { RegisterRequest } from "./register.schema";
 
+export type RegisterInterest = RegisterRequest["selectedInterests"][number];
+
 // 회원가입 완료 후 반환되는 사용자 정보
 export interface RegisterUser {
   userId: number; // 사용자 식별자
@@ -20,7 +22,7 @@ export type RegisterStep = 1 | 2 | 3;
 
 export type RegisterScalarField = Exclude<
   keyof RegisterRequest,
-  "selectedTagIds"
+  "selectedInterests"
 >;
 
 export type RegisterValidationErrors = Partial<

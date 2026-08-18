@@ -2,19 +2,22 @@
 
 import { useState } from "react";
 
-import type { RegisterValidationErrors } from "../../../../model/types";
+import type {
+  RegisterInterest,
+  RegisterValidationErrors,
+} from "../../../../model/types";
 import { registerInterestStepSchema } from "../model/register-interest-step.schema";
 import useSignupParts from "./use-signup-parts";
 
 interface UseRegisterInterestStepParams {
-  selectedTagIds: number[];
-  onTagToggle: (tagId: number) => void;
+  selectedInterests: RegisterInterest[];
+  onInterestToggle: (interest: RegisterInterest) => void;
   onComplete: () => void;
 }
 
 export default function useRegisterInterestStep({
-  selectedTagIds,
-  onTagToggle,
+  selectedInterests,
+  onInterestToggle,
   onComplete,
 }: UseRegisterInterestStepParams) {
   const { parts, partsError, isPartsPending } = useSignupParts();
@@ -33,19 +36,22 @@ export default function useRegisterInterestStep({
 
   function toggleTag(tagId: number) {
     setValidationErrors({});
-    onTagToggle(tagId);
+
+    if (activePart) {
+      onInterestToggle({ partId: activePart.partId, tagId });
+    }
   }
 
   function submitStep() {
     const validationResult = registerInterestStepSchema.safeParse({
-      selectedTagIds,
+      selectedInterests,
     });
 
     if (!validationResult.success) {
       const fieldErrors = validationResult.error.flatten().fieldErrors;
 
       setValidationErrors({
-        selectedTagIds: fieldErrors.selectedTagIds?.[0],
+        selectedInterests: fieldErrors.selectedInterests?.[0],
       });
       return;
     }

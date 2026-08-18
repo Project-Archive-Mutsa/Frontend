@@ -8,6 +8,24 @@
   --color-brand-soft: #dce9f4;
 }
 
+.loading-spinner {
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  animation: loading-spinner-rotate 700ms linear infinite;
+}
+
+@keyframes loading-spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-spinner {
+    animation: none;
+  }
+}
+
 .register-scrollbar {
   scrollbar-color: color-mix(in srgb, currentColor 35%, transparent)
     transparent;
