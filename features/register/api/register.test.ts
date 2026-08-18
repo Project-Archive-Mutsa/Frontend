@@ -14,7 +14,10 @@ const registerRequest: RegisterRequest = {
   phoneNumber: "010-1234-5678",
   school: "테스트대학교",
   department: "컴퓨터공학과",
-  selectedTagIds: [66, 68],
+  selectedInterests: [
+    { partId: 5, tagId: 66 },
+    { partId: 5, tagId: 68 },
+  ],
 };
 
 const successResponse: RegisterResponse = {

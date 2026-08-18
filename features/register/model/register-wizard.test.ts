@@ -21,15 +21,17 @@ describe("registerWizardReducer", () => {
 
   it("관심 태그를 선택하고 다시 선택하면 해제한다", () => {
     const selectedState = registerWizardReducer(initialRegisterWizardState, {
-      type: "TOGGLE_TAG",
-      tagId: 1,
+      type: "TOGGLE_INTEREST",
+      interest: { partId: 1, tagId: 1 },
     });
     const unselectedState = registerWizardReducer(selectedState, {
-      type: "TOGGLE_TAG",
-      tagId: 1,
+      type: "TOGGLE_INTEREST",
+      interest: { partId: 1, tagId: 1 },
     });
 
-    expect(selectedState.values.selectedTagIds).toEqual([1]);
-    expect(unselectedState.values.selectedTagIds).toEqual([]);
+    expect(selectedState.values.selectedInterests).toEqual([
+      { partId: 1, tagId: 1 },
+    ]);
+    expect(unselectedState.values.selectedInterests).toEqual([]);
   });
 });

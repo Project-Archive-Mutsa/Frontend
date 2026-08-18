@@ -28,8 +28,8 @@ describe("useRegisterInterestStep", () => {
   it("첫 파트를 기본으로 보여주고 선택한 파트로 전환한다", () => {
     const { result } = renderHook(() =>
       useRegisterInterestStep({
-        selectedTagIds: [],
-        onTagToggle: vi.fn(),
+        selectedInterests: [],
+        onInterestToggle: vi.fn(),
         onComplete: vi.fn(),
       }),
     );
@@ -39,5 +39,20 @@ describe("useRegisterInterestStep", () => {
     act(() => result.current.selectPart(2));
 
     expect(result.current.activePart?.partId).toBe(2);
+  });
+
+  it("현재 파트와 태그 ID를 함께 선택값으로 전달한다", () => {
+    const onInterestToggle = vi.fn();
+    const { result } = renderHook(() =>
+      useRegisterInterestStep({
+        selectedInterests: [],
+        onInterestToggle,
+        onComplete: vi.fn(),
+      }),
+    );
+
+    act(() => result.current.toggleTag(1));
+
+    expect(onInterestToggle).toHaveBeenCalledWith({ partId: 1, tagId: 1 });
   });
 });

@@ -1,4 +1,5 @@
 import SectionLoadingSpinner from "@/shared/components/section-loading-spinner/section-loading-spinner";
+import type { RegisterInterest } from "../../../../model/types";
 import RegisterActions from "../../../register-actions";
 import RegisterStepForm from "../../../register-step-form";
 import useRegisterInterestStep from "../hooks/use-register-interest-step";
@@ -6,19 +7,19 @@ import RegisterInterestTagSelector from "./register-interest-tag-selector";
 import RegisterPartNavigation from "./register-part-navigation";
 
 interface RegisterInterestStepProps {
-  selectedTagIds: number[];
+  selectedInterests: RegisterInterest[];
   submitError: Error | null;
   isSubmitting: boolean;
-  onTagToggle: (tagId: number) => void;
+  onInterestToggle: (interest: RegisterInterest) => void;
   onPrevious: () => void;
   onComplete: () => void;
 }
 
 export default function RegisterInterestStep({
-  selectedTagIds,
+  selectedInterests,
   submitError,
   isSubmitting,
-  onTagToggle,
+  onInterestToggle,
   onPrevious,
   onComplete,
 }: RegisterInterestStepProps) {
@@ -31,7 +32,11 @@ export default function RegisterInterestStep({
     selectPart,
     toggleTag,
     submitStep,
-  } = useRegisterInterestStep({ selectedTagIds, onTagToggle, onComplete });
+  } = useRegisterInterestStep({
+    selectedInterests,
+    onInterestToggle,
+    onComplete,
+  });
 
   const isPartsUnavailable =
     isPartsPending || Boolean(partsError) || parts.length === 0;
@@ -62,15 +67,15 @@ export default function RegisterInterestStep({
           <RegisterPartNavigation
             parts={parts}
             activePartId={activePart.partId}
-            selectedTagIds={selectedTagIds}
+            selectedInterests={selectedInterests}
             isDisabled={isSubmitting}
             onPartChange={selectPart}
           />
           <div className="register-scrollbar min-h-0 min-w-0 overflow-y-auto px-6 py-4 text-slate-700 2xl:px-8">
             <RegisterInterestTagSelector
               part={activePart}
-              selectedTagIds={selectedTagIds}
-              validationError={validationErrors.selectedTagIds}
+              selectedInterests={selectedInterests}
+              validationError={validationErrors.selectedInterests}
               isDisabled={isSubmitting}
               onTagToggle={toggleTag}
             />
