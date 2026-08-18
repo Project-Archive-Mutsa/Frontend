@@ -11,10 +11,12 @@ export function mapRecentAwardProject(
     detailPath: project.detailPath,
     name: project.projectName,
     summary: project.description,
-    representativeImage: {
-      src: project.representativeImageUrl,
-      alt: `${project.projectName} 대표 이미지`,
-    },
+    representativeImage: project.representativeImageUrl?.trim()
+      ? {
+          src: project.representativeImageUrl,
+          alt: `${project.projectName} 대표 이미지`,
+        }
+      : null,
     category: project.category,
     award: {
       competitionName: project.organization,
@@ -25,5 +27,16 @@ export function mapRecentAwardProject(
       viewCount: project.viewCount,
       likeCount: project.likeCount,
     },
+    registrationPurpose: project.registrationPurpose ?? null,
+    resultLevel: project.resultLevel ?? null,
+    activityStatus: project.activityStatus ?? null,
+    assetCount: project.assetCount ?? null,
+    assetCategories: project.assetCategories ?? [],
+    ...(project.informationCompletenessScore !== undefined
+      ? {
+          informationCompletenessScore:
+            project.informationCompletenessScore,
+        }
+      : {}),
   };
 }

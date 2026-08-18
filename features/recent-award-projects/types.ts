@@ -6,11 +6,17 @@ export interface RecentAwardProjectResponseItem {
   description: string; // 프로젝트 설명
   organization: string; // 대회 이름
   awardRank: string; // 수상 등급
-  representativeImageUrl: string; // 대표 이미지 URL
+  representativeImageUrl: string | null; // 대표 이미지 URL
   awardedDate: string; // 수상일
   viewCount: number; // 조회수
   likeCount: number; // 좋아요 수
   detailPath: string; // 상세 페이지 경로
+  informationCompletenessScore?: number | null; // 프로젝트 등록 정보 충실도 점수
+  registrationPurpose?: ProjectRegistrationPurpose | null;
+  resultLevel?: ProjectResultLevel | null;
+  activityStatus?: ProjectActivityStatus | null;
+  assetCount?: number | null;
+  assetCategories?: readonly string[];
 }
 
 // 최근 수상작 API 공통 응답
@@ -29,7 +35,7 @@ export interface RecentAwardProject {
   representativeImage: { // 대표 이미지
     src: string; // 이미지 URL
     alt: string; // 이미지 대체 텍스트
-  };
+  } | null;
   category: string; // 대회·활동 카테고리
   award: { // 수상 정보
     competitionName: string; // 대회 이름
@@ -40,4 +46,15 @@ export interface RecentAwardProject {
     viewCount: number; // 조회수
     likeCount: number; // 좋아요 수
   };
+  informationCompletenessScore?: number | null; // 프로젝트 등록 정보 충실도 점수
+  registrationPurpose?: ProjectRegistrationPurpose | null;
+  resultLevel?: ProjectResultLevel | null;
+  activityStatus?: ProjectActivityStatus | null;
+  assetCount?: number | null;
+  assetCategories?: readonly string[];
 }
+import type {
+  ProjectActivityStatus,
+  ProjectRegistrationPurpose,
+  ProjectResultLevel,
+} from "@/shared/project-summary/types";

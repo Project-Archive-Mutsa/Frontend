@@ -1,6 +1,10 @@
 import Image from "next/image";
-import Link from "next/link";
 import type { RecentAwardProject } from "@/features/recent-award-projects/types";
+import ProjectInformationCompleteness from "@/shared/components/project-information-completeness/project-information-completeness";
+import {
+  getProjectActivityStatusLabel,
+  getProjectResultLevelLabel,
+} from "@/shared/project-summary/types";
 
 interface RecentAwardProjectItemProps {
   project: RecentAwardProject;
@@ -10,51 +14,75 @@ export default function RecentAwardProjectItem({
   project,
 }: RecentAwardProjectItemProps) {
   return (
-    <Link
-      href={project.detailPath}
-      className="group block h-full rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-[#317bb8] focus-visible:ring-offset-4"
-    >
-      <article className="flex h-full flex-col overflow-hidden rounded-xl border border-[#d7e3ee] bg-white transition-colors group-hover:border-[#9fbfd8]">
-        <div className="relative flex aspect-[16/10] items-center justify-center overflow-hidden bg-brand-canvas">
+    <article className="flex h-full flex-col border-y border-slate-300 py-5">
+      <div className="relative aspect-[16/10] overflow-hidden bg-brand-canvas">
+        {project.representativeImage ? (
           <Image
             src={project.representativeImage.src}
             alt={project.representativeImage.alt}
-            width={86}
-            height={86}
-            unoptimized={project.representativeImage.src.endsWith(".svg")}
-            className="size-20 object-contain opacity-80"
+            fill
+            unoptimized
+            sizes="(max-width: 640px) 100vw, 280px"
+            className="object-cover"
           />
-          <span className="absolute top-4 right-4 rounded-md border border-[#f4d58d] bg-[#fff5d8] px-2.5 py-1 text-[10px] font-bold whitespace-nowrap text-[#986412]">
-            {project.award.title}
-          </span>
-        </div>
+        ) : (
+          <div className="flex h-full items-center justify-center px-4 text-center text-xs text-slate-500">
+            대표 이미지 미등록
+          </div>
+        )}
+      </div>
 
-        <div className="flex flex-1 flex-col p-5">
-          <p className="text-[11px] font-bold tracking-[0.1em] whitespace-nowrap text-[#4f82b1] uppercase">
-            {project.category}
-          </p>
-          <h3 className="mt-2 text-pretty break-keep text-lg font-bold tracking-[-0.03em] text-[#173f68] transition-colors group-hover:text-[#0f67a8]">
-            {project.name}
-          </h3>
-          <p className="mt-2 line-clamp-3 text-pretty break-keep text-sm leading-6 text-[#687e93]">
-            {project.summary}
-          </p>
-          <p className="mt-4 text-pretty break-keep text-xs leading-5 font-medium text-[#405f7c]">
+      <div className="flex flex-1 flex-col pt-5">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+          <span>{project.category}</span>
+          <span className="font-bold text-brand">{project.award.title}</span>
+        </div>
+        <h3 className="mt-3 text-pretty break-keep text-xl font-bold tracking-[-0.03em] text-slate-950">
+          {project.name}
+        </h3>
+        <p className="mt-2 line-clamp-3 text-pretty break-keep text-sm leading-6 text-slate-600">
+          {project.summary}
+        </p>
+
+        <dl className="mt-5 grid grid-cols-2 gap-4 border-t border-slate-200 pt-4 text-sm">
+          <div>
+            <dt className="text-xs text-slate-500">결과물 단계</dt>
+            <dd className="mt-1 font-bold text-slate-800">
+              {getProjectResultLevelLabel(project.resultLevel)}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs text-slate-500">활동 상태</dt>
+            <dd className="mt-1 font-bold text-slate-800">
+              {getProjectActivityStatusLabel(project.activityStatus)}
+            </dd>
+          </div>
+        </dl>
+
+        <div className="mt-5 border-t border-slate-200 pt-4">
+          <p className="text-xs font-medium leading-5 text-slate-700">
             {project.award.competitionName}
           </p>
-          <div className="mt-auto flex items-center justify-between gap-3 border-t border-[#e8eef4] pt-4 text-[11px] text-[#72869a]">
-            <time
-              dateTime={project.award.awardedAt}
-              className="whitespace-nowrap"
-            >
-              {project.award.awardedAt}
-            </time>
-            <span className="whitespace-nowrap">
-              조회 {project.stats.viewCount} · 좋아요 {project.stats.likeCount}
-            </span>
-          </div>
+          <time
+            dateTime={project.award.awardedAt}
+            className="mt-1 block text-xs tabular-nums text-slate-500"
+          >
+            {project.award.awardedAt} 수상
+          </time>
         </div>
-      </article>
-    </Link>
+
+        <div className="mt-5 border-t border-slate-200 pt-4">
+          <ProjectInformationCompleteness
+            projectName={project.name}
+            score={project.informationCompletenessScore}
+          />
+        </div>
+
+        <p className="mt-auto border-t border-slate-200 pt-4 text-xs tabular-nums text-slate-500">
+          조회 {project.stats.viewCount.toLocaleString("ko-KR")} · 좋아요{" "}
+          {project.stats.likeCount.toLocaleString("ko-KR")}
+        </p>
+      </div>
+    </article>
   );
 }

@@ -9,7 +9,7 @@ export default async function PopularProjectList() {
   }
 
   return (
-    <ul className="divide-y divide-[#d6e3ec] border-y border-[#d6e3ec]">
+    <ul className="divide-y divide-slate-300 border-y border-slate-300">
       {projects.map((project) => (
         <li key={project.id}>
           <PopularProjectItem project={project} />
