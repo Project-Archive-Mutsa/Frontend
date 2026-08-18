@@ -7,13 +7,13 @@ export default function LoginPage() {
       <section className="grid min-h-[32rem] w-full max-w-5xl grid-cols-[0.9fr_1.1fr] overflow-hidden rounded-2xl border border-slate-200 bg-white 2xl:max-w-6xl">
         <aside className="bg-brand-soft text-brand flex flex-col justify-between px-10 py-10 2xl:px-12 2xl:py-12">
           <div>
-            <p className="font-[Georgia] text-5xl leading-none font-bold tracking-[-0.04em]">
+            <p className="font-display text-5xl leading-none font-bold tracking-[-0.02em]">
               Project
               <br />
               Archive
             </p>
             <div className="bg-brand-accent mt-6 h-1 w-10" />
-            <p className="mt-6 max-w-sm text-2xl leading-8 font-bold tracking-[-0.03em]">
+            <p className="font-display mt-6 max-w-sm text-2xl leading-9 font-semibold tracking-[-0.02em]">
               과거 프로젝트를 찾고, 멈춘 결과물의 다음 가능성을 확인하세요.
             </p>
             <p className="mt-3 max-w-sm text-base leading-7 text-slate-600">

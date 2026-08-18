@@ -313,7 +313,7 @@ export default function AssetsStep({
   return (
     <div className="space-y-10">
       <section aria-labelledby="retrospective-title">
-        <h2 id="retrospective-title" className="text-lg font-bold text-slate-950">시행착오와 다음 과제</h2>
+        <h2 id="retrospective-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">시행착오와 다음 과제</h2>
         <p className="mt-2 text-sm leading-6 text-slate-600">완성된 결과보다 무엇을 시도했고 어디에서 막혔는지가 다음 실행자에게 더 유용할 수 있습니다.</p>
         <div className="mt-6 space-y-6">
           <Field id="attempts" label="시도한 방법" required error={errors.attempts}>
@@ -339,7 +339,7 @@ export default function AssetsStep({
       <section aria-labelledby="assets-title" className="border-t border-slate-200 pt-8">
         <div className="flex items-start justify-between gap-6">
           <div>
-            <h2 id="assets-title" className="text-lg font-bold text-slate-950">보유 자산</h2>
+            <h2 id="assets-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">보유 자산</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">파일 개수가 아니라 자산의 내용·역할·접근성·권리 설명이 정보 충실도 평가에 활용됩니다.</p>
           </div>
           <button type="button" onClick={onAddAsset} className="min-h-11 shrink-0 border-b-2 border-brand-accent px-1 text-sm font-bold text-brand hover:border-brand hover:text-brand-hover focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand">자산 추가</button>

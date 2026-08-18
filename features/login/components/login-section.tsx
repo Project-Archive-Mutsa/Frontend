@@ -12,7 +12,7 @@ export default function LoginSection() {
   return (
     <form className="w-full" onSubmit={handleSubmit}>
       <header>
-        <h1 className="text-brand text-3xl font-bold tracking-[-0.03em]">
+        <h1 className="font-display text-brand text-3xl font-bold tracking-[-0.025em]">
           로그인
         </h1>
         <p className="mt-2 text-base leading-6 text-slate-600">

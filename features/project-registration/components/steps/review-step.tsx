@@ -25,7 +25,7 @@ function AccessBoundaryReview({ draft }: { draft: ProjectRegistrationDraft }) {
 
   return (
     <section aria-labelledby="access-boundary-title" className="border-t border-slate-200 pt-8">
-      <h2 id="access-boundary-title" className="text-lg font-bold text-slate-950">공개 범위</h2>
+      <h2 id="access-boundary-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">공개 범위</h2>
       <p className="mt-2 text-sm leading-6 text-slate-600">상세정보 열람권과 프로젝트 자산의 사용권·소유권은 서로 다른 권리입니다.</p>
       <div className="mt-6 grid gap-8 sm:grid-cols-3">
         <div>
@@ -73,7 +73,7 @@ export default function ReviewStep({
       <section aria-labelledby="public-preview-title">
         <div className="flex items-start justify-between gap-6">
           <div>
-            <h2 id="public-preview-title" className="text-lg font-bold text-slate-950">탐색 카드 미리보기</h2>
+            <h2 id="public-preview-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">탐색 카드 미리보기</h2>
             <p className="mt-2 text-sm leading-6 text-slate-600">프로젝트를 열기 전에 다른 사용자가 확인할 무료 기본정보입니다.</p>
           </div>
           <button
@@ -92,7 +92,7 @@ export default function ReviewStep({
               <span>{draft.eventName || "행사명 미입력"}</span>
               {draft.eventDate ? <time dateTime={draft.eventDate}>{draft.eventDate.slice(0, 4)}년 출품</time> : null}
             </div>
-            <h3 className="mt-3 text-pretty break-keep text-2xl font-bold tracking-[-0.03em] text-slate-950 [overflow-wrap:anywhere]">
+            <h3 className="font-display mt-3 text-pretty break-keep text-2xl font-semibold tracking-[-0.02em] text-slate-950 [overflow-wrap:anywhere]">
               {draft.projectName || "프로젝트명을 입력해 주세요"}
             </h3>
             <p className="mt-3 max-w-3xl text-pretty break-keep text-sm leading-7 text-slate-600 [overflow-wrap:anywhere]">
@@ -139,7 +139,7 @@ export default function ReviewStep({
       <section aria-labelledby="completeness-review-title" className="border-t border-slate-200 pt-8">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_16rem]">
           <div>
-            <h2 id="completeness-review-title" className="text-lg font-bold text-slate-950">AI 정보 충실도 점검</h2>
+            <h2 id="completeness-review-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">AI 정보 충실도 점검</h2>
             <p className="mt-2 text-sm leading-7 text-slate-600">프로젝트 설명과 자산이 서로 연결되는지, 분야와 결과물 단계에 맞는 근거·권리·회고가 충분한지 점검합니다. 파일 개수나 특정 확장자만으로 점수를 올리지 않습니다.</p>
             <ul className="mt-5 grid gap-x-6 gap-y-2 text-sm leading-6 text-slate-600 sm:grid-cols-2">
               <li>문제·해결 맥락</li>
@@ -158,7 +158,7 @@ export default function ReviewStep({
       </section>
 
       <section aria-labelledby="registration-submit-title" className="border-t border-slate-300 pt-8">
-        <h2 id="registration-submit-title" className="text-lg font-bold text-slate-950">프로젝트 등록</h2>
+        <h2 id="registration-submit-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">프로젝트 등록</h2>
         <p className="mt-2 text-sm leading-6 text-slate-600">필수 입력과 공개 범위를 확인했습니다. 현재 최종 등록·파일 업로드 API는 백엔드 미구현 상태입니다.</p>
         <button type="button" disabled className="mt-5 min-h-12 w-full cursor-not-allowed bg-slate-300 px-5 text-sm font-bold text-slate-600 sm:w-auto">프로젝트 등록</button>
       </section>

@@ -124,7 +124,7 @@ export default function PurposeStep({
   return (
     <div className="space-y-10">
       <section aria-labelledby="purpose-title">
-        <h2 id="purpose-title" className="text-lg font-bold text-slate-950">등록 목적</h2>
+        <h2 id="purpose-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">등록 목적</h2>
         <p className="mt-2 text-sm leading-6 text-slate-600">같은 출품작이라도 기록, 공개 계승, 권리 이전, 팀원 모집은 필요한 정보와 책임이 다릅니다.</p>
         <div className="mt-6">
           <PurposeChoice draft={draft} errors={errors} onUpdateField={onUpdateField} />
@@ -133,7 +133,7 @@ export default function PurposeStep({
 
       {draft.purpose === "ARCHIVE" ? (
         <section aria-labelledby="archive-purpose-title" className="border-t border-slate-200 pt-8">
-          <h2 id="archive-purpose-title" className="text-lg font-bold text-slate-950">아카이브 등록</h2>
+          <h2 id="archive-purpose-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">아카이브 등록</h2>
           <p className="mt-3 text-sm leading-7 text-slate-600">기본정보는 탐색 목록에 공개되고, 문제 정의·해결 과정·회고와 첨부 자산은 결제 후 상세 리포트로 제공됩니다. 자산의 사용권이나 소유권은 상세 리포트 열람에 포함되지 않습니다.</p>
         </section>
       ) : null}
@@ -141,7 +141,7 @@ export default function PurposeStep({
       {draft.purpose === "ZOMBIE" ? (
         <section aria-labelledby="zombie-purpose-title" className="space-y-7 border-t border-slate-200 pt-8">
           <div>
-            <h2 id="zombie-purpose-title" className="text-lg font-bold text-slate-950">공개 계승 조건</h2>
+            <h2 id="zombie-purpose-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">공개 계승 조건</h2>
             <p className="mt-2 text-sm leading-6 text-slate-600">좀비 프로젝트는 단순히 멈춘 프로젝트가 아닙니다. 실제 재사용 가능한 자산과 이용조건을 공개해야 합니다.</p>
           </div>
           <AssetSelectionList
@@ -188,7 +188,7 @@ export default function PurposeStep({
       {draft.purpose === "SELL" ? (
         <section aria-labelledby="sale-purpose-title" className="space-y-7 border-t border-slate-200 pt-8">
           <div>
-            <h2 id="sale-purpose-title" className="text-lg font-bold text-slate-950">판매 조건</h2>
+            <h2 id="sale-purpose-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">판매 조건</h2>
             <p className="mt-2 text-sm leading-6 text-slate-600">상세 리포트 열람과 프로젝트 판매는 별도 거래입니다. 무상 공유는 아카이브 또는 좀비 프로젝트에서 설정하며, 계좌나 결제 정보는 등록 단계에서 받지 않습니다.</p>
           </div>
           <AssetSelectionList
@@ -224,7 +224,7 @@ export default function PurposeStep({
       {draft.purpose === "TEAM_RECRUIT" ? (
         <section aria-labelledby="recruitment-purpose-title" className="space-y-7 border-t border-slate-200 pt-8">
           <div>
-            <h2 id="recruitment-purpose-title" className="text-lg font-bold text-slate-950">팀원 모집 조건</h2>
+            <h2 id="recruitment-purpose-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">팀원 모집 조건</h2>
             <p className="mt-2 text-sm leading-6 text-slate-600">등록자가 프로젝트를 계속 주도합니다. 지원자가 판단하는 데 필요한 조건은 결제 없이 공개됩니다.</p>
           </div>
           <Field id="recruitmentTitle" label="모집 제목" required error={errors.recruitmentTitle}>

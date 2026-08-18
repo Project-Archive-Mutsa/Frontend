@@ -29,7 +29,7 @@ export default function SubmissionStep({
   return (
     <div className="space-y-10">
       <section aria-labelledby="event-information-title">
-        <h2 id="event-information-title" className="text-lg font-bold text-slate-950">
+        <h2 id="event-information-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">
           출품한 행사
         </h2>
         <p className="mt-2 text-sm leading-6 text-slate-600">
@@ -107,7 +107,7 @@ export default function SubmissionStep({
       <section aria-labelledby="award-history-title" className="border-t border-slate-200 pt-8">
         <div className="flex items-start justify-between gap-6">
           <div>
-            <h2 id="award-history-title" className="text-lg font-bold text-slate-950">수상 이력</h2>
+            <h2 id="award-history-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">수상 이력</h2>
             <p className="mt-2 text-sm leading-6 text-slate-600">
               이력서처럼 직접 입력합니다. 별도 증빙은 받지 않으며 입력한 내용이 공개됩니다.
             </p>

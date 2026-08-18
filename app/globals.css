@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+@theme inline {
+  --font-display: var(--font-noto-serif-kr), "Noto Serif KR", ui-serif, serif;
+}
+
 @theme {
   --color-brand: #123f70;
   --color-brand-accent: #4f8fbd;

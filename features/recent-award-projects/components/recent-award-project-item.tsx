@@ -37,7 +37,7 @@ export default function RecentAwardProjectItem({
           <span>{project.category}</span>
           <span className="font-bold text-brand">{project.award.title}</span>
         </div>
-        <h3 className="mt-3 text-pretty break-keep text-xl font-bold tracking-[-0.03em] text-slate-950">
+        <h3 className="font-display mt-3 text-pretty break-keep text-xl font-semibold tracking-[-0.02em] text-slate-950">
           {project.name}
         </h3>
         <p className="mt-2 line-clamp-3 text-pretty break-keep text-sm leading-6 text-slate-600">

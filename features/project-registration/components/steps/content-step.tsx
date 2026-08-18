@@ -21,7 +21,7 @@ export default function ContentStep({ draft, errors, onUpdateField }: ContentSte
   return (
     <div className="space-y-10">
       <section aria-labelledby="problem-solution-title">
-        <h2 id="problem-solution-title" className="text-lg font-bold text-slate-950">문제와 해결 방식</h2>
+        <h2 id="problem-solution-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">문제와 해결 방식</h2>
         <p className="mt-2 text-sm leading-6 text-slate-600">이 내용은 결제 후 상세 리포트의 핵심이 되며 AI 유사 프로젝트 검색에도 활용됩니다.</p>
         <div className="mt-6 space-y-6">
           <Field id="problemDefinition" label="문제 정의" required helper="어떤 상황에서 누구에게 어떤 문제가 발생했는지 적어주세요." error={errors.problemDefinition}>
@@ -46,7 +46,7 @@ export default function ContentStep({ draft, errors, onUpdateField }: ContentSte
       </section>
 
       <section aria-labelledby="project-state-title" className="border-t border-slate-200 pt-8">
-        <h2 id="project-state-title" className="text-lg font-bold text-slate-950">결과물과 현재 상태</h2>
+        <h2 id="project-state-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">결과물과 현재 상태</h2>
         <p className="mt-2 text-sm leading-6 text-slate-600">출품 당시 만든 결과의 수준과 지금 프로젝트가 움직이고 있는지는 서로 다른 정보입니다.</p>
         <div className="mt-6 space-y-8">
           <ChoiceList id="resultLevel" legend="출품 당시 결과물 단계" required error={errors.resultLevel}>

@@ -16,7 +16,7 @@ export default async function ZombieProjectSearchResults({
     return (
       <div>
         <header className="border-b border-slate-300 pb-5">
-          <h2 className="text-xl font-bold tracking-[-0.025em] text-slate-900">
+          <h2 className="font-display text-xl font-bold tracking-[-0.02em] text-slate-900">
             &ldquo;{results.query || query}&rdquo; 검색 결과
           </h2>
           <p className="mt-2 text-sm text-slate-600">총 0개의 프로젝트</p>
@@ -32,7 +32,7 @@ export default async function ZombieProjectSearchResults({
     <div>
       <header className="flex flex-wrap items-end justify-between gap-3 border-b border-slate-300 pb-5">
         <div>
-          <h2 className="text-xl font-bold tracking-[-0.025em] text-slate-900">
+          <h2 className="font-display text-xl font-bold tracking-[-0.02em] text-slate-900">
             &ldquo;{results.query || query}&rdquo; 검색 결과
           </h2>
           <p className="mt-2 text-sm text-slate-600">

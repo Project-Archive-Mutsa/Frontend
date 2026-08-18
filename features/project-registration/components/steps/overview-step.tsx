@@ -80,7 +80,7 @@ export default function OverviewStep({
   return (
     <div className="space-y-10">
       <section aria-labelledby="overview-basic-title">
-        <h2 id="overview-basic-title" className="text-lg font-bold text-slate-950">목록에 보일 기본정보</h2>
+        <h2 id="overview-basic-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">목록에 보일 기본정보</h2>
         <p className="mt-2 text-sm leading-6 text-slate-600">제목과 한 줄 소개는 프로젝트 탐색 결과에 무료로 공개됩니다.</p>
 
         <div className="mt-6 space-y-6">
@@ -172,7 +172,7 @@ export default function OverviewStep({
       </section>
 
       <section aria-labelledby="classification-title" className="border-t border-slate-200 pt-8">
-        <h2 id="classification-title" className="text-lg font-bold text-slate-950">프로젝트 분류</h2>
+        <h2 id="classification-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">프로젝트 분류</h2>
         <p className="mt-2 text-sm leading-6 text-slate-600">개발 기술만이 아니라 프로젝트가 다룬 문제와 사용한 방법을 함께 분류합니다.</p>
         <div className="mt-6 space-y-8">
           <ChoiceList id="categories" legend="분야" required error={errors.categories}>

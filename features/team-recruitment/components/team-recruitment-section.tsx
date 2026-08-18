@@ -15,7 +15,7 @@ export default function TeamRecruitmentSection() {
           <div className="max-w-3xl">
             <h1
               id="team-recruitment-heading"
-              className="text-balance break-keep text-3xl font-bold tracking-[-0.04em] text-slate-950 sm:text-4xl"
+              className="font-display text-balance break-keep text-3xl font-bold tracking-[-0.025em] text-slate-950 sm:text-4xl"
             >
               팀원 모집
             </h1>

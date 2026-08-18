@@ -10,7 +10,7 @@ export default function PopularProjectSection() {
       <div className="mx-auto max-w-6xl px-5 sm:px-8 lg:px-10">
         <div className="mb-10 flex flex-col gap-3 sm:mb-12 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h2 className="text-balance break-keep text-3xl font-bold tracking-[-0.04em] text-slate-950 sm:text-4xl">
+            <h2 className="font-display text-balance break-keep text-3xl font-bold tracking-[-0.025em] text-slate-950 sm:text-4xl">
               인기 프로젝트
             </h2>
           </div>

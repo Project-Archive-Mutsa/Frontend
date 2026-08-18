@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Sans_KR } from "next/font/google";
+import { Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
 import SiteHeader from "@/shared/components/site-header/site-header";
 import "./globals.css";
 import Providers from "./providers";
@@ -7,6 +7,13 @@ import Providers from "./providers";
 const notoSansKr = Noto_Sans_KR({
   display: "swap",
   preload: false,
+  weight: "variable",
+});
+
+const notoSerifKr = Noto_Serif_KR({
+  display: "swap",
+  preload: false,
+  variable: "--font-noto-serif-kr",
   weight: "variable",
 });
 
@@ -22,7 +29,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className="h-full scroll-smooth antialiased">
+    <html
+      lang="ko"
+      className={`${notoSerifKr.variable} h-full scroll-smooth antialiased`}
+    >
       <body
         className={`${notoSansKr.className} flex min-h-full flex-col bg-slate-50 text-slate-900`}
       >

@@ -74,7 +74,7 @@ export default function ProjectListCard({
           </div>
         ) : null}
 
-        <Heading className="mt-3 text-pretty break-keep text-2xl font-bold tracking-[-0.03em] text-slate-950 [overflow-wrap:anywhere]">
+        <Heading className="font-display mt-3 text-pretty break-keep text-2xl font-semibold tracking-[-0.02em] text-slate-950 [overflow-wrap:anywhere]">
           {title}
         </Heading>
         <p className="mt-3 line-clamp-3 max-w-3xl text-pretty break-keep text-sm leading-7 text-slate-600 [overflow-wrap:anywhere]">

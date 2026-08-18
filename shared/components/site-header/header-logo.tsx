@@ -5,7 +5,7 @@ export default function HeaderLogo() {
     <Link
       href="/"
       aria-label="Project Archive 홈"
-      className="shrink-0 font-[Georgia] text-lg leading-[0.95] font-bold tracking-[-0.03em] text-white sm:text-xl"
+      className="font-display shrink-0 text-xl leading-[0.95] font-bold tracking-[-0.025em] text-white sm:text-2xl"
     >
       Project
       <br />

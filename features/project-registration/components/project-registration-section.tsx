@@ -29,7 +29,7 @@ function ProjectRegistrationWizard() {
     <section aria-labelledby="project-registration-title" className="mx-auto w-full max-w-7xl">
       <header className="flex items-end justify-between gap-8 border-b border-slate-300 pb-7">
         <div>
-          <h1 id="project-registration-title" className="text-3xl font-bold tracking-[-0.04em] text-slate-950">프로젝트 등록</h1>
+          <h1 id="project-registration-title" className="font-display text-3xl font-bold tracking-[-0.025em] text-slate-950">프로젝트 등록</h1>
           <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">실제 출품했던 프로젝트의 배경, 결과와 남은 자산을 기록해 다음 실행으로 연결합니다.</p>
         </div>
         <div className="shrink-0 text-right text-xs leading-5 text-slate-500" aria-live="polite">
@@ -59,7 +59,7 @@ function ProjectRegistrationWizard() {
         >
           <header className="mb-8">
             <p className="text-xs font-bold tabular-nums text-brand">{wizard.step} / {projectRegistrationSteps.length}</p>
-            <h2 className="mt-2 text-2xl font-bold tracking-[-0.03em] text-slate-950">{stepInformation?.label}</h2>
+            <h2 className="font-display mt-2 text-2xl font-bold tracking-[-0.02em] text-slate-950">{stepInformation?.label}</h2>
             <p className="mt-2 text-sm leading-6 text-slate-600">{stepInformation?.description}</p>
           </header>
 
