@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { PopularProject } from "@/features/popular-projects/types";
 import ProjectListCard from "@/shared/components/project-list-card/project-list-card";
 import {
@@ -28,50 +29,59 @@ export default function PopularProjectItem({
         : "없음";
 
   return (
-    <ProjectListCard
-      title={project.name}
-      summary={project.description}
-      contextItems={[
-        {
-          label:
-            getProjectPurposeLabel(project.registrationPurpose) ??
-            "등록 목적 연동 전",
-        },
-        {
-          label: project.eventName
-            ? `${project.eventName}${eventYear ? ` · ${eventYear}년 출품` : ""}`
-            : "출품 행사 연동 전",
-        },
-        { label: `${project.registeredDate} 등록`, dateTime: project.registeredDate },
-      ]}
-      tags={[
-        ...new Set([project.category ?? "", ...project.tags].filter(Boolean)),
-      ]}
-      facts={[
-        {
-          label: "결과물 단계",
-          value: getProjectResultLevelLabel(project.resultLevel),
-        },
-        {
-          label: "현재 활동 상태",
-          value: getProjectActivityStatusLabel(project.activityStatus),
-        },
-        { label: "보유 자산", value: assetSummary },
-        { label: "수상 이력", value: awardSummary },
-      ]}
-      representativeImage={
-        project.thumbnailUrl
-          ? { src: project.thumbnailUrl, alt: `${project.name} 대표 이미지` }
-          : null
-      }
-      informationCompletenessScore={project.informationCompletenessScore}
-      registrantName={project.sellerName}
-      stats={[
-        { label: "조회", value: project.viewCount },
-        { label: "좋아요", value: project.likeCount },
-        { label: "저장", value: project.bookmarkCount },
-      ]}
-      headingLevel={3}
-    />
+    <Link
+      href={`/project-market/${project.id}`}
+      aria-label={`${project.name} 상세 보기`}
+      className="block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+    >
+      <ProjectListCard
+        title={project.name}
+        summary={project.description}
+        contextItems={[
+          {
+            label:
+              getProjectPurposeLabel(project.registrationPurpose) ??
+              "등록 목적 연동 전",
+          },
+          {
+            label: project.eventName
+              ? `${project.eventName}${eventYear ? ` · ${eventYear}년 출품` : ""}`
+              : "출품 행사 연동 전",
+          },
+          {
+            label: `${project.registeredDate} 등록`,
+            dateTime: project.registeredDate,
+          },
+        ]}
+        tags={[
+          ...new Set([project.category ?? "", ...project.tags].filter(Boolean)),
+        ]}
+        facts={[
+          {
+            label: "결과물 단계",
+            value: getProjectResultLevelLabel(project.resultLevel),
+          },
+          {
+            label: "현재 활동 상태",
+            value: getProjectActivityStatusLabel(project.activityStatus),
+          },
+          { label: "보유 자산", value: assetSummary },
+          { label: "수상 이력", value: awardSummary },
+        ]}
+        representativeImage={
+          project.thumbnailUrl
+            ? { src: project.thumbnailUrl, alt: `${project.name} 대표 이미지` }
+            : null
+        }
+        informationCompletenessScore={project.informationCompletenessScore}
+        registrantName={project.sellerName}
+        stats={[
+          { label: "조회", value: project.viewCount },
+          { label: "좋아요", value: project.likeCount },
+          { label: "저장", value: project.bookmarkCount },
+        ]}
+        headingLevel={3}
+      />
+    </Link>
   );
 }

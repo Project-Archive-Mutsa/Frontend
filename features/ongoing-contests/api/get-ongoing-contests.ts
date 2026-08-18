@@ -9,8 +9,11 @@ const ONGOING_CONTESTS_PATH = "/api/contests/active";
 export async function getOngoingContests(): Promise<
   readonly OngoingContest[]
 > {
+  const API_BASE_URL =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "https://project-archive-api-zf90.onrender.com";
+
   const response = await fetch(
-    `${process.env.API_BASE_URL}${ONGOING_CONTESTS_PATH}`,
+    `${API_BASE_URL}${ONGOING_CONTESTS_PATH}`,
     {
       cache: "no-store",
     },
