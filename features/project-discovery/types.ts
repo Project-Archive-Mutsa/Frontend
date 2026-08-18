@@ -1,3 +1,9 @@
+import type {
+  ProjectActivityStatus,
+  ProjectRegistrationPurpose,
+  ProjectResultLevel,
+} from "@/shared/project-summary/types";
+
 // AI 프로젝트 검색 대상
 export type ProjectDiscoveryTarget = "PROJECT" | "CONTEST" | "IDEA" | "AWARD";
 
@@ -47,14 +53,24 @@ export interface ProjectDiscoveryResultsData {
   awards: readonly ProjectDiscoveryResultItem[]; // 수상작 결과
 }
 
+export interface ProjectDiscoveryAnalysisSummary {
+  summary: string;
+  keywords: readonly string[];
+  comparisonPoints: readonly string[];
+  validationPoints: readonly string[];
+  interpretationNote: string;
+}
+
+// 백엔드 연동 전 AI 검색 결과 화면에서 사용하는 데모 데이터
+export interface ProjectDiscoveryDemoResults {
+  query: string;
+  analysis: ProjectDiscoveryAnalysisSummary;
+  projects: readonly ProjectDiscoveryResultItem[];
+}
+
 // AI 프로젝트 검색 API 공통 응답
 export interface ProjectDiscoveryResultsResponse {
   success: boolean; // 요청 성공 여부
   data: ProjectDiscoveryResultsData | null; // 검색 결과 데이터
   message: string | null; // 서버 응답 메시지
 }
-import type {
-  ProjectActivityStatus,
-  ProjectRegistrationPurpose,
-  ProjectResultLevel,
-} from "@/shared/project-summary/types";

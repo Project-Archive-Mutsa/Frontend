@@ -5,6 +5,7 @@ interface ProjectDiscoveryResultListProps {
   id: string;
   title: string;
   description: string;
+  query: string;
   items: readonly ProjectDiscoveryResultItem[];
 }
 
@@ -14,6 +15,7 @@ export default function ProjectDiscoveryResultList({
   id,
   title,
   description,
+  query,
   items,
 }: ProjectDiscoveryResultListProps) {
   const initialItems = items.slice(0, INITIAL_RESULT_COUNT);
@@ -41,7 +43,7 @@ export default function ProjectDiscoveryResultList({
           <ul className="divide-y divide-slate-300 border-y border-slate-300">
             {initialItems.map((item) => (
               <li key={`${item.type}-${item.id}`}>
-                <ProjectDiscoveryResultItemComponent item={item} />
+                <ProjectDiscoveryResultItemComponent item={item} query={query} />
               </li>
             ))}
           </ul>
@@ -57,7 +59,10 @@ export default function ProjectDiscoveryResultList({
               <ul className="divide-y divide-slate-300 border-t border-slate-300">
                 {remainingItems.map((item) => (
                   <li key={`${item.type}-${item.id}`}>
-                    <ProjectDiscoveryResultItemComponent item={item} />
+                    <ProjectDiscoveryResultItemComponent
+                      item={item}
+                      query={query}
+                    />
                   </li>
                 ))}
               </ul>

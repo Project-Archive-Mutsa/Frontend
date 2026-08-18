@@ -17,7 +17,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const query = (Array.isArray(q) ? q[0] : q)?.trim() ?? "";
 
   return (
-    <main className="flex flex-1 bg-brand-canvas">
+    <main className="flex flex-1 bg-slate-50">
       <ProjectDiscoverySection query={query} />
     </main>
   );
