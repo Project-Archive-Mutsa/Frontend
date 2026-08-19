@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import LoadingSpinner from "@/shared/components/loading-spinner/loading-spinner";
 import SectionLoadingSpinner from "@/shared/components/section-loading-spinner/section-loading-spinner";
 import useAuthSession from "@/shared/auth/hooks/use-auth-session";
 import useProjectRegistrationWizard from "../hooks/use-project-registration-wizard";
@@ -32,15 +33,24 @@ function ProjectRegistrationWizard() {
           <h1 id="project-registration-title" className="font-display text-3xl font-bold tracking-[-0.025em] text-slate-950">프로젝트 등록</h1>
           <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">실제 출품했던 프로젝트의 배경, 결과와 남은 자산을 기록해 다음 실행으로 연결합니다.</p>
         </div>
-        <div className="shrink-0 text-right text-xs leading-5 text-slate-500" aria-live="polite">
-          <p>
-            {wizard.saveStatus === "saving"
-              ? "이 브라우저에 저장 중"
-              : wizard.saveStatus === "saved" && savedTime
-                ? `이 브라우저에 ${savedTime} 임시 저장됨`
-                : wizard.saveStatus === "unavailable"
-                  ? "브라우저 임시저장을 사용할 수 없음"
-                  : "입력을 시작하면 이 브라우저에 임시 저장됩니다"}
+        <div
+          className="shrink-0 text-right text-xs leading-5 text-slate-500"
+          aria-live="polite"
+          aria-busy={wizard.saveStatus === "saving"}
+        >
+          <p className="flex items-center justify-end gap-2">
+            {wizard.saveStatus === "saving" ? (
+              <>
+                <LoadingSpinner size={14} />
+                <span>이 브라우저에 저장 중</span>
+              </>
+            ) : wizard.saveStatus === "saved" && savedTime ? (
+              `이 브라우저에 ${savedTime} 임시 저장됨`
+            ) : wizard.saveStatus === "unavailable" ? (
+              "브라우저 임시저장을 사용할 수 없음"
+            ) : (
+              "입력을 시작하면 이 브라우저에 임시 저장됩니다"
+            )}
           </p>
           <button type="button" onClick={wizard.discardDraft} className="mt-1 min-h-8 font-medium text-red-700 underline decoration-red-300 underline-offset-4 hover:decoration-red-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700">작성 내용 지우기</button>
         </div>

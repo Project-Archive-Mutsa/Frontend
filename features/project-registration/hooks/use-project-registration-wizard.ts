@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useAuthSession from "@/shared/auth/hooks/use-auth-session";
 import {
   getProjectRegistrationDraftKey,
@@ -31,6 +31,10 @@ function createEntityId(prefix: string) {
   return `${prefix}-${Date.now()}-${entitySequence}`;
 }
 
+function isHostnameWithin(hostname: string, domain: string) {
+  return hostname === domain || hostname.endsWith(`.${domain}`);
+}
+
 function focusFirstError(errors: ProjectRegistrationFieldErrors) {
   const firstField = Object.keys(errors)[0];
   if (!firstField) {
@@ -59,13 +63,28 @@ function focusFirstError(errors: ProjectRegistrationFieldErrors) {
 export function detectAssetLinkProvider(url: string): AssetLinkProvider {
   try {
     const hostname = new URL(url).hostname.toLowerCase();
-    if (hostname === "figma.com" || hostname.endsWith(".figma.com")) return "FIGMA";
-    if (hostname === "github.com" || hostname.endsWith(".github.com")) return "GITHUB";
-    if (hostname === "gitlab.com" || hostname.endsWith(".gitlab.com")) return "GITLAB";
-    if (hostname === "notion.so" || hostname.endsWith(".notion.site")) return "NOTION";
-    if (hostname === "drive.google.com" || hostname === "docs.google.com") return "GOOGLE_DRIVE";
-    if (hostname === "youtube.com" || hostname === "youtu.be") return "YOUTUBE";
-    if (hostname === "vimeo.com" || hostname.endsWith(".vimeo.com")) return "VIMEO";
+    if (isHostnameWithin(hostname, "figma.com")) return "FIGMA";
+    if (isHostnameWithin(hostname, "github.com")) return "GITHUB";
+    if (isHostnameWithin(hostname, "gitlab.com")) return "GITLAB";
+    if (
+      isHostnameWithin(hostname, "notion.so") ||
+      isHostnameWithin(hostname, "notion.site")
+    ) {
+      return "NOTION";
+    }
+    if (
+      isHostnameWithin(hostname, "drive.google.com") ||
+      isHostnameWithin(hostname, "docs.google.com")
+    ) {
+      return "GOOGLE_DRIVE";
+    }
+    if (
+      isHostnameWithin(hostname, "youtube.com") ||
+      isHostnameWithin(hostname, "youtu.be")
+    ) {
+      return "YOUTUBE";
+    }
+    if (isHostnameWithin(hostname, "vimeo.com")) return "VIMEO";
   } catch {
     return "GENERAL";
   }
@@ -99,6 +118,37 @@ export default function useProjectRegistrationWizard() {
   );
   const [representativeImageUrl, setRepresentativeImageUrl] = useState<string | null>(null);
   const hasChanged = useRef(false);
+  const representativeImageFileRef = useRef<File | null>(null);
+  const assetFilesRef = useRef<Map<string, File>>(new Map());
+  const latestDraftRef = useRef(draft);
+  const latestStepRef = useRef(step);
+
+  useEffect(() => {
+    latestDraftRef.current = draft;
+    latestStepRef.current = step;
+  }, [draft, step]);
+
+  const persistLatestDraft = useCallback(
+    (announceResult: boolean) => {
+      try {
+        const nextSavedAt = storeProjectRegistrationDraft(
+          window.localStorage,
+          draftKey,
+          latestDraftRef.current,
+          latestStepRef.current,
+        );
+        if (announceResult) {
+          setSavedAt(nextSavedAt);
+          setSaveStatus("saved");
+        }
+      } catch {
+        if (announceResult) {
+          setSaveStatus("unavailable");
+        }
+      }
+    },
+    [draftKey],
+  );
 
   useEffect(() => {
     if (!hasChanged.current) {
@@ -107,22 +157,25 @@ export default function useProjectRegistrationWizard() {
 
     setSaveStatus("saving");
     const timeoutId = window.setTimeout(() => {
-      try {
-        const nextSavedAt = storeProjectRegistrationDraft(
-          window.localStorage,
-          draftKey,
-          draft,
-          step,
-        );
-        setSavedAt(nextSavedAt);
-        setSaveStatus("saved");
-      } catch {
-        setSaveStatus("unavailable");
-      }
+      persistLatestDraft(true);
     }, 600);
 
     return () => window.clearTimeout(timeoutId);
-  }, [draft, draftKey, step]);
+  }, [draft, persistLatestDraft, step]);
+
+  useEffect(() => {
+    const flushPendingDraft = () => {
+      if (hasChanged.current) {
+        persistLatestDraft(false);
+      }
+    };
+
+    window.addEventListener("pagehide", flushPendingDraft);
+    return () => {
+      window.removeEventListener("pagehide", flushPendingDraft);
+      flushPendingDraft();
+    };
+  }, [persistLatestDraft]);
 
   useEffect(
     () => () => {
@@ -215,6 +268,7 @@ export default function useProjectRegistrationWizard() {
     if (representativeImageUrl) {
       URL.revokeObjectURL(representativeImageUrl);
     }
+    representativeImageFileRef.current = file;
     setRepresentativeImageUrl(file ? URL.createObjectURL(file) : null);
     setDraft((previousDraft) => ({
       ...previousDraft,
@@ -247,6 +301,13 @@ export default function useProjectRegistrationWizard() {
 
   function removeAsset(id: string) {
     markChanged();
+    draft.assets
+      .find((asset) => asset.id === id)
+      ?.sources.forEach((source) => {
+        if (source.kind === "UPLOAD") {
+          assetFilesRef.current.delete(source.id);
+        }
+      });
     setDraft((previousDraft) => ({
       ...previousDraft,
       assets: previousDraft.assets.filter((asset) => asset.id !== id),
@@ -265,14 +326,45 @@ export default function useProjectRegistrationWizard() {
     if (!files?.length) return;
     const asset = draft.assets.find((item) => item.id === assetId);
     if (!asset) return;
-    const fileSources = Array.from(files).map((file) => ({
-      id: createEntityId("source"),
-      kind: "UPLOAD" as const,
-      fileName: file.name,
-      sizeInBytes: file.size,
-      needsReattach: false,
-    }));
-    updateAsset(assetId, { sources: [...asset.sources, ...fileSources] });
+    clearError(`asset-${assetId}-sources`);
+    const sources = [...asset.sources];
+    const reattachedSourceIds = new Set<string>();
+
+    Array.from(files).forEach((file) => {
+      const detachedSourceIndex = sources.findIndex(
+        (source) =>
+          source.kind === "UPLOAD" &&
+          source.needsReattach &&
+          !reattachedSourceIds.has(source.id) &&
+          source.fileName === file.name &&
+          source.sizeInBytes === file.size,
+      );
+
+      if (detachedSourceIndex >= 0) {
+        const detachedSource = sources[detachedSourceIndex];
+        if (detachedSource.kind === "UPLOAD") {
+          sources[detachedSourceIndex] = {
+            ...detachedSource,
+            needsReattach: false,
+          };
+          reattachedSourceIds.add(detachedSource.id);
+          assetFilesRef.current.set(detachedSource.id, file);
+        }
+        return;
+      }
+
+      const sourceId = createEntityId("source");
+      sources.push({
+        id: sourceId,
+        kind: "UPLOAD",
+        fileName: file.name,
+        sizeInBytes: file.size,
+        needsReattach: false,
+      });
+      assetFilesRef.current.set(sourceId, file);
+    });
+
+    updateAsset(assetId, { sources });
   }
 
   function addAssetLink(
@@ -288,6 +380,7 @@ export default function useProjectRegistrationWizard() {
     } catch {
       return false;
     }
+    clearError(`asset-${assetId}-sources`);
     updateAsset(assetId, {
       sources: [
         ...asset.sources,
@@ -306,6 +399,7 @@ export default function useProjectRegistrationWizard() {
   function removeAssetSource(assetId: string, sourceId: string) {
     const asset = draft.assets.find((item) => item.id === assetId);
     if (!asset) return;
+    assetFilesRef.current.delete(sourceId);
     updateAsset(assetId, {
       sources: asset.sources.filter((source) => source.id !== sourceId),
     });
@@ -383,6 +477,8 @@ export default function useProjectRegistrationWizard() {
     }
     window.localStorage.removeItem(draftKey);
     if (representativeImageUrl) URL.revokeObjectURL(representativeImageUrl);
+    representativeImageFileRef.current = null;
+    assetFilesRef.current.clear();
     setRepresentativeImageUrl(null);
     setDraft(defaultProjectRegistrationDraft);
     setStep(1);

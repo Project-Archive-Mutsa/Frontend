@@ -179,7 +179,16 @@ export function validateProjectRegistrationStep(
       if (asset.title.trim().length < 2) errors[`asset-${asset.id}-title`] = "자산명을 2자 이상 작성해 주세요.";
       if (asset.projectRole.trim().length < 5) errors[`asset-${asset.id}-role`] = "프로젝트에서 이 자산이 맡은 역할을 작성해 주세요.";
       if (asset.description.trim().length < 10) errors[`asset-${asset.id}-description`] = "자산의 내용과 활용 방법을 10자 이상 작성해 주세요.";
-      if (asset.sources.length === 0) errors[`asset-${asset.id}-sources`] = "파일이나 외부 링크를 하나 이상 연결해 주세요.";
+      if (asset.sources.length === 0) {
+        errors[`asset-${asset.id}-sources`] = "파일이나 외부 링크를 하나 이상 연결해 주세요.";
+      } else if (
+        asset.sources.some(
+          (source) => source.kind === "UPLOAD" && source.needsReattach,
+        )
+      ) {
+        errors[`asset-${asset.id}-sources`] =
+          "새로고침 후 연결이 끊긴 파일을 다시 첨부하거나 목록에서 삭제해 주세요.";
+      }
       if (!asset.ownershipStatus) errors[`asset-${asset.id}-ownership`] = "자산의 소유·사용 권한 상태를 선택해 주세요.";
     });
     return errors;
