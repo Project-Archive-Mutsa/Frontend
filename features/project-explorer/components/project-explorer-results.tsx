@@ -46,7 +46,9 @@ export default async function ProjectExplorerResults({
 
       <div className="mt-5">
         <BackendContractNotice>
-          출품 행사·등록 목적·결과물 단계·활동 상태·자산·수상 이력과 정보 충실도 응답 필드가 필요합니다.
+          {query
+            ? "검색 결과에 출품 행사·등록 목적·결과물 단계·활동 상태·자산·수상 이력과 정보 충실도 응답 필드가 필요합니다."
+            : "필터 없는 전체 프로젝트 목록·페이지네이션 API가 없어 아래에는 인기 프로젝트 최대 4개만 미리 표시합니다."}
         </BackendContractNotice>
       </div>
 
