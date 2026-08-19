@@ -1,5 +1,6 @@
 "use client";
 
+import type { RegisterInterest } from "../model/types";
 import useRegisterMutation from "../hooks/use-register-mutation";
 import useRegisterWizard from "../hooks/use-register-wizard";
 import RegisterStepper from "./register-stepper";
@@ -21,7 +22,7 @@ export default function RegisterSection() {
     values,
     goToNextStep,
     goToPreviousStep,
-    toggleTag,
+    toggleInterest,
     updateField,
   } = useRegisterWizard();
 
@@ -39,9 +40,9 @@ export default function RegisterSection() {
     goToPreviousStep();
   }
 
-  function handleTagToggle(tagId: number) {
+  function handleInterestToggle(interest: RegisterInterest) {
     resetSubmit();
-    toggleTag(tagId);
+    toggleInterest(interest);
   }
 
   return (
@@ -85,10 +86,10 @@ export default function RegisterSection() {
 
         {step === 3 ? (
           <RegisterInterestStep
-            selectedTagIds={values.selectedTagIds}
+            selectedInterests={values.selectedInterests}
             submitError={submitError}
             isSubmitting={isSubmitting}
-            onTagToggle={handleTagToggle}
+            onInterestToggle={handleInterestToggle}
             onPrevious={handlePreviousStep}
             onComplete={() => submitRegister(values)}
           />

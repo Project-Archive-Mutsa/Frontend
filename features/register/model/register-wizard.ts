@@ -1,4 +1,5 @@
 import type {
+  RegisterInterest,
   RegisterRequest,
   RegisterScalarField,
   RegisterStep,
@@ -15,7 +16,7 @@ export type RegisterWizardAction =
       field: RegisterScalarField;
       value: string;
     }
-  | { type: "TOGGLE_TAG"; tagId: number }
+  | { type: "TOGGLE_INTEREST"; interest: RegisterInterest }
   | { type: "NEXT_STEP" }
   | { type: "PREVIOUS_STEP" };
 
@@ -28,7 +29,7 @@ export const initialRegisterValues: RegisterRequest = {
   phoneNumber: "",
   school: "",
   department: "",
-  selectedTagIds: [],
+  selectedInterests: [],
 };
 
 export const initialRegisterWizardState: RegisterWizardState = {
@@ -51,18 +52,24 @@ export function registerWizardReducer(
       };
     }
 
-    case "TOGGLE_TAG": {
-      const isSelected = state.values.selectedTagIds.includes(action.tagId);
+    case "TOGGLE_INTEREST": {
+      const isSelected = state.values.selectedInterests.some(
+        (selectedInterest) =>
+          selectedInterest.partId === action.interest.partId &&
+          selectedInterest.tagId === action.interest.tagId,
+      );
 
       return {
         ...state,
         values: {
           ...state.values,
-          selectedTagIds: isSelected
-            ? state.values.selectedTagIds.filter(
-                (selectedTagId) => selectedTagId !== action.tagId,
+          selectedInterests: isSelected
+            ? state.values.selectedInterests.filter(
+                (selectedInterest) =>
+                  selectedInterest.partId !== action.interest.partId ||
+                  selectedInterest.tagId !== action.interest.tagId,
               )
-            : [...state.values.selectedTagIds, action.tagId],
+            : [...state.values.selectedInterests, action.interest],
         },
       };
     }

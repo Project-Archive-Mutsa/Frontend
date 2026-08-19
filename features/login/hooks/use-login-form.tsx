@@ -1,12 +1,16 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
+import useAuthSession from "@/shared/auth/hooks/use-auth-session";
 
 import { login } from "../api/login";
 import type { LoginRequest } from "../model/types";
 
 export default function useLoginForm() {
+  const router = useRouter();
+  const { signIn } = useAuthSession();
   const [values, setValues] = useState<LoginRequest>({
     email: "",
     password: "",
@@ -14,6 +18,10 @@ export default function useLoginForm() {
   });
   const loginMutation = useMutation({
     mutationFn: login,
+    onSuccess: (response) => {
+      signIn(response.data);
+      router.replace("/");
+    },
   });
 
   function updateField<Field extends keyof LoginRequest>(

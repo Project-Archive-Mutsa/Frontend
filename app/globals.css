@@ -1,11 +1,33 @@
 @import "tailwindcss";
 
+@theme inline {
+  --font-display: var(--font-noto-serif-kr), "Noto Serif KR", ui-serif, serif;
+}
+
 @theme {
   --color-brand: #123f70;
   --color-brand-accent: #4f8fbd;
   --color-brand-canvas: #eef4f8;
   --color-brand-hover: #0c3158;
   --color-brand-soft: #dce9f4;
+}
+
+.loading-spinner {
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  animation: loading-spinner-rotate 700ms linear infinite;
+}
+
+@keyframes loading-spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-spinner {
+    animation: none;
+  }
 }
 
 .register-scrollbar {

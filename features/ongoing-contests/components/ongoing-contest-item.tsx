@@ -24,7 +24,7 @@ export default function OngoingContestItem({
           <p className="text-[11px] font-bold tracking-[0.12em] whitespace-nowrap text-[#678099] uppercase">
             {contest.startDate} — {contest.endDate}
           </p>
-          <h3 className="mt-2 text-pretty break-keep text-xl font-bold tracking-[-0.035em] text-[#152f49] transition-colors group-hover:text-[#17659f]">
+          <h3 className="font-display mt-2 text-pretty break-keep text-xl font-semibold tracking-[-0.02em] text-[#152f49] transition-colors group-hover:text-[#17659f]">
             {contest.title}
           </h3>
           <p className="mt-2 line-clamp-2 text-pretty break-keep text-sm leading-6 text-[#6a747d]">

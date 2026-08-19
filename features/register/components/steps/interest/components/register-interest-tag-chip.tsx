@@ -20,7 +20,7 @@ export default function RegisterInterestTagChip({
       <input
         id={inputId}
         className="peer sr-only"
-        name="selectedTagIds"
+        name="selectedInterests"
         type="checkbox"
         value={tag.tagId}
         checked={isSelected}
