@@ -1,103 +1,148 @@
-import type { ProjectDiscoveryResultsData } from "@/features/project-discovery/types";
-import { projectDiscoveryAiSummaryMock } from "@/mocks/project-discovery/ai-summary";
+import type {
+  ProjectDiscoveryAnalysisSummary,
+  ProjectDiscoveryResultItem,
+} from "@/features/project-discovery/types";
 
 interface ProjectDiscoverySummaryProps {
-  data: ProjectDiscoveryResultsData;
+  query: string;
+  analysis: ProjectDiscoveryAnalysisSummary;
+  projects: readonly ProjectDiscoveryResultItem[];
 }
 
 export default function ProjectDiscoverySummary({
-  data,
+  query,
+  analysis,
+  projects,
 }: ProjectDiscoverySummaryProps) {
-  const resultCounts = [
-    { label: "프로젝트", value: data.projects.length },
-    { label: "공모전", value: data.contests.length },
-    { label: "아이디어", value: data.ideas.length },
-    { label: "수상작", value: data.awards.length },
+  const resultMetrics = [
+    { label: "검색 결과", value: projects.length },
+    {
+      label: "유사도 80% 이상",
+      value: projects.filter((project) => project.similarityScore >= 0.8).length,
+    },
+    {
+      label: "공개 계승",
+      value: projects.filter(
+        (project) => project.registrationPurpose === "ZOMBIE",
+      ).length,
+    },
+    {
+      label: "수상 이력",
+      value: projects.filter((project) => (project.awards?.length ?? 0) > 0)
+        .length,
+    },
   ];
-  const totalCount = resultCounts.reduce((total, item) => total + item.value, 0);
+  const analysisSections = [
+    {
+      id: "project-discovery-comparison-points",
+      title: "결과를 비교할 때 볼 점",
+      items: analysis.comparisonPoints,
+    },
+    {
+      id: "project-discovery-validation-points",
+      title: "추가로 검증할 점",
+      items: analysis.validationPoints,
+    },
+  ];
 
   return (
     <section
       aria-labelledby="project-discovery-summary-title"
-      className="border border-brand-soft bg-white"
+      className="border-y border-slate-300 bg-white"
     >
-      <header className="border-b border-brand-soft px-5 py-6 sm:px-8 sm:py-8">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <header className="px-5 py-7 sm:px-7 sm:py-8">
+        <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-brand-accent">
-              AI 검색 요약
-            </p>
-            <h1
+            <p className="text-sm font-bold text-brand">AI 검색 요약</p>
+            <h2
               id="project-discovery-summary-title"
-              className="mt-2 text-balance break-keep text-2xl font-bold tracking-[-0.035em] text-[#102a43] sm:text-3xl"
+              className="font-display mt-2 text-balance break-keep text-2xl font-bold tracking-[-0.025em] text-slate-950 sm:text-3xl"
             >
-              &ldquo;{data.query}&rdquo; 검색 결과
-            </h1>
-            <p className="mt-3 max-w-3xl text-pretty break-keep text-sm leading-7 text-[#5f7488] sm:text-base">
-              {projectDiscoveryAiSummaryMock.overview}
-            </p>
+              &ldquo;{query}&rdquo; 분석 결과
+            </h2>
           </div>
-          <p className="shrink-0 text-sm font-semibold text-[#315978]">
-            총 {totalCount.toLocaleString("ko-KR")}건
+          <p className="shrink-0 text-sm font-semibold tabular-nums text-slate-700">
+            유사 프로젝트 {projects.length.toLocaleString("ko-KR")}개
           </p>
         </div>
 
-        {data.matchedCategories.length > 0 ? (
-          <ul
-            aria-label="관련 카테고리"
-            className="mt-5 flex flex-wrap gap-x-3 gap-y-2 text-xs text-[#526f88]"
-          >
-            {data.matchedCategories.map((category) => (
-              <li key={category} className="border-b border-[#aac3d6] pb-0.5">
-                {category}
-              </li>
-            ))}
-          </ul>
-        ) : null}
+        <p className="mt-5 max-w-4xl text-pretty break-keep text-base leading-8 text-slate-700">
+          {analysis.summary}
+        </p>
+
+        <ul
+          aria-label="AI 분석 키워드"
+          className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-sm font-semibold text-slate-600"
+        >
+          {analysis.keywords.map((keyword) => (
+            <li key={keyword} className="border-b border-brand-accent pb-0.5">
+              {keyword}
+            </li>
+          ))}
+        </ul>
       </header>
 
-      <dl className="grid border-b border-brand-soft sm:grid-cols-4">
-        {resultCounts.map((item) => (
+      <dl
+        aria-label="검색 결과 구성"
+        className="grid border-t border-slate-200 sm:grid-cols-2 lg:grid-cols-4"
+      >
+        {resultMetrics.map((metric, index) => (
           <div
-            key={item.label}
-            className="flex items-center justify-between border-b border-brand-soft px-5 py-4 last:border-b-0 sm:block sm:border-r sm:border-b-0 sm:px-8 sm:last:border-r-0"
+            key={metric.label}
+            className={`px-5 py-5 sm:px-7 ${
+              index < resultMetrics.length - 1
+                ? "border-b border-slate-200"
+                : ""
+            } ${index % 2 === 0 ? "sm:border-r" : "sm:border-r-0"} ${
+              index < 2 ? "sm:border-b" : "sm:border-b-0"
+            } ${index < 3 ? "lg:border-r" : "lg:border-r-0"} lg:border-b-0`}
           >
-            <dt className="text-sm text-[#62798d]">{item.label}</dt>
-            <dd className="mt-0 text-xl font-bold tabular-nums text-[#173f68] sm:mt-1 sm:text-2xl">
-              {item.value.toLocaleString("ko-KR")}
+            <dt className="text-sm text-slate-500">{metric.label}</dt>
+            <dd className="mt-1 text-2xl font-bold tabular-nums text-slate-950">
+              {metric.value.toLocaleString("ko-KR")}개
             </dd>
           </div>
         ))}
       </dl>
 
-      <div className="grid lg:grid-cols-2">
-        <article className="border-b border-brand-soft px-5 py-6 sm:px-8 sm:py-8 lg:border-r lg:border-b-0">
-          <h2 className="text-lg font-bold text-[#173f68]">결과를 비교할 때 볼 점</h2>
-          <ul className="mt-4 space-y-3 text-sm leading-6 text-[#5f7488]">
-            {projectDiscoveryAiSummaryMock.commonPatterns.map((pattern) => (
-              <li key={pattern} className="flex gap-3">
-                <span aria-hidden="true" className="mt-2.5 h-px w-3 shrink-0 bg-brand-accent" />
-                <span>{pattern}</span>
-              </li>
-            ))}
-          </ul>
-        </article>
-
-        <article className="px-5 py-6 sm:px-8 sm:py-8">
-          <h2 className="text-lg font-bold text-[#173f68]">추가로 검증할 점</h2>
-          <ul className="mt-4 space-y-3 text-sm leading-6 text-[#5f7488]">
-            {projectDiscoveryAiSummaryMock.reviewPoints.map((point) => (
-              <li key={point} className="flex gap-3">
-                <span aria-hidden="true" className="mt-2.5 h-px w-3 shrink-0 bg-brand-accent" />
-                <span>{point}</span>
-              </li>
-            ))}
-          </ul>
-        </article>
+      <div className="grid border-t border-slate-200 lg:grid-cols-2">
+        {analysisSections.map((section, index) => (
+          <section
+            key={section.id}
+            aria-labelledby={section.id}
+            className={`px-5 py-7 sm:px-7 sm:py-8 ${
+              index === 0
+                ? "border-b border-slate-200 lg:border-r lg:border-b-0"
+                : ""
+            }`}
+          >
+            <h3
+              id={section.id}
+              className="font-display text-xl font-semibold tracking-[-0.02em] text-slate-950"
+            >
+              {section.title}
+            </h3>
+            <ul className="mt-4 space-y-3 text-sm leading-7 text-slate-600">
+              {section.items.map((item) => (
+                <li key={item} className="flex gap-3">
+                  <span aria-hidden="true" className="text-brand">
+                    —
+                  </span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
       </div>
 
-      <p className="border-t border-brand-soft bg-brand-canvas px-5 py-5 text-sm leading-7 text-[#536b80] sm:px-8">
-        {projectDiscoveryAiSummaryMock.conclusion}
+      <p className="border-t border-slate-200 bg-slate-100 px-5 py-5 text-sm leading-7 text-slate-600 sm:px-7">
+        <strong className="mr-2 font-bold text-slate-900">해석 기준</strong>
+        {analysis.interpretationNote}
+      </p>
+      <p className="border-t border-slate-200 px-5 py-4 text-xs leading-5 text-slate-500 sm:px-7">
+        <strong className="mr-2 font-bold text-slate-700">데모 데이터</strong>
+        AI 분석 백엔드 개발 중이며, 현재는 결과 구조와 사용 흐름을 확인하기 위한 예시를 표시합니다.
       </p>
     </section>
   );

@@ -22,7 +22,7 @@ export async function getZombieProjects(): Promise<
   );
 
   if (!response.ok) {
-    throw new Error(`중단 프로젝트 조회에 실패했습니다. (${response.status})`);
+    throw new Error(`좀비 프로젝트 조회에 실패했습니다. (${response.status})`);
   }
 
   const parsedResponse = zombieProjectsResponseSchema.safeParse(
@@ -30,12 +30,12 @@ export async function getZombieProjects(): Promise<
   );
 
   if (!parsedResponse.success) {
-    throw new Error("중단 프로젝트 응답 형식이 올바르지 않습니다.");
+    throw new Error("좀비 프로젝트 응답 형식이 올바르지 않습니다.");
   }
 
   if (!parsedResponse.data.success) {
     throw new Error(
-      parsedResponse.data.message ?? "중단 프로젝트를 조회하지 못했습니다.",
+      parsedResponse.data.message ?? "좀비 프로젝트를 조회하지 못했습니다.",
     );
   }
 
@@ -44,7 +44,7 @@ export async function getZombieProjects(): Promise<
     .safeParse(parsedResponse.data.data);
 
   if (!parsedProjects.success) {
-    throw new Error("중단 프로젝트 응답 형식이 올바르지 않습니다.");
+    throw new Error("좀비 프로젝트 응답 형식이 올바르지 않습니다.");
   }
 
   return parsedProjects.data.map(mapZombieProject);

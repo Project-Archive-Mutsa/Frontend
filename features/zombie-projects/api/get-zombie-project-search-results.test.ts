@@ -79,7 +79,7 @@ function createResponse({
   } as unknown as Response;
 }
 
-describe("중단 프로젝트 검색 API", () => {
+describe("좀비 프로젝트 검색 API", () => {
   const fetchMock = vi.fn<typeof fetch>();
 
   beforeEach(() => {
@@ -169,7 +169,7 @@ describe("중단 프로젝트 검색 API", () => {
     );
 
     await expect(getZombieProjectSearchResults(QUERY)).rejects.toThrow(
-      "중단 프로젝트 검색에 실패했습니다. (400)",
+      "좀비 프로젝트 검색에 실패했습니다. (400)",
     );
   });
 
@@ -215,7 +215,7 @@ describe("중단 프로젝트 검색 API", () => {
     );
 
     await expect(getZombieProjectSearchResults(QUERY)).rejects.toThrow(
-      "중단 프로젝트 검색 응답 형식이 올바르지 않습니다.",
+      "좀비 프로젝트 검색 응답 형식이 올바르지 않습니다.",
     );
   });
 });

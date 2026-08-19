@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import ZombieProjectSection from "@/features/zombie-projects/components/zombie-project-section";
 
 export const metadata: Metadata = {
-  title: "중단 프로젝트 | Project Archive",
-  description:
-    "후속 개발이나 협업으로 이어갈 수 있는 중단 프로젝트를 살펴보세요.",
+  title: "좀비 프로젝트 | 프로젝트 탐색 | Project Archive",
+  description: "공개된 자산과 기존 시도를 바탕으로 다시 계승할 프로젝트를 찾아보세요.",
 };
 
 interface ZombieProjectPageProps {
@@ -20,7 +19,7 @@ export default async function ZombieProjectPage({
   const query = (Array.isArray(q) ? q[0] : q)?.trim() ?? "";
 
   return (
-    <main className="flex flex-1 bg-brand-canvas">
+    <main className="flex flex-1 bg-slate-50">
       <ZombieProjectSection query={query} />
     </main>
   );

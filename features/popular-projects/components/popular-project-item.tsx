@@ -1,5 +1,11 @@
 import Link from "next/link";
 import type { PopularProject } from "@/features/popular-projects/types";
+import ProjectListCard from "@/shared/components/project-list-card/project-list-card";
+import {
+  getProjectActivityStatusLabel,
+  getProjectPurposeLabel,
+  getProjectResultLevelLabel,
+} from "@/shared/project-summary/types";
 
 interface PopularProjectItemProps {
   project: PopularProject;
@@ -8,76 +14,74 @@ interface PopularProjectItemProps {
 export default function PopularProjectItem({
   project,
 }: PopularProjectItemProps) {
+  const eventYear = project.eventDate?.slice(0, 4);
+  const assetSummary =
+    project.assetCount === null || project.assetCount === undefined
+      ? "연동 전"
+      : project.assetCategories?.length
+        ? `${project.assetCount}개 · ${project.assetCategories.slice(0, 2).join(" · ")}`
+        : `${project.assetCount}개`;
+  const awardSummary =
+    project.awardTitles === undefined || project.awardTitles === null
+      ? "연동 전"
+      : project.awardTitles.length > 0
+        ? project.awardTitles.slice(0, 2).join(", ")
+        : "없음";
+
   return (
     <Link
       href={`/project-market/${project.id}`}
-      className="group block rounded-lg py-6 outline-none focus-visible:ring-2 focus-visible:ring-[#317bb8] focus-visible:ring-offset-4 sm:py-7"
+      aria-label={`${project.name} 상세 보기`}
+      className="block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
     >
-      <article className="grid gap-5 sm:grid-cols-[10rem_minmax(0,1fr)] sm:items-center sm:gap-7">
-        <div
-          aria-hidden="true"
-          className="aspect-[16/10] overflow-hidden rounded-xl bg-[#e7f1f7] bg-cover bg-center sm:aspect-square"
-          style={{ backgroundImage: `url(${project.thumbnailUrl})` }}
-        />
-
-        <div className="min-w-0">
-          <div className="flex items-start justify-between gap-4">
-            <div className="min-w-0">
-              <div className="text-xs whitespace-nowrap text-[#6c7f90]">
-                <time dateTime={project.registeredDate}>
-                  {project.registeredDate} 등록
-                </time>
-              </div>
-              <h3 className="mt-2 text-pretty break-keep text-xl font-bold tracking-[-0.03em] text-[#183a57] transition-colors group-hover:text-[#0f65a5] sm:text-2xl">
-                {project.name}
-              </h3>
-              <p className="mt-2 line-clamp-2 text-pretty break-keep text-sm leading-6 text-[#65788a]">
-                {project.description}
-              </p>
-            </div>
-            {project.bookmarked ? (
-              <span className="shrink-0 text-xs font-medium text-[#526e87]">
-                저장됨
-              </span>
-            ) : null}
-          </div>
-
-          <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="프로젝트 태그">
-            {project.tags.map((tag) => (
-              <li
-                key={tag}
-                className="rounded-md border border-[#d5e2eb] bg-white px-2 py-1 text-[11px] font-medium whitespace-nowrap text-[#5f7283]"
-              >
-                {tag}
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-[#637688]">
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              <span className="whitespace-nowrap">
-                조회 {project.viewCount.toLocaleString("ko-KR")}
-              </span>
-              <span className="whitespace-nowrap">
-                좋아요 {project.likeCount.toLocaleString("ko-KR")}
-              </span>
-              <span className="whitespace-nowrap">
-                저장 {project.bookmarkCount.toLocaleString("ko-KR")}
-              </span>
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="truncate">
-                {project.sellerName}
-              </span>
-              {project.price > 0 ? (
-                <strong className="whitespace-nowrap text-[#214e70]">
-                  {project.price.toLocaleString("ko-KR")}원
-                </strong>
-              ) : null}
-            </div>
-          </div>
-        </div>
-      </article>
+      <ProjectListCard
+        title={project.name}
+        summary={project.description}
+        contextItems={[
+          {
+            label:
+              getProjectPurposeLabel(project.registrationPurpose) ??
+              "등록 목적 연동 전",
+          },
+          {
+            label: project.eventName
+              ? `${project.eventName}${eventYear ? ` · ${eventYear}년 출품` : ""}`
+              : "출품 행사 연동 전",
+          },
+          {
+            label: `${project.registeredDate} 등록`,
+            dateTime: project.registeredDate,
+          },
+        ]}
+        tags={[
+          ...new Set([project.category ?? "", ...project.tags].filter(Boolean)),
+        ]}
+        facts={[
+          {
+            label: "결과물 단계",
+            value: getProjectResultLevelLabel(project.resultLevel),
+          },
+          {
+            label: "현재 활동 상태",
+            value: getProjectActivityStatusLabel(project.activityStatus),
+          },
+          { label: "보유 자산", value: assetSummary },
+          { label: "수상 이력", value: awardSummary },
+        ]}
+        representativeImage={
+          project.thumbnailUrl
+            ? { src: project.thumbnailUrl, alt: `${project.name} 대표 이미지` }
+            : null
+        }
+        informationCompletenessScore={project.informationCompletenessScore}
+        registrantName={project.sellerName}
+        stats={[
+          { label: "조회", value: project.viewCount },
+          { label: "좋아요", value: project.likeCount },
+          { label: "저장", value: project.bookmarkCount },
+        ]}
+        headingLevel={3}
+      />
     </Link>
   );
 }

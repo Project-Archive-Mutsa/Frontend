@@ -1,3 +1,9 @@
+import type {
+  ProjectActivityStatus,
+  ProjectRegistrationPurpose,
+  ProjectResultLevel,
+} from "@/shared/project-summary/types";
+
 // AI 프로젝트 검색 대상
 export type ProjectDiscoveryTarget = "PROJECT" | "CONTEST" | "IDEA" | "AWARD";
 
@@ -22,6 +28,18 @@ export interface ProjectDiscoveryResultItem {
   images: readonly ProjectDiscoveryImage[]; // 추가 이미지 목록
   detailPath: string; // 상세 페이지 경로
   similarityScore: number; // AI 유사도 점수
+  informationCompletenessScore?: number | null; // 프로젝트 등록 정보 충실도 점수
+  registrationPurpose?: ProjectRegistrationPurpose | null;
+  eventName?: string | null;
+  eventDate?: string | null;
+  resultLevel?: ProjectResultLevel | null;
+  activityStatus?: ProjectActivityStatus | null;
+  assetCount?: number | null;
+  assetCategories?: readonly string[];
+  awards?: readonly { title: string; awardedAt?: string | null }[];
+  similarityReasons?: readonly string[];
+  differences?: readonly string[];
+  validationSuggestions?: readonly string[];
 }
 
 // AI 프로젝트 검색 결과 데이터
@@ -33,6 +51,21 @@ export interface ProjectDiscoveryResultsData {
   contests: readonly ProjectDiscoveryResultItem[]; // 공모전 결과
   ideas: readonly ProjectDiscoveryResultItem[]; // 아이디어 결과
   awards: readonly ProjectDiscoveryResultItem[]; // 수상작 결과
+}
+
+export interface ProjectDiscoveryAnalysisSummary {
+  summary: string;
+  keywords: readonly string[];
+  comparisonPoints: readonly string[];
+  validationPoints: readonly string[];
+  interpretationNote: string;
+}
+
+// 백엔드 연동 전 AI 검색 결과 화면에서 사용하는 데모 데이터
+export interface ProjectDiscoveryDemoResults {
+  query: string;
+  analysis: ProjectDiscoveryAnalysisSummary;
+  projects: readonly ProjectDiscoveryResultItem[];
 }
 
 // AI 프로젝트 검색 API 공통 응답

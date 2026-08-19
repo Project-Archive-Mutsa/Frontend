@@ -34,5 +34,24 @@ export function mapZombieProject(
           sizeInBytes: project.zipFile.fileSize,
         }
       : null,
+    category: project.category?.trim() || null,
+    registrationPurpose: project.registrationPurpose ?? "ZOMBIE",
+    eventName: project.eventName?.trim() || null,
+    eventDate: project.eventDate ?? null,
+    resultLevel: project.resultLevel ?? null,
+    activityStatus: project.activityStatus ?? null,
+    assetCount: project.assetCount ?? null,
+    assetCategories: project.assetCategories ?? [],
+    awardTitles:
+      project.awards === undefined
+        ? null
+        : project.awards.map((award) => award.title).filter(Boolean),
+    publicAssets: project.publicAssets ?? null,
+    ...(project.informationCompletenessScore !== undefined
+      ? {
+          informationCompletenessScore:
+            project.informationCompletenessScore,
+        }
+      : {}),
   };
 }

@@ -63,7 +63,7 @@ export async function getZombieProjectSearchResults(
   });
 
   if (!response.ok) {
-    throw new Error(`중단 프로젝트 검색에 실패했습니다. (${response.status})`);
+    throw new Error(`좀비 프로젝트 검색에 실패했습니다. (${response.status})`);
   }
 
   const parsedResponse = zombieProjectSearchResponseSchema.safeParse(
@@ -71,12 +71,12 @@ export async function getZombieProjectSearchResults(
   );
 
   if (!parsedResponse.success) {
-    throw new Error("중단 프로젝트 검색 응답 형식이 올바르지 않습니다.");
+    throw new Error("좀비 프로젝트 검색 응답 형식이 올바르지 않습니다.");
   }
 
   if (!parsedResponse.data.success) {
     throw new Error(
-      parsedResponse.data.message ?? "중단 프로젝트를 검색하지 못했습니다.",
+      parsedResponse.data.message ?? "좀비 프로젝트를 검색하지 못했습니다.",
     );
   }
 
@@ -85,7 +85,7 @@ export async function getZombieProjectSearchResults(
   );
 
   if (!parsedResults.success) {
-    throw new Error("중단 프로젝트 검색 응답 형식이 올바르지 않습니다.");
+    throw new Error("좀비 프로젝트 검색 응답 형식이 올바르지 않습니다.");
   }
 
   return {

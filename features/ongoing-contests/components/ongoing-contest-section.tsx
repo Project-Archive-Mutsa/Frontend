@@ -8,7 +8,7 @@ export default function OngoingContestSection() {
     <section className="bg-white py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-14">
         <div className="mx-auto mb-10 max-w-2xl text-center sm:mb-12">
-          <h2 className="text-balance break-keep text-4xl font-bold tracking-[-0.05em] text-[#122c45] sm:text-5xl">
+          <h2 className="font-display text-balance break-keep text-4xl font-bold tracking-[-0.025em] text-[#122c45] sm:text-5xl">
             진행 중인 공모전
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-pretty break-keep text-sm leading-7 text-[#6b7680] sm:text-base">

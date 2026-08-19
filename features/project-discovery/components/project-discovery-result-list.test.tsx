@@ -25,6 +25,7 @@ describe("ProjectDiscoveryResultList", () => {
         id="project-results"
         title="프로젝트"
         description="프로젝트 검색 결과"
+        query="대학생 공모전 추천"
         items={Array.from({ length: 6 }, (_, index) =>
           createResultItem(index + 1),
         )}
@@ -48,6 +49,7 @@ describe("ProjectDiscoveryResultList", () => {
         id="award-results"
         title="수상작"
         description="수상작 검색 결과"
+        query="대학생 공모전 추천"
         items={Array.from({ length: 5 }, (_, index) =>
           createResultItem(index + 1),
         )}
@@ -56,5 +58,24 @@ describe("ProjectDiscoveryResultList", () => {
 
     expect(container.querySelector("details")).toBeNull();
     expect(screen.queryByText(/개 더보기/)).toBeNull();
+  });
+
+  it("검색어와 프로젝트의 유사도를 숫자와 막대로 표시한다", () => {
+    render(
+      <ProjectDiscoveryResultList
+        id="project-results"
+        title="유사 프로젝트"
+        description="AI 검색 결과"
+        query="대학생 공모전 추천"
+        items={[createResultItem(1)]}
+      />,
+    );
+
+    expect(screen.getByText("50%")).toBeDefined();
+    expect(
+      screen.getByRole("meter", {
+        name: "검색어 대학생 공모전 추천. 프로젝트 1 유사도",
+      }),
+    ).toBeDefined();
   });
 });

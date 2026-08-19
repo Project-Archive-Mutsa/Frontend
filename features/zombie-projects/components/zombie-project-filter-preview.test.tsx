@@ -7,12 +7,12 @@ describe("ZombieProjectFilterPreview", () => {
     render(<ZombieProjectFilterPreview />);
 
     expect(screen.getByText("백엔드 미구현")).toBeDefined();
-    expect(screen.getByText("주제·기술")).toBeDefined();
+    expect(screen.getByText("분야·방법")).toBeDefined();
     expect(screen.getByText("제공 자산")).toBeDefined();
-    expect(screen.getByText("개발 진행도")).toBeDefined();
-    expect(screen.getByText("프로젝트 규모")).toBeDefined();
-    expect(screen.getByText("등록 가격")).toBeDefined();
-    expect(screen.getByText("후속 개발 방식")).toBeDefined();
+    expect(screen.getByText("완성 수준")).toBeDefined();
+    expect(screen.getByText("출품 유형")).toBeDefined();
+    expect(screen.getByText("자산 라이선스")).toBeDefined();
+    expect(screen.getByText("정렬")).toBeDefined();
     expect(screen.getAllByRole("combobox")).toHaveLength(6);
 
     for (const filter of screen.getAllByRole("combobox")) {
