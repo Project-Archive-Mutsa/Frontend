@@ -1,33 +1,31 @@
-import type {
-  PopularProject,
-  PopularProjectsResponse,
-} from "@/features/popular-projects/types";
-import { mapPopularProject } from "./map-popular-project";
-
-const POPULAR_PROJECTS_PATH = "/api/projects/popular";
+import type { PopularProject } from "@/features/popular-projects/types";
+import { getProjectList } from "@/shared/project-summary/api/get-project-list";
 
 export async function getPopularProjects(): Promise<readonly PopularProject[]> {
-  const API_BASE_URL =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://project-archive-api-zf90.onrender.com";
-
-  const response = await fetch(
-    `${API_BASE_URL}${POPULAR_PROJECTS_PATH}`,
-    {
-      cache: "no-store",
-    },
-  );
-
-  if (!response.ok) {
-    throw new Error(`인기 프로젝트 조회에 실패했습니다. (${response.status})`);
-  }
-
-  const result = (await response.json()) as PopularProjectsResponse;
-
-  if (!result.success || !Array.isArray(result.data)) {
-    throw new Error(
-      result.message ?? "인기 프로젝트 응답 형식이 올바르지 않습니다.",
-    );
-  }
-
-  return result.data.map(mapPopularProject);
+  const page = await getProjectList({ sort: "POPULAR", size: 4 });
+  return page.content.map((project) => ({
+    id: project.id,
+    name: project.name,
+    description: project.summary,
+    thumbnailUrl: project.representativeImageUrl,
+    category: project.categories[0],
+    viewCount: project.stats.viewCount,
+    likeCount: project.stats.likeCount,
+    bookmarkCount: project.stats.bookmarkCount,
+    registeredDate: project.registeredAt,
+    sellerName: undefined,
+    tags: project.tags,
+    price: project.price,
+    bookmarked: project.bookmarked,
+    detailUrl: `/projects/${project.id}`,
+    informationCompletenessScore: project.informationCompletenessScore,
+    registrationPurpose: project.registrationPurpose,
+    eventName: project.event?.name,
+    eventDate: project.event?.startedAt,
+    resultLevel: project.resultLevel,
+    activityStatus: project.activityStatus,
+    assetCount: project.assets.count,
+    assetCategories: project.assets.categories,
+    awardTitles: project.awards.map((award) => award.title),
+  }));
 }

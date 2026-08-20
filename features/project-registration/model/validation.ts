@@ -63,11 +63,11 @@ const contentSchema = z.object({
 
 const retrospectiveSchema = z
   .object({
-    attempts: requiredText("시도한 방법", 10),
-    difficulties: z.string(),
-    limitations: requiredText("한계와 배운 점", 10),
+    approaches: requiredText("수행한 접근", 10),
+    constraints: z.string(),
+    limitations: requiredText("확인된 한계", 10),
     endReason: z.string(),
-    nextSteps: requiredText("후속 과제", 10),
+    nextValidationTasks: requiredText("후속 검증 과제", 10),
     activityStatus: z.string(),
   })
   .superRefine((value, context) => {
@@ -97,27 +97,9 @@ function validatePurpose(draft: ProjectRegistrationDraft) {
     return errors;
   }
 
-  if (draft.purpose === "ZOMBIE") {
-    if (draft.zombieAssetIds.length === 0) {
-      errors.zombieAssetIds = "공개 재사용할 자산을 하나 이상 선택해 주세요.";
-    }
-    draft.zombieAssetIds.forEach((assetId) => {
-      const terms = draft.zombieAssetTerms[assetId];
-      if (!terms || terms.licenseName.trim().length < 2) {
-        errors[`zombie-${assetId}-license`] = "이 자산에 적용할 라이선스나 이용조건 이름을 작성해 주세요.";
-      }
-      if (!terms || terms.reuseTerms.trim().length < 10) {
-        errors[`zombie-${assetId}-terms`] = "이 자산의 재사용 조건을 10자 이상 작성해 주세요.";
-      }
-    });
-  }
-
   if (draft.purpose === "SELL") {
-    if (draft.saleAssetIds.length === 0) {
-      errors.saleAssetIds = "판매할 자산을 하나 이상 선택해 주세요.";
-    }
-    if (draft.saleRightsScope.trim().length < 10) {
-      errors.saleRightsScope = "판매에 포함할 권리 범위를 10자 이상 작성해 주세요.";
+    if (draft.assets.length === 0) {
+      errors.saleAssets = "프로젝트 판매에는 등록할 자료가 하나 이상 필요합니다.";
     }
     if (!/^\d+$/.test(draft.desiredPoints) || Number(draft.desiredPoints) <= 0) {
       errors.desiredPoints = "희망 거래가를 1포인트 이상 입력해 주세요.";
@@ -175,10 +157,10 @@ export function validateProjectRegistrationStep(
     const result = retrospectiveSchema.safeParse(draft);
     const errors = result.success ? {} : issuesToErrors(result.error.issues);
     draft.assets.forEach((asset) => {
-      if (!asset.category) errors[`asset-${asset.id}-category`] = "자산 분야를 선택해 주세요.";
-      if (asset.title.trim().length < 2) errors[`asset-${asset.id}-title`] = "자산명을 2자 이상 작성해 주세요.";
-      if (asset.projectRole.trim().length < 5) errors[`asset-${asset.id}-role`] = "프로젝트에서 이 자산이 맡은 역할을 작성해 주세요.";
-      if (asset.description.trim().length < 10) errors[`asset-${asset.id}-description`] = "자산의 내용과 활용 방법을 10자 이상 작성해 주세요.";
+      if (!asset.category) errors[`asset-${asset.id}-category`] = "자료 분야를 선택해 주세요.";
+      if (asset.title.trim().length < 2) errors[`asset-${asset.id}-title`] = "자료명을 2자 이상 작성해 주세요.";
+      if (asset.projectRole.trim().length < 5) errors[`asset-${asset.id}-role`] = "프로젝트에서 이 자료가 맡은 역할을 작성해 주세요.";
+      if (asset.description.trim().length < 10) errors[`asset-${asset.id}-description`] = "자료의 내용과 활용 방법을 10자 이상 작성해 주세요.";
       if (asset.sources.length === 0) {
         errors[`asset-${asset.id}-sources`] = "파일이나 외부 링크를 하나 이상 연결해 주세요.";
       } else if (
@@ -189,18 +171,23 @@ export function validateProjectRegistrationStep(
         errors[`asset-${asset.id}-sources`] =
           "새로고침 후 연결이 끊긴 파일을 다시 첨부하거나 목록에서 삭제해 주세요.";
       }
-      if (!asset.ownershipStatus) errors[`asset-${asset.id}-ownership`] = "자산의 소유·사용 권한 상태를 선택해 주세요.";
     });
     return errors;
   }
   if (step === 5) {
     return validatePurpose(draft);
   }
+  if (step === 6 && !draft.materialDisclosureConsent) {
+    return {
+      materialDisclosureConsent:
+        "등록한 모든 자료의 공개·제공 범위에 동의해 주세요.",
+    };
+  }
   return {};
 }
 
 export function findFirstInvalidRegistrationStep(draft: ProjectRegistrationDraft) {
-  for (const step of [1, 2, 3, 4, 5] as const) {
+  for (const step of [1, 2, 3, 4, 5, 6] as const) {
     const errors = validateProjectRegistrationStep(step, draft);
     if (Object.keys(errors).length > 0) {
       return { step, errors };

@@ -11,29 +11,17 @@ interface ZombieProjectItemProps {
   headingLevel?: 2 | 3;
 }
 
-function getPublicAssetSummary(project: ZombieProject) {
-  if (project.publicAssets && project.publicAssets.length > 0) {
-    return project.publicAssets
-      .slice(0, 2)
-      .map((asset) => `${asset.name} · ${asset.category}`)
-      .join(", ");
-  }
-  if (project.zipFile) return project.zipFile.name;
-  return "연동 전";
-}
-
 function getAssetCount(project: ZombieProject) {
-  if (project.publicAssets) return `${project.publicAssets.length}개`;
   if (project.assetCount !== null && project.assetCount !== undefined) {
     return `${project.assetCount}개`;
   }
   if (project.zipFile) return "1개";
-  return "연동 전";
+  return "0개";
 }
 
 function getAwardSummary(project: ZombieProject) {
   if (project.awardTitles === undefined || project.awardTitles === null) {
-    return "연동 전";
+    return "미입력";
   }
   return project.awardTitles.length > 0
     ? project.awardTitles.slice(0, 2).join(", ")
@@ -45,11 +33,10 @@ export default function ZombieProjectItem({
   headingLevel = 2,
 }: ZombieProjectItemProps) {
   const eventYear = project.eventDate?.slice(0, 4);
-  const firstPublicAsset = project.publicAssets?.[0];
-
   return (
     <ProjectListCard
       title={project.name}
+      href={`/projects/${project.id}`}
       summary={project.description}
       contextItems={[
         {
@@ -60,7 +47,7 @@ export default function ZombieProjectItem({
         {
           label: project.eventName
             ? `${project.eventName}${eventYear ? ` · ${eventYear}년 출품` : ""}`
-            : "출품 행사 연동 전",
+            : "출품 행사 미입력",
         },
         { label: `${project.registeredAt} 등록`, dateTime: project.registeredAt },
       ]}
@@ -76,7 +63,7 @@ export default function ZombieProjectItem({
           label: "현재 활동 상태",
           value: getProjectActivityStatusLabel(project.activityStatus),
         },
-        { label: "공개 재사용 자산", value: getAssetCount(project) },
+        { label: "보유 자산", value: getAssetCount(project) },
         { label: "수상 이력", value: getAwardSummary(project) },
       ]}
       representativeImage={project.representativeImage}
@@ -88,29 +75,20 @@ export default function ZombieProjectItem({
         { label: "저장", value: project.stats.bookmarkCount },
       ]}
       headingLevel={headingLevel}
+      projectId={project.id}
+      bookmarked={project.bookmarked}
+      bookmarkReturnPath="/zombie-projects"
     >
-      <section aria-label="공개 계승 조건">
-        <h3 className="text-sm font-bold text-slate-900">공개 계승 조건</h3>
-        <dl className="mt-4 grid gap-x-7 gap-y-5 text-sm sm:grid-cols-3">
-          <div>
-            <dt className="text-xs text-slate-500">공개 자산</dt>
-            <dd className="mt-1 line-clamp-2 leading-6 text-slate-700">
-              {getPublicAssetSummary(project)}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-slate-500">라이선스</dt>
-            <dd className="mt-1 font-bold text-slate-800">
-              {firstPublicAsset?.licenseName ?? "연동 전"}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-slate-500">재사용 조건</dt>
-            <dd className="mt-1 line-clamp-2 leading-6 text-slate-700">
-              {firstPublicAsset?.reuseTerms ?? "연동 전"}
-            </dd>
-          </div>
-        </dl>
+      <section aria-label="프로젝트 상세 정보 안내">
+        <h3 className="text-sm font-bold text-slate-900">프로젝트 상세 정보</h3>
+        <p className="mt-3 text-sm leading-6 text-slate-600">
+          문제 상황, 해결 방법, 검증 결과와 자산 파일·링크는 상세 정보 열람 후 확인할 수 있습니다.
+        </p>
+        {project.assetCategories?.length ? (
+          <p className="mt-2 text-xs leading-5 text-slate-500">
+            자산 유형 {project.assetCategories.slice(0, 3).join(" · ")}
+          </p>
+        ) : null}
       </section>
     </ProjectListCard>
   );

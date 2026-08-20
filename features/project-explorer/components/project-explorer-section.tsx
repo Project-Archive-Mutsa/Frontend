@@ -34,17 +34,17 @@ export default function ProjectExplorerSection({
           </p>
         </div>
 
-        <ProjectExplorerSearch query={state.query} />
+        <ProjectExplorerSearch state={state} />
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[15rem_minmax(0,1fr)]">
-          <ProjectExplorerFilters />
+          <ProjectExplorerFilters state={state} />
           <div className="min-h-[32rem] min-w-0">
             <SectionErrorBoundary message="프로젝트 목록을 불러오지 못했습니다.">
               <Suspense
-                key={state.query || "popular-projects"}
+                key={JSON.stringify(state)}
                 fallback={<SectionLoadingSpinner />}
               >
-                <ProjectExplorerResults query={state.query} />
+                <ProjectExplorerResults state={state} />
               </Suspense>
             </SectionErrorBoundary>
           </div>

@@ -1,5 +1,6 @@
 import type { z } from "zod";
 import type { ArchiveProjectItem } from "@/features/project-explorer/model/types";
+import { normalizeProjectRegistrationPurpose } from "@/shared/project-summary/types";
 import { projectExplorerResponseItemSchema } from "./project-explorer-response-schema";
 
 type ProjectExplorerResponseItem = z.infer<
@@ -31,7 +32,7 @@ export function mapArchiveProject(
     kind: "archive",
     id: project.projectId,
     name: project.projectName,
-    description: project.description,
+    description: project.description.trim().slice(0, 100),
     category: project.category,
     registeredAt: project.registeredDate,
     representativeImage: representativeImageUrl
@@ -47,7 +48,9 @@ export function mapArchiveProject(
       bookmarkCount: project.bookmarkCount,
     },
     registrantName: project.sellerName,
-    registrationPurpose: project.registrationPurpose ?? null,
+    registrationPurpose: project.registrationPurpose
+      ? normalizeProjectRegistrationPurpose(project.registrationPurpose)
+      : null,
     eventName: project.eventName?.trim() || null,
     eventDate: project.eventDate ?? null,
     resultLevel: project.resultLevel ?? null,
@@ -61,5 +64,6 @@ export function mapArchiveProject(
     detailAccess: "SUBSCRIBER_REPORT",
     informationCompletenessScore:
       project.informationCompletenessScore ?? null,
+    bookmarked: false,
   };
 }

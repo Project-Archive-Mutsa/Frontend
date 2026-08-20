@@ -10,8 +10,8 @@ export interface PopularProjectResponseItem {
   viewCount: number; // 조회수
   likeCount: number; // 좋아요 수
   bookmarkCount: number; // 북마크 수
-  sellerName: string; // 판매자 이름
-  price: number; // 판매 가격
+  sellerName?: string; // 판매자 이름
+  price: number | null; // 판매 가격
   bookmarked: boolean; // 현재 사용자의 북마크 여부
   zipFile: { // 판매 파일 정보
     originalFileName: string; // 원본 파일 이름
@@ -41,9 +41,9 @@ export interface PopularProject {
   likeCount: number; // 좋아요 수
   bookmarkCount: number; // 북마크 수
   registeredDate: string; // 등록일
-  sellerName: string; // 판매자 이름
+  sellerName?: string; // 판매자 이름
   tags: readonly string[]; // 프로젝트 태그 목록
-  price: number; // 판매 가격
+  price: number | null; // 판매 가격
   bookmarked: boolean; // 현재 사용자의 북마크 여부
   detailUrl: string; // 프로젝트 상세 경로
   informationCompletenessScore?: number | null; // 프로젝트 등록 정보 충실도 점수

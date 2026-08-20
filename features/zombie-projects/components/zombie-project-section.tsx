@@ -7,12 +7,11 @@ import ZombieProjectResults from "./zombie-project-results";
 import ZombieProjectSearchForm from "./zombie-project-search-form";
 
 interface ZombieProjectSectionProps {
-  query: string;
+  state: { query: string; category: string; assetCategory: string; resultLevel: string; activityStatus: string; eventType: string; sort: "RECENT" | "POPULAR"; page: number };
 }
 
-export default function ZombieProjectSection({
-  query,
-}: ZombieProjectSectionProps) {
+export default function ZombieProjectSection({ state }: ZombieProjectSectionProps) {
+  const { query } = state;
   return (
     <section
       className="flex-1 py-12 sm:py-16"
@@ -29,7 +28,7 @@ export default function ZombieProjectSection({
             좀비 프로젝트
           </h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            공개 자산과 활용 조건을 확인하고 후속 개발로 계승할 프로젝트를 찾습니다.
+            공개 기본정보를 비교하고, 필요한 프로젝트의 상세 정보를 1,000P로 열람할 수 있습니다.
           </p>
         </div>
 
@@ -37,7 +36,7 @@ export default function ZombieProjectSection({
           key={query || "empty-query"}
           defaultQuery={query}
         />
-        <ZombieProjectFilterPreview />
+        <ZombieProjectFilterPreview state={state} />
 
         <div className="mt-10 grid min-h-[32rem]">
           <SectionErrorBoundary
@@ -48,10 +47,10 @@ export default function ZombieProjectSection({
             }
           >
             <Suspense
-              key={query || "all-projects"}
+              key={JSON.stringify(state)}
               fallback={<SectionLoadingSpinner />}
             >
-              <ZombieProjectResults query={query} />
+              <ZombieProjectResults state={state} />
             </Suspense>
           </SectionErrorBoundary>
         </div>

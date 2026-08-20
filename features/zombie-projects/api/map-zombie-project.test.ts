@@ -53,6 +53,16 @@ describe("mapZombieProject", () => {
         name: "archive.zip",
         sizeInBytes: 1048576,
       },
+      category: null,
+      registrationPurpose: "ZOMBIE",
+      eventName: null,
+      eventDate: null,
+      resultLevel: null,
+      activityStatus: null,
+      assetCount: null,
+      assetCategories: [],
+      awardTitles: null,
+      bookmarked: false,
     });
     expect(JSON.stringify(result)).not.toContain("downloadUrl");
     expect(JSON.stringify(result)).not.toContain(

@@ -1,4 +1,4 @@
-import { getProjectDiscoveryDemoResults } from "@/features/project-discovery/data/project-discovery-demo-data";
+import { getProjectDiscoveryResults } from "@/features/project-discovery/api/get-project-discovery-results";
 import ProjectDiscoveryResultList from "./project-discovery-result-list";
 import ProjectDiscoverySummary from "./project-discovery-summary";
 
@@ -6,17 +6,25 @@ interface ProjectDiscoveryResultsProps {
   query: string;
 }
 
-export default function ProjectDiscoveryResults({
+export default async function ProjectDiscoveryResults({
   query,
 }: ProjectDiscoveryResultsProps) {
-  const data = getProjectDiscoveryDemoResults(query);
+  const data = await getProjectDiscoveryResults(query);
 
   return (
     <div className="space-y-12 sm:space-y-14">
       <ProjectDiscoverySummary
         query={data.query}
         analysis={data.analysis}
+        analysisStatus={data.analysisStatus}
+        matchedCategories={data.matchedCategories}
         projects={data.projects}
+        resultCounts={{
+          projects: data.projects.length,
+          contests: data.contests.length,
+          ideas: data.ideas.length,
+          awards: data.awards.length,
+        }}
       />
 
       <ProjectDiscoveryResultList

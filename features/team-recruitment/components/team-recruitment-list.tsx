@@ -1,9 +1,10 @@
 import { getTeamRecruitments } from "@/features/team-recruitment/api/get-team-recruitments";
-import BackendContractNotice from "@/shared/components/backend-contract-notice/backend-contract-notice";
 import TeamRecruitmentCard from "./team-recruitment-card";
 
-export default async function TeamRecruitmentList() {
-  const recruitments = await getTeamRecruitments();
+type State = { query: string; role: string; status: "" | "OPEN" | "CLOSED" };
+
+export default async function TeamRecruitmentList({ state }: { state: State }) {
+  const recruitments = await getTeamRecruitments(state);
 
   if (recruitments.length === 0) {
     return (
@@ -22,12 +23,6 @@ export default async function TeamRecruitmentList() {
             {recruitments.length.toLocaleString("ko-KR")}개
           </strong>
         </p>
-      </div>
-
-      <div className="mt-4">
-        <BackendContractNotice>
-          프로젝트 연결 ID·기본정보·모집 인원·역량·일정·진행 방식·참고 자산·정보 충실도와 지원 API가 필요합니다.
-        </BackendContractNotice>
       </div>
 
       <ul className="mt-5 divide-y divide-slate-300 border-y border-slate-300">

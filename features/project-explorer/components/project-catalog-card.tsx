@@ -11,7 +11,7 @@ interface ProjectCatalogCardProps {
 }
 
 function getAssetSummary(project: ArchiveProjectItem) {
-  if (project.assetCount === null) return "연동 전";
+  if (project.assetCount === null) return "미입력";
   const categorySummary = project.assetCategories.slice(0, 2).join(" · ");
   return categorySummary
     ? `${project.assetCount}개 · ${categorySummary}`
@@ -19,7 +19,7 @@ function getAssetSummary(project: ArchiveProjectItem) {
 }
 
 function getAwardSummary(project: ArchiveProjectItem) {
-  if (project.awardTitles === null) return "연동 전";
+  if (project.awardTitles === null) return "미입력";
   return project.awardTitles.length > 0
     ? project.awardTitles.slice(0, 2).join(", ")
     : "없음";
@@ -33,12 +33,12 @@ export default function ProjectCatalogCard({
     {
       label:
         getProjectPurposeLabel(project.registrationPurpose) ??
-        "등록 목적 연동 전",
+        "등록 목적 미입력",
     },
     {
       label: project.eventName
         ? `${project.eventName}${eventYear ? ` · ${eventYear}년 출품` : ""}`
-        : "출품 행사 연동 전",
+        : "출품 행사 미입력",
     },
     { label: `${project.registeredAt} 등록`, dateTime: project.registeredAt },
   ];
@@ -46,6 +46,7 @@ export default function ProjectCatalogCard({
   return (
     <ProjectListCard
       title={project.name}
+      href={`/projects/${project.id}`}
       summary={project.description}
       contextItems={contextItems}
       tags={[...new Set([project.category, ...project.tags].filter(Boolean))]}
@@ -70,6 +71,9 @@ export default function ProjectCatalogCard({
         { label: "저장", value: project.stats.bookmarkCount },
       ]}
       headingLevel={3}
+      projectId={project.id}
+      bookmarked={project.bookmarked}
+      bookmarkReturnPath="/projects"
     />
   );
 }

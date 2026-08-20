@@ -1,19 +1,23 @@
 import Link from "next/link";
-import { getProjectMarketProjects } from "@/features/project-market/api/get-project-market-projects";
-import { getProjectMarketSearchResults } from "@/features/project-market/api/get-project-market-search-results";
-import BackendContractNotice from "@/shared/components/backend-contract-notice/backend-contract-notice";
+import { getProjectMarketPage } from "@/features/project-market/api/get-project-market-projects";
 import ProjectMarketCard from "./project-market-card";
 
 interface ProjectMarketListProps {
-  query?: string;
+  state: { query: string; assetCategory: string; category: string; sort: "RECENT" | "POPULAR"; page: number };
 }
 
-export default async function ProjectMarketList({
-  query = "",
-}: ProjectMarketListProps = {}) {
-  const projects = query
-    ? await getProjectMarketSearchResults(query)
-    : await getProjectMarketProjects();
+function pageHref(state: ProjectMarketListProps["state"], page: number) {
+  const params = new URLSearchParams();
+  Object.entries({ ...state, page }).forEach(([key, value]) => {
+    if (value !== "" && !(key === "page" && value === 0)) params.set(key === "query" ? "q" : key, String(value));
+  });
+  return `/project-market?${params.toString()}`;
+}
+
+export default async function ProjectMarketList({ state }: ProjectMarketListProps) {
+  const { query } = state;
+  const result = await getProjectMarketPage(state);
+  const { projects } = result;
 
   if (projects.length === 0) {
     return (
@@ -41,14 +45,9 @@ export default async function ProjectMarketList({
         <p className="text-sm text-slate-600">
           {query ? `“${query}” 검색 결과 ` : "등록 프로젝트 "}
           <strong className="font-bold tabular-nums text-slate-900">
-            {projects.length.toLocaleString("ko-KR")}개
+            {result.totalElements.toLocaleString("ko-KR")}개
           </strong>
         </p>
-      </div>
-      <div className="mt-4">
-        <BackendContractNotice>
-          판매 자산 목록·포인트 단위·가격 조건·권리 범위와 공통 출품 정보를 제공하는 판매 요약 API가 필요합니다.
-        </BackendContractNotice>
       </div>
       <ul className="mt-4 divide-y divide-slate-300 border-y border-slate-300">
         {projects.map((project) => (
@@ -57,6 +56,7 @@ export default async function ProjectMarketList({
           </li>
         ))}
       </ul>
+      {result.totalPages > 1 ? <nav aria-label="판매 프로젝트 목록 페이지" className="mt-6 flex items-center justify-between text-sm">{result.page > 0 ? <Link href={pageHref(state, result.page - 1)} className="font-bold text-brand underline underline-offset-4">이전</Link> : <span />}<span><strong>{result.page + 1}</strong> / {result.totalPages}</span>{result.page + 1 < result.totalPages ? <Link href={pageHref(state, result.page + 1)} className="font-bold text-brand underline underline-offset-4">다음</Link> : <span />}</nav> : null}
     </div>
   );
 }

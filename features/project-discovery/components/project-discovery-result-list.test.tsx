@@ -78,4 +78,31 @@ describe("ProjectDiscoveryResultList", () => {
       }),
     ).toBeDefined();
   });
+
+  it("#38의 프로젝트별 유사 근거와 차이·검증 과제를 표시한다", () => {
+    render(
+      <ProjectDiscoveryResultList
+        id="project-results"
+        title="유사 프로젝트"
+        description="AI 검색 결과"
+        query="대학생 공모전 추천"
+        items={[
+          {
+            ...createResultItem(1),
+            similarityReasons: ["사용자 조건을 분석하는 방식이 비슷합니다."],
+            differences: ["추천하는 정보의 범위가 다릅니다."],
+            validationSuggestions: ["추천 기준의 신뢰도를 검증해 보세요."],
+          },
+        ]}
+      />,
+    );
+
+    expect(
+      screen.getByText("사용자 조건을 분석하는 방식이 비슷합니다."),
+    ).toBeDefined();
+    expect(screen.getByText("추천하는 정보의 범위가 다릅니다.")).toBeDefined();
+    expect(
+      screen.getByText("추천 기준의 신뢰도를 검증해 보세요."),
+    ).toBeDefined();
+  });
 });

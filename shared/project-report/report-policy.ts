@@ -1,0 +1,1 @@
+export const REPORT_ACCESS_PRICE_POINT = 1_000;

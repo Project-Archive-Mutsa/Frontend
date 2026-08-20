@@ -1,70 +1,47 @@
 import Image from "next/image";
 import ProjectInformationCompleteness from "@/shared/components/project-information-completeness/project-information-completeness";
+import Link from "next/link";
+import LoadingSpinner from "@/shared/components/loading-spinner/loading-spinner";
 import {
   getActivityStatusLabel,
   getPurposeLabel,
   getResultLevelLabel,
 } from "../../model/options";
-import type { ProjectRegistrationDraft } from "../../model/types";
+import type {
+  ProjectRegistrationDraft,
+  ProjectRegistrationFieldErrors,
+} from "../../model/types";
 
 interface ReviewStepProps {
   draft: ProjectRegistrationDraft;
+  errors: ProjectRegistrationFieldErrors;
   representativeImageUrl: string | null;
   onReviewAllSteps: () => boolean;
-}
-
-function AccessBoundaryReview({ draft }: { draft: ProjectRegistrationDraft }) {
-  const purposeSpecificItems =
-    draft.purpose === "ZOMBIE"
-      ? ["선택한 공개 재사용 자산", "라이선스와 출처·재사용 조건"]
-      : draft.purpose === "SELL"
-        ? ["판매 대상 자산과 권리 요약", "포인트 판매가와 협의 조건"]
-        : draft.purpose === "TEAM_RECRUIT"
-          ? ["모집 역할·인원·일정·마감", "선택한 모집 참고 자산"]
-          : [];
-
-  return (
-    <section aria-labelledby="access-boundary-title" className="border-t border-slate-200 pt-8">
-      <h2 id="access-boundary-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">공개 범위</h2>
-      <p className="mt-2 text-sm leading-6 text-slate-600">상세정보 열람권과 프로젝트 자산의 사용권·소유권은 서로 다른 권리입니다.</p>
-      <div className="mt-6 grid gap-8 sm:grid-cols-3">
-        <div>
-          <h3 className="border-b border-slate-300 pb-3 text-sm font-bold text-slate-900">무료 기본정보</h3>
-          <ul className="mt-3 space-y-2 text-sm leading-6 text-slate-600">
-            <li>제목·한 줄 소개·대표 이미지</li>
-            <li>출품 행사·분야·태그·수상 이력</li>
-            <li>결과물 단계·활동 상태·등록 목적</li>
-            <li>자산 종류와 개수·정보 충실도</li>
-          </ul>
-        </div>
-        <div>
-          <h3 className="border-b border-slate-300 pb-3 text-sm font-bold text-slate-900">결제 후 상세 리포트</h3>
-          <ul className="mt-3 space-y-2 text-sm leading-6 text-slate-600">
-            <li>문제 정의와 해결 과정</li>
-            <li>검증 결과와 차별점</li>
-            <li>시행착오·한계·후속 과제</li>
-            <li>상세 자산 설명과 리포트 자료</li>
-          </ul>
-        </div>
-        <div>
-          <h3 className="border-b border-slate-300 pb-3 text-sm font-bold text-slate-900">목적별 공개정보</h3>
-          {purposeSpecificItems.length > 0 ? (
-            <ul className="mt-3 space-y-2 text-sm leading-6 text-slate-600">
-              {purposeSpecificItems.map((item) => <li key={item}>{item}</li>)}
-            </ul>
-          ) : (
-            <p className="mt-3 text-sm leading-6 text-slate-500">아카이브 등록에는 별도 공개 자산이 없습니다.</p>
-          )}
-        </div>
-      </div>
-    </section>
-  );
+  onSubmit: () => void;
+  isPending: boolean;
+  error: string | null;
+  result: { project: { projectId: number; projectName: string; informationCompletenessScore?: number | null }; recruitmentCreated: boolean | null; warning: string | null } | null;
+  onRetryRecruitment: () => void;
+  isRetryingRecruitment: boolean;
+  recruitmentRetrySucceeded: boolean;
+  recruitmentRetryError: string | null;
+  onDisclosureConsentChange: (checked: boolean) => void;
 }
 
 export default function ReviewStep({
   draft,
+  errors,
   representativeImageUrl,
   onReviewAllSteps,
+  onSubmit,
+  isPending,
+  error,
+  result,
+  onRetryRecruitment,
+  isRetryingRecruitment,
+  recruitmentRetrySucceeded,
+  recruitmentRetryError,
+  onDisclosureConsentChange,
 }: ReviewStepProps) {
   const tags = [...draft.categories, ...draft.problemAreas, ...draft.methods, ...draft.customTags];
 
@@ -107,7 +84,7 @@ export default function ReviewStep({
             <dl className="mt-6 grid gap-5 text-sm sm:grid-cols-3">
               <div><dt className="text-xs text-slate-500">결과물 단계</dt><dd className="mt-1 font-bold text-slate-800">{getResultLevelLabel(draft.resultLevel)}</dd></div>
               <div><dt className="text-xs text-slate-500">현재 활동 상태</dt><dd className="mt-1 font-bold text-slate-800">{getActivityStatusLabel(draft.activityStatus)}</dd></div>
-              <div><dt className="text-xs text-slate-500">보유 자산</dt><dd className="mt-1 font-bold text-slate-800">{draft.assets.length}개</dd></div>
+              <div><dt className="text-xs text-slate-500">프로젝트 자료</dt><dd className="mt-1 font-bold text-slate-800">{draft.assets.length}개</dd></div>
             </dl>
           </div>
 
@@ -134,33 +111,50 @@ export default function ReviewStep({
         </article>
       </section>
 
-      <AccessBoundaryReview draft={draft} />
-
       <section aria-labelledby="completeness-review-title" className="border-t border-slate-200 pt-8">
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_16rem]">
-          <div>
-            <h2 id="completeness-review-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">AI 정보 충실도 점검</h2>
-            <p className="mt-2 text-sm leading-7 text-slate-600">프로젝트 설명과 자산이 서로 연결되는지, 분야와 결과물 단계에 맞는 근거·권리·회고가 충분한지 점검합니다. 파일 개수나 특정 확장자만으로 점수를 올리지 않습니다.</p>
-            <ul className="mt-5 grid gap-x-6 gap-y-2 text-sm leading-6 text-slate-600 sm:grid-cols-2">
-              <li>문제·해결 맥락</li>
-              <li>출품·결과 근거</li>
-              <li>검증·회고</li>
-              <li>자산 설명과 접근성</li>
-              <li>권리·등록 목적 적합성</li>
-            </ul>
-          </div>
-          <div className="border-l border-slate-200 pl-6">
-            <p className="text-xs font-bold text-slate-700">백엔드 미구현</p>
-            <p className="mt-2 text-xs leading-5 text-slate-500">AI 평가 API가 연결되면 점수, 항목별 근거와 우선 보완 항목을 표시합니다.</p>
-            <button type="button" disabled className="mt-5 min-h-11 w-full cursor-not-allowed bg-slate-300 px-4 text-sm font-bold text-slate-600">AI 점검 실행</button>
-          </div>
+        <h2 id="completeness-review-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">정보 충실도</h2>
+        <p className="mt-2 text-sm leading-7 text-slate-600">등록 시 입력한 문제·해결 맥락, 검증 결과, 제약·한계와 자료 설명을 기준으로 정보 충실도가 자동 계산됩니다. 별도 미리보기 호출은 하지 않습니다.</p>
+      </section>
+
+      <section aria-labelledby="material-disclosure-title" className="border-t border-slate-300 pt-8">
+        <h2 id="material-disclosure-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">자료 공개 동의</h2>
+        <div className="mt-5">
+          <label className="flex cursor-pointer items-start gap-3 border-y border-slate-300 py-5 text-sm leading-6 text-slate-700">
+            <input
+              id="materialDisclosureConsent"
+              type="checkbox"
+              checked={draft.materialDisclosureConsent}
+              aria-invalid={Boolean(errors.materialDisclosureConsent)}
+              aria-describedby={errors.materialDisclosureConsent ? "materialDisclosureConsent-error" : "materialDisclosureConsent-help"}
+              onChange={(event) => onDisclosureConsentChange(event.target.checked)}
+              className="mt-1 size-4 shrink-0 accent-brand"
+            />
+            <span>
+              <strong className="block text-slate-950">이 프로젝트에 등록한 모든 자료의 공개·제공에 동의합니다.</strong>
+              <span id="materialDisclosureConsent-help" className="mt-1 block text-slate-600">기본정보는 무료 공개되며, 상세 내용과 파일·링크는 좀비 프로젝트 열람 사용자, 프로젝트 구매자 또는 현재 소유자에게 등록 목적에 따라 제공됩니다. 직접 등록하거나 제공에 동의할 수 있는 자료만 첨부해 주세요.</span>
+            </span>
+          </label>
+          {errors.materialDisclosureConsent ? <p id="materialDisclosureConsent-error" role="alert" className="mt-2 text-sm text-red-700">{errors.materialDisclosureConsent}</p> : null}
         </div>
       </section>
 
       <section aria-labelledby="registration-submit-title" className="border-t border-slate-300 pt-8">
         <h2 id="registration-submit-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">프로젝트 등록</h2>
-        <p className="mt-2 text-sm leading-6 text-slate-600">필수 입력과 공개 범위를 확인했습니다. 현재 최종 등록·파일 업로드 API는 백엔드 미구현 상태입니다.</p>
-        <button type="button" disabled className="mt-5 min-h-12 w-full cursor-not-allowed bg-slate-300 px-5 text-sm font-bold text-slate-600 sm:w-auto">프로젝트 등록</button>
+        <p className="mt-2 text-sm leading-6 text-slate-600">필수 입력과 자료 공개 동의를 확인한 뒤 프로젝트와 첨부 파일을 등록합니다.</p>
+        {result ? (
+          <div className="mt-5 border-y border-emerald-300 bg-emerald-50 px-4 py-4 text-sm text-emerald-900" role="status">
+            <p className="font-bold">{result.project.projectName} 등록 완료 · 프로젝트 #{result.project.projectId}</p>
+            <p className="mt-2">정보 충실도 {result.project.informationCompletenessScore === null || result.project.informationCompletenessScore === undefined ? "미산정" : `${result.project.informationCompletenessScore}점`}</p>
+            {result.warning ? <p className="mt-2 text-amber-900">{result.warning}</p> : null}
+            {result.recruitmentCreated === false && !recruitmentRetrySucceeded ? <button type="button" onClick={onRetryRecruitment} disabled={isRetryingRecruitment} className="mt-3 inline-flex min-h-10 items-center gap-2 border border-amber-700 px-4 font-bold text-amber-900 disabled:opacity-60">{isRetryingRecruitment ? <LoadingSpinner size={16} /> : null}{isRetryingRecruitment ? "모집글 재등록 중" : "모집글 등록 재시도"}</button> : null}
+            {recruitmentRetrySucceeded ? <p className="mt-2 font-bold text-emerald-900">팀원 모집글 등록도 완료됐습니다.</p> : null}
+            {recruitmentRetryError ? <p role="alert" className="mt-2 text-red-800">{recruitmentRetryError}</p> : null}
+            <Link href={`/projects/${result.project.projectId}`} className="mt-3 inline-block font-bold underline underline-offset-4">등록한 프로젝트 기록 보기</Link>
+          </div>
+        ) : (
+          <button type="button" onClick={onSubmit} disabled={isPending} className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 bg-brand px-5 text-sm font-bold text-white hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto">{isPending ? <LoadingSpinner size={18} /> : null}{isPending ? "등록 중" : "프로젝트 등록"}</button>
+        )}
+        {error ? <p role="alert" className="mt-3 text-sm text-red-700">{error}</p> : null}
       </section>
     </div>
   );

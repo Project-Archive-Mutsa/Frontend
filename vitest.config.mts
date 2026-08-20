@@ -8,7 +8,7 @@ export default defineConfig({
   },
   test: {
     environment: "jsdom",
-    exclude: [...configDefaults.exclude, ".agents/**"],
+    exclude: [...configDefaults.exclude, ".agents/**", "e2e/**"],
     setupFiles: ["./vitest.setup.ts"],
   },
 });

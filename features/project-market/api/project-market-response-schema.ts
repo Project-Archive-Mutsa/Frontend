@@ -41,7 +41,7 @@ export const projectMarketProjectResponseItemSchema: z.ZodType<ProjectMarketProj
       .nullable()
       .optional(),
     registrationPurpose: z
-      .enum(["ARCHIVE", "ZOMBIE", "SELL", "TEAM_RECRUIT"])
+      .enum(["REGISTER", "ARCHIVE", "ZOMBIE", "SELL", "TEAM_RECRUIT"])
       .nullable()
       .optional(),
     eventName: z.string().nullable().optional(),

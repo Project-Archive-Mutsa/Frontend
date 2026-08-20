@@ -1,8 +1,12 @@
 export type ProjectRegistrationPurpose =
-  | "ARCHIVE"
   | "ZOMBIE"
   | "SELL"
   | "TEAM_RECRUIT";
+
+export type ProjectRegistrationPurposeInput =
+  | ProjectRegistrationPurpose
+  | "REGISTER"
+  | "ARCHIVE";
 
 export type ProjectResultLevel =
   | "IDEA_PLAN"
@@ -16,11 +20,16 @@ export type ProjectActivityStatus = "ACTIVE" | "PAUSED" | "ENDED";
 export type ProjectPricingMode = "FIXED" | "NEGOTIABLE";
 
 const purposeLabels: Record<ProjectRegistrationPurpose, string> = {
-  ARCHIVE: "아카이브",
   ZOMBIE: "좀비 프로젝트",
   SELL: "프로젝트 판매",
   TEAM_RECRUIT: "팀원 모집",
 };
+
+export function normalizeProjectRegistrationPurpose(
+  purpose: ProjectRegistrationPurposeInput,
+): ProjectRegistrationPurpose {
+  return purpose === "REGISTER" || purpose === "ARCHIVE" ? "ZOMBIE" : purpose;
+}
 
 const resultLevelLabels: Record<ProjectResultLevel, string> = {
   IDEA_PLAN: "아이디어·기획",
@@ -45,11 +54,11 @@ export function getProjectPurposeLabel(
 export function getProjectResultLevelLabel(
   level: ProjectResultLevel | null | undefined,
 ) {
-  return level ? resultLevelLabels[level] : "연동 전";
+  return level ? resultLevelLabels[level] : "미입력";
 }
 
 export function getProjectActivityStatusLabel(
   status: ProjectActivityStatus | null | undefined,
 ) {
-  return status ? activityStatusLabels[status] : "연동 전";
+  return status ? activityStatusLabels[status] : "미입력";
 }

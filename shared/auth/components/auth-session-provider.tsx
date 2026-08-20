@@ -31,7 +31,10 @@ function subscribeAuthSession(onStoreChange: () => void) {
 
 function getAuthSessionSnapshot() {
   try {
-    return window.sessionStorage.getItem(AUTH_SESSION_STORAGE_KEY);
+    return (
+      window.sessionStorage.getItem(AUTH_SESSION_STORAGE_KEY) ??
+      window.localStorage.getItem(AUTH_SESSION_STORAGE_KEY)
+    );
   } catch {
     return null;
   }
@@ -48,7 +51,7 @@ function notifyAuthSessionChange() {
 interface AuthSessionContextValue {
   user: AuthUser | null;
   isInitialized: boolean;
-  signIn: (user: AuthUser) => void;
+  signIn: (user: AuthUser, rememberMe?: boolean) => void;
 }
 
 export const AuthSessionContext =
@@ -75,6 +78,7 @@ export default function AuthSessionProvider({
     if (storedUser && !persistedUser) {
       try {
         window.sessionStorage.removeItem(AUTH_SESSION_STORAGE_KEY);
+        window.localStorage.removeItem(AUTH_SESSION_STORAGE_KEY);
         notifyAuthSessionChange();
       } catch {
         // 저장소 접근이 차단된 경우 잘못된 값은 로그인 상태로 사용하지 않는다.
@@ -82,15 +86,27 @@ export default function AuthSessionProvider({
     }
   }, [persistedUser, storedUser]);
 
-  const signIn = useCallback((authenticatedUser: AuthUser) => {
-    try {
-      storeAuthUser(window.sessionStorage, authenticatedUser);
-      notifyAuthSessionChange();
-    } catch {
-      // 저장소를 사용할 수 없어도 현재 탭의 로그인 상태는 유지한다.
+  const signIn = useCallback(
+    (authenticatedUser: AuthUser, rememberMe = false) => {
       setMemoryUser(authenticatedUser);
-    }
-  }, []);
+
+      try {
+        const targetStorage = rememberMe
+          ? window.localStorage
+          : window.sessionStorage;
+        const staleStorage = rememberMe
+          ? window.sessionStorage
+          : window.localStorage;
+
+        storeAuthUser(targetStorage, authenticatedUser);
+        staleStorage.removeItem(AUTH_SESSION_STORAGE_KEY);
+        notifyAuthSessionChange();
+      } catch {
+        // 저장소를 사용할 수 없어도 현재 탭의 로그인 상태는 유지한다.
+      }
+    },
+    [],
+  );
 
   const value = useMemo(
     () => ({ user, isInitialized, signIn }),

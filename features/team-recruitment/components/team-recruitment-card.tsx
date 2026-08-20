@@ -5,6 +5,7 @@ import {
   getProjectActivityStatusLabel,
   getProjectResultLevelLabel,
 } from "@/shared/project-summary/types";
+import RecruitmentApplicationForm from "./recruitment-application-form";
 
 interface TeamRecruitmentCardProps {
   recruitment: TeamRecruitment;
@@ -12,7 +13,7 @@ interface TeamRecruitmentCardProps {
 
 function getReferenceAssetSummary(recruitment: TeamRecruitment) {
   if (recruitment.referenceAssetCount === null || recruitment.referenceAssetCount === undefined) {
-    return "연동 전";
+    return "미입력";
   }
   const categories = recruitment.referenceAssetCategories?.slice(0, 2).join(" · ");
   return categories
@@ -22,7 +23,7 @@ function getReferenceAssetSummary(recruitment: TeamRecruitment) {
 
 function getAwardSummary(recruitment: TeamRecruitment) {
   if (recruitment.awardTitles === undefined || recruitment.awardTitles === null) {
-    return "연동 전";
+    return "미입력";
   }
   return recruitment.awardTitles.length > 0
     ? recruitment.awardTitles.slice(0, 2).join(", ")
@@ -39,13 +40,14 @@ export default function TeamRecruitmentCard({
   return (
     <ProjectListCard
       title={projectTitle}
+      href={recruitment.projectId ? `/projects/${recruitment.projectId}` : undefined}
       summary={projectSummary}
       contextItems={[
         { label: "팀원 모집" },
         {
           label: recruitment.eventName
             ? `${recruitment.eventName}${eventYear ? ` · ${eventYear}년 출품` : ""}`
-            : "출품 행사 연동 전",
+            : "출품 행사 미입력",
         },
         ...(recruitment.registeredDate
           ? [{
@@ -89,7 +91,7 @@ export default function TeamRecruitmentCard({
           <div>
             <dt className="text-xs text-slate-500">모집 인원</dt>
             <dd className="mt-1 font-bold text-slate-800">
-              {recruitment.headcount ? `${recruitment.headcount}명` : "연동 전"}
+              {recruitment.headcount ? `${recruitment.headcount}명` : "미입력"}
             </dd>
           </div>
           <div>
@@ -103,22 +105,23 @@ export default function TeamRecruitmentCard({
           <div>
             <dt className="text-xs text-slate-500">필요 역량·경험</dt>
             <dd className="mt-1 line-clamp-2 leading-6 text-slate-700">
-              {recruitment.skills ?? "연동 전"}
+              {recruitment.skills ?? "설명 본문 참고"}
             </dd>
           </div>
           <div>
             <dt className="text-xs text-slate-500">진행 방식</dt>
             <dd className="mt-1 font-bold text-slate-800">
-              {recruitment.workMode ?? "연동 전"}
+              {recruitment.workMode ?? "설명 본문 참고"}
             </dd>
           </div>
           <div>
             <dt className="text-xs text-slate-500">활동 일정</dt>
             <dd className="mt-1 line-clamp-2 leading-6 text-slate-700">
-              {recruitment.schedule ?? "연동 전"}
+              {recruitment.schedule ?? "설명 본문 참고"}
             </dd>
           </div>
         </dl>
+        <RecruitmentApplicationForm recruitmentId={recruitment.id} roles={recruitment.roles} closed={recruitment.status === "CLOSED"} />
       </section>
     </ProjectListCard>
   );

@@ -9,18 +9,31 @@ export const metadata: Metadata = {
 interface ZombieProjectPageProps {
   searchParams: Promise<{
     q?: string | string[];
+    category?: string | string[];
+    assetCategory?: string | string[];
+    resultLevel?: string | string[];
+    activityStatus?: string | string[];
+    eventType?: string | string[];
+    sort?: string | string[];
+    page?: string | string[];
   }>;
 }
 
 export default async function ZombieProjectPage({
   searchParams,
 }: ZombieProjectPageProps) {
-  const { q } = await searchParams;
+  const params = await searchParams;
+  const { q } = params;
   const query = (Array.isArray(q) ? q[0] : q)?.trim() ?? "";
+  const value = (name: keyof typeof params) => {
+    const raw = params[name];
+    return (Array.isArray(raw) ? raw[0] : raw)?.trim() ?? "";
+  };
+  const state = { query, category: value("category"), assetCategory: value("assetCategory"), resultLevel: value("resultLevel"), activityStatus: value("activityStatus"), eventType: value("eventType"), sort: value("sort") === "POPULAR" ? "POPULAR" as const : "RECENT" as const, page: /^\d+$/.test(value("page")) ? Number(value("page")) : 0 };
 
   return (
     <main className="flex flex-1 bg-slate-50">
-      <ZombieProjectSection query={query} />
+      <ZombieProjectSection state={state} />
     </main>
   );
 }

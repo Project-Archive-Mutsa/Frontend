@@ -1,10 +1,10 @@
 import type { RegisterRequest, RegisterResponse } from "../model/types";
+import { getClientApiUrl } from "@/shared/api/client-api-url";
 
 const REGISTER_PATH = "/api/auth/signup";
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function register(registerValue: RegisterRequest): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}${REGISTER_PATH}`, {
+  const response = await fetch(getClientApiUrl(REGISTER_PATH), {
     method: "POST",
     credentials: "include",
     headers: {

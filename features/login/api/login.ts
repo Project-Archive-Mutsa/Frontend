@@ -1,10 +1,10 @@
 import type { LoginRequest, LoginResponse } from "../model/types";
+import { getClientApiUrl } from "@/shared/api/client-api-url";
 
 const LOGIN_PATH = "/api/auth/login";
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function login(loginValue: LoginRequest): Promise<LoginResponse> {
-  const response = await fetch(`${API_BASE_URL}${LOGIN_PATH}`, {
+  const response = await fetch(getClientApiUrl(LOGIN_PATH), {
     method: "POST",
     credentials: "include",
     headers: {

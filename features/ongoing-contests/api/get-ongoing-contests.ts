@@ -3,17 +3,15 @@ import type {
   OngoingContestsResponse,
 } from "@/features/ongoing-contests/types";
 import { mapOngoingContest } from "./map-ongoing-contest";
+import { getServerApiUrl } from "@/shared/api/server-api-url";
 
 const ONGOING_CONTESTS_PATH = "/api/contests/active";
 
 export async function getOngoingContests(): Promise<
   readonly OngoingContest[]
 > {
-  const API_BASE_URL =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://project-archive-api-zf90.onrender.com";
-
   const response = await fetch(
-    `${API_BASE_URL}${ONGOING_CONTESTS_PATH}`,
+    getServerApiUrl(ONGOING_CONTESTS_PATH),
     {
       cache: "no-store",
     },

@@ -6,12 +6,11 @@ import ProjectMarketControls from "./project-market-controls";
 import ProjectMarketList from "./project-market-list";
 
 interface ProjectMarketSectionProps {
-  query: string;
+  state: { query: string; assetCategory: string; category: string; sort: "RECENT" | "POPULAR"; page: number };
 }
 
-export default function ProjectMarketSection({
-  query,
-}: ProjectMarketSectionProps) {
+export default function ProjectMarketSection({ state }: ProjectMarketSectionProps) {
+  const { query } = state;
   return (
     <section
       className="flex-1 py-12 sm:py-16"
@@ -28,11 +27,11 @@ export default function ProjectMarketSection({
             판매 중인 프로젝트
           </h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            판매자가 공개한 자산, 권리 범위와 희망 가격을 확인합니다. 거래 기능은 백엔드 미구현 상태입니다.
+            판매자가 공개한 자산과 희망 가격을 확인하고 포인트로 구매합니다.
           </p>
         </div>
 
-        <ProjectMarketControls defaultQuery={query} />
+        <ProjectMarketControls state={state} />
 
         <div className="mt-10 grid min-h-[32rem]">
           <SectionErrorBoundary
@@ -43,10 +42,10 @@ export default function ProjectMarketSection({
             }
           >
             <Suspense
-              key={query || "all-projects"}
+              key={JSON.stringify(state)}
               fallback={<SectionLoadingSpinner />}
             >
-              <ProjectMarketList query={query} />
+              <ProjectMarketList state={state} />
             </Suspense>
           </SectionErrorBoundary>
         </div>

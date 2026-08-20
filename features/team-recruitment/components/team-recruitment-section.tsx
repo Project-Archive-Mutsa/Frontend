@@ -1,10 +1,13 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import SectionErrorBoundary from "@/shared/components/section-error-boundary/section-error-boundary";
 import SectionLoadingSpinner from "@/shared/components/section-loading-spinner/section-loading-spinner";
 import TeamRecruitmentControls from "./team-recruitment-controls";
 import TeamRecruitmentList from "./team-recruitment-list";
 
-export default function TeamRecruitmentSection() {
+type State = { query: string; role: string; status: "" | "OPEN" | "CLOSED" };
+
+export default function TeamRecruitmentSection({ state }: { state: State }) {
   return (
     <section
       className="flex-1 py-12 sm:py-16"
@@ -25,30 +28,24 @@ export default function TeamRecruitmentSection() {
           </div>
 
           <div className="flex flex-col items-start gap-2 sm:items-end">
-            <button
-              type="button"
-              disabled
-              aria-describedby="team-recruitment-create-description"
-              className="min-h-11 cursor-not-allowed border border-slate-300 bg-slate-200 px-5 text-sm font-bold text-slate-500 opacity-70"
-            >
+            <Link href="/project-register" className="inline-flex min-h-11 items-center bg-brand px-5 text-sm font-bold text-white hover:bg-brand-hover">
               모집글 작성
-            </button>
+            </Link>
             <p
               id="team-recruitment-create-description"
               className="text-xs text-slate-600"
             >
-              <strong className="font-bold text-brand">백엔드 미구현</strong>
-              {" · "}모집글 작성 기능은 연결 전입니다.
+              프로젝트 등록 과정에서 모집 조건을 함께 작성합니다.
             </p>
           </div>
         </header>
 
-        <TeamRecruitmentControls />
+        <TeamRecruitmentControls state={state} />
 
         <div className="mt-10 grid min-h-[28rem]">
           <SectionErrorBoundary message="팀원 모집글을 불러오지 못했습니다.">
-            <Suspense fallback={<SectionLoadingSpinner />}>
-              <TeamRecruitmentList />
+            <Suspense key={JSON.stringify(state)} fallback={<SectionLoadingSpinner />}>
+              <TeamRecruitmentList state={state} />
             </Suspense>
           </SectionErrorBoundary>
         </div>

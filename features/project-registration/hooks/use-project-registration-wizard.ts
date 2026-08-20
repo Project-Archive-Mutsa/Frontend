@@ -1,7 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAuthSession from "@/shared/auth/hooks/use-auth-session";
+import { createRecruitment, registerProject } from "../api/register-project";
+import { queryKeys } from "@/shared/query/query-keys";
 import {
   getProjectRegistrationDraftKey,
   readProjectRegistrationDraft,
@@ -9,7 +12,6 @@ import {
 } from "../lib/draft-storage";
 import { defaultProjectRegistrationDraft } from "../model/default-draft";
 import type {
-  AssetAccessRequirement,
   AssetLinkProvider,
   DraftSaveStatus,
   ProjectAssetDraft,
@@ -17,7 +19,6 @@ import type {
   ProjectRegistrationDraft,
   ProjectRegistrationFieldErrors,
   ProjectRegistrationStep,
-  ZombieAssetTermsDraft,
 } from "../model/types";
 import {
   findFirstInvalidRegistrationStep,
@@ -99,6 +100,7 @@ function toggleValue(values: string[], value: string) {
 
 export default function useProjectRegistrationWizard() {
   const { user } = useAuthSession();
+  const queryClient = useQueryClient();
   const draftKey = getProjectRegistrationDraftKey(user?.userId);
   const [initialState] = useState(() =>
     readProjectRegistrationDraft(window.localStorage, draftKey),
@@ -122,6 +124,40 @@ export default function useProjectRegistrationWizard() {
   const assetFilesRef = useRef<Map<string, File>>(new Map());
   const latestDraftRef = useRef(draft);
   const latestStepRef = useRef(step);
+  const registrationMutation = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error("프로젝트를 등록하려면 먼저 로그인해 주세요.");
+      return registerProject({ draft: latestDraftRef.current, userId: user.userId, representativeImage: representativeImageFileRef.current, assetFiles: assetFilesRef.current });
+    },
+    retry: false,
+    onSuccess: async (result) => {
+      if (result.recruitmentCreated !== false) {
+        window.localStorage.removeItem(draftKey);
+        hasChanged.current = false;
+      }
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: queryKeys.projects.all }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.mypage.all }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.recruitments.all }),
+      ]);
+    },
+  });
+  const recruitmentRetryMutation = useMutation({
+    mutationFn: async () => {
+      const result = registrationMutation.data;
+      if (!user || !result || result.recruitmentCreated !== false) throw new Error("재시도할 모집글이 없습니다.");
+      return createRecruitment(result.project.projectId, latestDraftRef.current, user.userId);
+    },
+    retry: false,
+    onSuccess: async () => {
+      window.localStorage.removeItem(draftKey);
+      hasChanged.current = false;
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: queryKeys.recruitments.all }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.projects.all }),
+      ]);
+    },
+  });
 
   useEffect(() => {
     latestDraftRef.current = draft;
@@ -207,7 +243,16 @@ export default function useProjectRegistrationWizard() {
   ) {
     markChanged();
     clearError(String(field));
-    setDraft((previousDraft) => ({ ...previousDraft, [field]: value }));
+    if (field === "purpose") {
+      clearError("materialDisclosureConsent");
+    }
+    setDraft((previousDraft) => ({
+      ...previousDraft,
+      [field]: value,
+      ...(field === "purpose" && previousDraft.purpose !== value
+        ? { materialDisclosureConsent: false }
+        : {}),
+    }));
   }
 
   function toggleListField(
@@ -215,10 +260,7 @@ export default function useProjectRegistrationWizard() {
       | "categories"
       | "problemAreas"
       | "methods"
-      | "recruitmentRoles"
-      | "zombieAssetIds"
-      | "saleAssetIds"
-      | "recruitmentReferenceAssetIds",
+      | "recruitmentRoles",
     value: string,
   ) {
     updateField(field, toggleValue(draft[field], value));
@@ -283,8 +325,6 @@ export default function useProjectRegistrationWizard() {
       title: "",
       projectRole: "",
       description: "",
-      ownershipStatus: "",
-      rightsDescription: "",
       versionLabel: "",
       updatedAt: "",
       sources: [],
@@ -311,14 +351,6 @@ export default function useProjectRegistrationWizard() {
     setDraft((previousDraft) => ({
       ...previousDraft,
       assets: previousDraft.assets.filter((asset) => asset.id !== id),
-      zombieAssetIds: previousDraft.zombieAssetIds.filter((assetId) => assetId !== id),
-      zombieAssetTerms: Object.fromEntries(
-        Object.entries(previousDraft.zombieAssetTerms).filter(([assetId]) => assetId !== id),
-      ),
-      saleAssetIds: previousDraft.saleAssetIds.filter((assetId) => assetId !== id),
-      recruitmentReferenceAssetIds: previousDraft.recruitmentReferenceAssetIds.filter(
-        (assetId) => assetId !== id,
-      ),
     }));
   }
 
@@ -370,7 +402,6 @@ export default function useProjectRegistrationWizard() {
   function addAssetLink(
     assetId: string,
     url: string,
-    accessRequirement: AssetAccessRequirement,
   ) {
     const asset = draft.assets.find((item) => item.id === assetId);
     if (!asset) return false;
@@ -389,7 +420,6 @@ export default function useProjectRegistrationWizard() {
           kind: "EXTERNAL_LINK",
           url: url.trim(),
           provider: detectAssetLinkProvider(url.trim()),
-          accessRequirement,
         },
       ],
     });
@@ -402,32 +432,6 @@ export default function useProjectRegistrationWizard() {
     assetFilesRef.current.delete(sourceId);
     updateAsset(assetId, {
       sources: asset.sources.filter((source) => source.id !== sourceId),
-    });
-  }
-
-  function updateZombieAssetTerms(
-    assetId: string,
-    values: Partial<ZombieAssetTermsDraft>,
-  ) {
-    markChanged();
-    clearError(`zombie-${assetId}-license`);
-    clearError(`zombie-${assetId}-terms`);
-    setDraft((previousDraft) => {
-      const currentTerms = previousDraft.zombieAssetTerms[assetId] ?? {
-        licenseName: "",
-        attribution: "",
-        reuseTerms: "",
-      };
-      return {
-        ...previousDraft,
-        zombieAssetTerms: {
-          ...previousDraft.zombieAssetTerms,
-          [assetId]: {
-            ...currentTerms,
-            ...values,
-          },
-        },
-      };
     });
   }
 
@@ -488,6 +492,11 @@ export default function useProjectRegistrationWizard() {
     hasChanged.current = false;
   }
 
+  function submitRegistration() {
+    if (!reviewAllSteps()) return;
+    registrationMutation.mutate();
+  }
+
   return {
     draft,
     step,
@@ -509,11 +518,13 @@ export default function useProjectRegistrationWizard() {
     addAssetFiles,
     addAssetLink,
     removeAssetSource,
-    updateZombieAssetTerms,
     goToNextStep,
     goToPreviousStep,
     goToCompletedStep,
     reviewAllSteps,
     discardDraft,
+    submitRegistration,
+    registrationMutation,
+    recruitmentRetryMutation,
   };
 }

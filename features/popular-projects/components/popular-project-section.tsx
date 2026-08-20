@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import SectionErrorBoundary from "@/shared/components/section-error-boundary/section-error-boundary";
 import SectionLoadingSpinner from "@/shared/components/section-loading-spinner/section-loading-spinner";
-import BackendContractNotice from "@/shared/components/backend-contract-notice/backend-contract-notice";
 import PopularProjectList from "./popular-project-list";
 
 export default function PopularProjectSection() {
@@ -18,11 +17,6 @@ export default function PopularProjectSection() {
             지금 가장 많은 관심을 받고 있는 프로젝트와 아이디어를
             살펴보세요.
           </p>
-        </div>
-        <div className="mb-5">
-          <BackendContractNotice>
-            인기 프로젝트에도 출품 맥락·등록 목적·단계·상태·자산·수상 이력과 정보 충실도가 동일하게 필요합니다.
-          </BackendContractNotice>
         </div>
         <SectionErrorBoundary message="인기 프로젝트를 불러오지 못했습니다.">
           <Suspense fallback={<SectionLoadingSpinner />}>

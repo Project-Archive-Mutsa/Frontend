@@ -1,5 +1,6 @@
 import type {
   ProjectActivityStatus,
+  ProjectRegistrationPurposeInput,
   ProjectRegistrationPurpose,
   ProjectResultLevel,
 } from "@/shared/project-summary/types";
@@ -8,6 +9,13 @@ export type ProjectDetailAccess = "PUBLIC_SUMMARY" | "SUBSCRIBER_REPORT";
 
 export interface ProjectExplorerSearchState {
   query: string;
+  eventType: string;
+  eventYear: string;
+  category: string;
+  resultLevel: ProjectResultLevel | "";
+  activityStatus: ProjectActivityStatus | "";
+  sort: "RECENT" | "POPULAR";
+  page: number;
 }
 
 export interface ProjectExplorerImageResponse {
@@ -30,7 +38,7 @@ export interface ProjectExplorerResponseItem {
   bookmarkCount: number;
   sellerName: string;
   informationCompletenessScore?: number | null;
-  registrationPurpose?: ProjectRegistrationPurpose | null;
+  registrationPurpose?: ProjectRegistrationPurposeInput | null;
   eventName?: string | null;
   eventDate?: string | null;
   resultLevel?: ProjectResultLevel | null;
@@ -57,7 +65,7 @@ export interface ArchiveProjectItem {
     likeCount: number;
     bookmarkCount: number;
   };
-  registrantName: string;
+  registrantName?: string;
   registrationPurpose: ProjectRegistrationPurpose | null;
   eventName: string | null;
   eventDate: string | null;
@@ -68,4 +76,5 @@ export interface ArchiveProjectItem {
   awardTitles: readonly string[] | null;
   detailAccess: ProjectDetailAccess;
   informationCompletenessScore: number | null;
+  bookmarked: boolean;
 }

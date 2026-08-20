@@ -2,8 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { RegisterRequest, RegisterResponse } from "../model/types";
 
-const API_BASE_URL = "https://api.example.com";
-const REGISTER_URL = `${API_BASE_URL}/api/auth/signup`;
+const REGISTER_URL = "/api/auth/signup";
 
 const registerRequest: RegisterRequest = {
   loginId: "test-user",
@@ -53,7 +52,6 @@ describe("회원가입 API", () => {
 
   beforeEach(() => {
     vi.resetModules();
-    vi.stubEnv("NEXT_PUBLIC_API_BASE_URL", API_BASE_URL);
     vi.stubGlobal("fetch", fetchMock);
     fetchMock.mockReset();
   });

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { RecentAwardProject } from "@/features/recent-award-projects/types";
 import ProjectInformationCompleteness from "@/shared/components/project-information-completeness/project-information-completeness";
 import {
@@ -33,14 +34,21 @@ export default function RecentAwardProjectItem({
       </div>
 
       <div className="flex flex-1 flex-col pt-5">
-        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+        <div className="flex flex-wrap items-start justify-between gap-x-2 gap-y-1 text-xs text-slate-500 sm:min-h-10">
           <span>{project.category}</span>
-          <span className="font-bold text-brand">{project.award.title}</span>
+          <span className="line-clamp-2 text-right font-bold text-brand">
+            {project.award.title}
+          </span>
         </div>
-        <h3 className="font-display mt-3 text-pretty break-keep text-xl font-semibold tracking-[-0.02em] text-slate-950">
-          {project.name}
+        <h3 className="font-display mt-3 line-clamp-3 text-pretty break-keep text-xl leading-7 font-semibold tracking-[-0.02em] text-slate-950 sm:min-h-[5.25rem]">
+          <Link
+            href={project.detailPath}
+            className="underline-offset-4 hover:text-brand hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+          >
+            {project.name}
+          </Link>
         </h3>
-        <p className="mt-2 line-clamp-3 text-pretty break-keep text-sm leading-6 text-slate-600">
+        <p className="mt-2 line-clamp-3 text-pretty break-keep text-sm leading-6 text-slate-600 sm:min-h-[4.5rem]">
           {project.summary}
         </p>
 
@@ -60,7 +68,7 @@ export default function RecentAwardProjectItem({
         </dl>
 
         <div className="mt-5 border-t border-slate-200 pt-4">
-          <p className="text-xs font-medium leading-5 text-slate-700">
+          <p className="line-clamp-2 text-xs font-medium leading-5 text-slate-700 sm:min-h-10">
             {project.award.competitionName}
           </p>
           <time

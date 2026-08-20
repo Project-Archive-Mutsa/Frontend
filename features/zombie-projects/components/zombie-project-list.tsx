@@ -1,5 +1,4 @@
 import { getZombieProjects } from "@/features/zombie-projects/api/get-zombie-projects";
-import BackendContractNotice from "@/shared/components/backend-contract-notice/backend-contract-notice";
 import ZombieProjectItem from "./zombie-project-item";
 
 export default async function ZombieProjectList() {
@@ -23,11 +22,6 @@ export default async function ZombieProjectList() {
           </strong>
           개의 좀비 프로젝트
         </p>
-      </div>
-      <div className="mt-4">
-        <BackendContractNotice>
-          공개 재사용 자산·자산별 라이선스·재사용 조건과 공통 출품 정보를 제공하는 좀비 프로젝트 요약 API가 필요합니다.
-        </BackendContractNotice>
       </div>
       <ul className="mt-4 divide-y divide-slate-300 border-y border-slate-300">
         {projects.map((project) => (

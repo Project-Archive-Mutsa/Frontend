@@ -1,10 +1,10 @@
 import type { RegisterPart, SignupPartsResponse } from "../model/types";
+import { getClientApiUrl } from "@/shared/api/client-api-url";
 
 const SIGNUP_PARTS_PATH = "/api/signup/parts";
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function getSignupParts(): Promise<RegisterPart[]> {
-  const response = await fetch(`${API_BASE_URL}${SIGNUP_PARTS_PATH}`, {
+  const response = await fetch(getClientApiUrl(SIGNUP_PARTS_PATH), {
     credentials: "include",
     headers: {
       Accept: "application/json",

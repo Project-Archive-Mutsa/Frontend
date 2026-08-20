@@ -2,6 +2,7 @@ import type {
   ZombieProject,
   ZombieProjectResponseItem,
 } from "@/features/zombie-projects/types";
+import { normalizeProjectRegistrationPurpose } from "@/shared/project-summary/types";
 
 export function mapZombieProject(
   project: ZombieProjectResponseItem,
@@ -12,7 +13,7 @@ export function mapZombieProject(
     id: project.projectId,
     detailPath: project.detailPath,
     name: project.projectName,
-    description: project.description,
+    description: project.description.trim().slice(0, 100),
     registeredAt: project.registeredDate,
     representativeImage: representativeImageUrl
       ? {
@@ -35,7 +36,9 @@ export function mapZombieProject(
         }
       : null,
     category: project.category?.trim() || null,
-    registrationPurpose: project.registrationPurpose ?? "ZOMBIE",
+    registrationPurpose: project.registrationPurpose
+      ? normalizeProjectRegistrationPurpose(project.registrationPurpose)
+      : "ZOMBIE",
     eventName: project.eventName?.trim() || null,
     eventDate: project.eventDate ?? null,
     resultLevel: project.resultLevel ?? null,
@@ -46,7 +49,7 @@ export function mapZombieProject(
       project.awards === undefined
         ? null
         : project.awards.map((award) => award.title).filter(Boolean),
-    publicAssets: project.publicAssets ?? null,
+    bookmarked: project.bookmarked ?? false,
     ...(project.informationCompletenessScore !== undefined
       ? {
           informationCompletenessScore:

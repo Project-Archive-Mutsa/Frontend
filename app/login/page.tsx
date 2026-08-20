@@ -1,7 +1,10 @@
 import Link from "next/link";
 import LoginSection from "@/features/login/components/login-section";
 
-export default function LoginPage() {
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ next?: string | string[] }> }) {
+  const rawNext = (await searchParams).next;
+  const candidate = typeof rawNext === "string" ? rawNext : "/";
+  const returnPath = candidate.startsWith("/") && !candidate.startsWith("//") ? candidate : "/";
   return (
     <main className="bg-brand-canvas flex flex-1 items-center justify-center px-8 py-8 xl:px-12 xl:py-10 2xl:py-12">
       <section className="grid min-h-[32rem] w-full max-w-5xl grid-cols-[0.9fr_1.1fr] overflow-hidden rounded-2xl border border-slate-200 bg-white 2xl:max-w-6xl">
@@ -34,7 +37,7 @@ export default function LoginPage() {
 
         <div className="flex items-center px-10 py-10 2xl:px-14 2xl:py-12">
           <div className="mx-auto w-full max-w-md">
-            <LoginSection />
+            <LoginSection returnPath={returnPath} />
           </div>
         </div>
       </section>

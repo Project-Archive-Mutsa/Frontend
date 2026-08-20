@@ -32,33 +32,64 @@ export function readProjectRegistrationDraft(
     }
 
     const storedDraft = parsedValue.data.draft;
+    const legacyAttempts = storedDraft.attempts;
+    const legacyDifficulties = storedDraft.difficulties;
+    const legacyNextSteps = storedDraft.nextSteps;
+    const currentStoredDraft = { ...storedDraft };
+    delete currentStoredDraft.attempts;
+    delete currentStoredDraft.difficulties;
+    delete currentStoredDraft.nextSteps;
+    delete currentStoredDraft.zombieAssetIds;
+    delete currentStoredDraft.zombieAssetTerms;
+    delete currentStoredDraft.saleAssetIds;
+    delete currentStoredDraft.saleRightsScope;
+    delete currentStoredDraft.fullTransferConfirmed;
+    delete currentStoredDraft.recruitmentReferenceAssetIds;
+    delete currentStoredDraft.transferAssetIds;
+    delete currentStoredDraft.transferRightsScope;
+    delete currentStoredDraft.transferMode;
     const legacyTransferMode = storedDraft.transferMode;
-    const legacyTransferAssetIds = storedDraft.transferAssetIds;
-    const legacyTransferRightsScope = storedDraft.transferRightsScope;
-    const normalizedPurpose =
+    const transferredPurpose =
       storedDraft.purpose === "TRANSFER"
         ? legacyTransferMode === "SALE"
           ? "SELL"
           : ""
         : storedDraft.purpose;
+    const normalizedPurpose =
+      transferredPurpose === "ARCHIVE" || transferredPurpose === "REGISTER"
+        ? "ZOMBIE"
+        : transferredPurpose;
     const assets = Array.isArray(storedDraft.assets)
       ? storedDraft.assets.map((asset) => {
           if (!asset || typeof asset !== "object") {
             return asset;
           }
 
-          const typedAsset = asset as { sources?: unknown[] };
+          const typedAsset = asset as Record<string, unknown> & {
+            sources?: unknown[];
+          };
+          const assetWithoutLegacyRights = { ...typedAsset };
+          delete assetWithoutLegacyRights.ownershipStatus;
+          delete assetWithoutLegacyRights.rightsDescription;
           return {
-            ...typedAsset,
+            ...assetWithoutLegacyRights,
             sources: Array.isArray(typedAsset.sources)
               ? typedAsset.sources.map((source) => {
                   if (!source || typeof source !== "object") {
                     return source;
                   }
-                  const typedSource = source as { kind?: string };
-                  return typedSource.kind === "UPLOAD"
-                    ? { ...typedSource, needsReattach: true }
-                    : typedSource;
+                  const typedSource = source as Record<string, unknown> & {
+                    kind?: string;
+                  };
+                  const sourceWithoutLegacyAccess = { ...typedSource };
+                  delete sourceWithoutLegacyAccess.accessRequirement;
+                  if (typedSource.kind === "UPLOAD") {
+                    return {
+                      ...sourceWithoutLegacyAccess,
+                      needsReattach: true,
+                    };
+                  }
+                  return sourceWithoutLegacyAccess;
                 })
               : [],
           };
@@ -68,20 +99,30 @@ export function readProjectRegistrationDraft(
     return {
       draft: {
         ...defaultProjectRegistrationDraft,
-        ...storedDraft,
+        ...currentStoredDraft,
         purpose: normalizedPurpose,
-        saleAssetIds:
-          legacyTransferMode === "SALE" && Array.isArray(legacyTransferAssetIds)
-            ? legacyTransferAssetIds.filter((assetId): assetId is string => typeof assetId === "string")
-            : Array.isArray(storedDraft.saleAssetIds)
-              ? storedDraft.saleAssetIds.filter((assetId): assetId is string => typeof assetId === "string")
-              : [],
-        saleRightsScope:
-          legacyTransferMode === "SALE" && typeof legacyTransferRightsScope === "string"
-            ? legacyTransferRightsScope
-            : typeof storedDraft.saleRightsScope === "string"
-              ? storedDraft.saleRightsScope
+        approaches:
+          typeof currentStoredDraft.approaches === "string"
+            ? currentStoredDraft.approaches
+            : typeof legacyAttempts === "string"
+              ? legacyAttempts
               : "",
+        constraints:
+          typeof currentStoredDraft.constraints === "string"
+            ? currentStoredDraft.constraints
+            : typeof legacyDifficulties === "string"
+              ? legacyDifficulties
+              : "",
+        nextValidationTasks:
+          typeof currentStoredDraft.nextValidationTasks === "string"
+            ? currentStoredDraft.nextValidationTasks
+            : typeof legacyNextSteps === "string"
+              ? legacyNextSteps
+              : "",
+        materialDisclosureConsent:
+          typeof storedDraft.materialDisclosureConsent === "boolean"
+            ? storedDraft.materialDisclosureConsent
+            : false,
         assets,
       } as ProjectRegistrationDraft,
       currentStep: parsedValue.data.currentStep,

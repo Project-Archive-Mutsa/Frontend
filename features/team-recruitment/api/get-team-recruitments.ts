@@ -2,6 +2,8 @@ import { z } from "zod";
 import type { TeamRecruitment } from "@/features/team-recruitment/types";
 import { mapTeamRecruitment } from "./map-team-recruitment";
 import { teamRecruitmentResponseItemSchema } from "./team-recruitment-response-schema";
+import { getApiError, readJson } from "@/shared/api/api-error";
+import { getServerApiUrl } from "@/shared/api/server-api-url";
 
 const TEAM_RECRUITMENTS_PATH = "/api/recruitments";
 
@@ -11,22 +13,22 @@ const teamRecruitmentsResponseSchema = z.object({
   message: z.string().nullable().optional(),
 });
 
-export async function getTeamRecruitments(): Promise<
+export async function getTeamRecruitments(query: { query?: string; role?: string; status?: "" | "OPEN" | "CLOSED" } = {}): Promise<
   readonly TeamRecruitment[]
 > {
-  const response = await fetch(
-    `${process.env.API_BASE_URL}${TEAM_RECRUITMENTS_PATH}`,
-    {
-      cache: "no-store",
-    },
-  );
+  const url = getServerApiUrl(TEAM_RECRUITMENTS_PATH);
+  if (query.query) url.searchParams.set("q", query.query);
+  if (query.role) url.searchParams.set("role", query.role);
+  if (query.status) url.searchParams.set("status", query.status);
+  const response = await fetch(url, { cache: "no-store" });
+  const payload = await readJson(response);
 
   if (!response.ok) {
-    throw new Error(`팀원 모집글 조회에 실패했습니다. (${response.status})`);
+    throw getApiError(payload, response.status, "팀원 모집글 조회에 실패했습니다.");
   }
 
   const parsedResponse = teamRecruitmentsResponseSchema.safeParse(
-    await response.json(),
+    payload,
   );
 
   if (!parsedResponse.success) {

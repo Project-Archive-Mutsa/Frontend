@@ -16,9 +16,9 @@ export const projectRegistrationSteps = [
   { step: 1, label: "출품 정보", description: "어디에 출품한 프로젝트인지 기록합니다." },
   { step: 2, label: "프로젝트 개요", description: "탐색 목록에 보일 기본정보를 작성합니다." },
   { step: 3, label: "문제·해결·결과", description: "프로젝트가 무엇을 시도했는지 설명합니다." },
-  { step: 4, label: "회고·보유 자산", description: "시행착오와 남은 결과물을 정리합니다." },
+  { step: 4, label: "제약·한계·프로젝트 자료", description: "확인된 제약과 남은 자료를 객관적으로 정리합니다." },
   { step: 5, label: "등록 목적", description: "프로젝트를 다음 사람과 연결할 방식을 정합니다." },
-  { step: 6, label: "검토·등록", description: "공개 범위와 입력 내용을 최종 확인합니다." },
+  { step: 6, label: "검토·등록", description: "입력 내용을 확인하고 등록 자료 공개에 동의합니다." },
 ] as const;
 
 export const eventTypeOptions: ReadonlyArray<{ value: EventType; label: string }> = [
@@ -57,9 +57,8 @@ export const registrationPurposeOptions: ReadonlyArray<{
   label: string;
   description: string;
 }> = [
-  { value: "ARCHIVE", label: "아카이브 등록", description: "출품 경험과 결과를 검색 가능한 기록으로 남깁니다." },
-  { value: "ZOMBIE", label: "좀비 프로젝트", description: "재사용 자산과 조건을 공개해 누구나 새로운 시도로 이어가게 합니다." },
-  { value: "SELL", label: "프로젝트 판매", description: "정한 자산과 권리를 희망 가격과 함께 특정 구매자에게 판매합니다." },
+  { value: "ZOMBIE", label: "좀비 프로젝트", description: "기본정보는 공개되며, 다른 사용자가 프로젝트 상세 정보를 열람하면 콘텐츠 정산 포인트가 지급됩니다." },
+  { value: "SELL", label: "프로젝트 판매", description: "등록한 프로젝트와 모든 자료를 희망 가격으로 특정 구매자에게 판매합니다." },
   { value: "TEAM_RECRUIT", label: "팀원 모집", description: "등록자가 프로젝트를 계속 주도하며 필요한 팀원을 찾습니다." },
 ];
 
@@ -109,15 +108,8 @@ export const assetCategoryOptions: ReadonlyArray<{
   { value: "RESEARCH_VALIDATION", label: "연구·검증", helper: "설문, 인터뷰, 실험과 결과 자료", acceptedExtensions: ".pdf,.doc,.docx,.hwp,.hwpx,.csv,.xls,.xlsx,.zip" },
   { value: "DEMO_MEDIA", label: "영상·시연", helper: "발표, 데모, 사용 영상", acceptedExtensions: ".mp4,.webm,.mov" },
   { value: "OFFLINE_OUTPUT", label: "오프라인 결과물", helper: "전시물, 제작물, 현장 활동 기록", acceptedExtensions: ".pdf,.png,.jpg,.jpeg,.mp4,.webm,.mov,.zip" },
-  { value: "OTHER", label: "기타", helper: "목록에 없는 프로젝트 자산", acceptedExtensions: "" },
+  { value: "OTHER", label: "기타", helper: "목록에 없는 프로젝트 자료", acceptedExtensions: "" },
 ];
-
-export const ownershipOptions = [
-  { value: "OWNED", label: "내가 권리를 보유함" },
-  { value: "TEAM_OWNED", label: "팀 공동 자산임" },
-  { value: "THIRD_PARTY_INCLUDED", label: "외부 자료가 포함됨" },
-  { value: "UNCONFIRMED", label: "권리 범위를 아직 확인하지 못함" },
-] as const;
 
 export const recruitmentRoleOptions = [
   "기획",
