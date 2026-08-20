@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import ProjectInformationCompleteness from "@/shared/components/project-information-completeness/project-information-completeness";
-import ProjectBookmarkButton from "@/shared/components/project-bookmark-button/project-bookmark-button";
 
 export interface ProjectListCardContextItem {
   label: string;
@@ -36,9 +35,6 @@ interface ProjectListCardProps {
   stats?: readonly ProjectListCardStat[];
   headingLevel?: 2 | 3;
   href?: string;
-  projectId?: number;
-  bookmarked?: boolean;
-  bookmarkReturnPath?: string;
   sideAction?: ReactNode;
   children?: ReactNode;
 }
@@ -59,9 +55,6 @@ export default function ProjectListCard({
   stats = [],
   headingLevel = 2,
   href,
-  projectId,
-  bookmarked,
-  bookmarkReturnPath,
   sideAction,
   children,
 }: ProjectListCardProps) {
@@ -148,34 +141,21 @@ export default function ProjectListCard({
       </div>
 
       <aside className="border-t border-slate-200 pt-6 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-7">
-        <div className="relative mb-5 aspect-[16/10] bg-brand-canvas">
-          <div className="absolute inset-0 overflow-hidden">
-            {representativeImage ? (
-              <Image
-                src={representativeImage.src}
-                alt={representativeImage.alt}
-                fill
-                unoptimized
-                sizes="240px"
-                className="object-cover"
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center px-4 text-center text-xs leading-5 text-slate-500">
-                대표 이미지 미등록
-              </div>
-            )}
-          </div>
-          {projectId && bookmarkReturnPath && bookmarked !== undefined ? (
-            <div className="absolute right-3 top-3 z-10">
-              <ProjectBookmarkButton
-                projectId={projectId}
-                projectName={title}
-                initialBookmarked={bookmarked}
-                returnPath={bookmarkReturnPath}
-                errorPlacement="floating"
-              />
+        <div className="relative mb-5 aspect-[16/10] overflow-hidden bg-brand-canvas">
+          {representativeImage ? (
+            <Image
+              src={representativeImage.src}
+              alt={representativeImage.alt}
+              fill
+              unoptimized
+              sizes="240px"
+              className="object-cover"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center px-4 text-center text-xs leading-5 text-slate-500">
+              대표 이미지 미등록
             </div>
-          ) : null}
+          )}
         </div>
 
         {showInformationCompleteness ? (

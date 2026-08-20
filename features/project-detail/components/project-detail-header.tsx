@@ -123,20 +123,20 @@ export default function ProjectDetailHeader({ project }: ProjectDetailHeaderProp
                 </div>
               )}
             </div>
-            <div className="absolute right-3 top-3 z-10">
-              <ProjectBookmarkButton
-                projectId={project.id}
-                projectName={project.name}
-                initialBookmarked={project.viewer.bookmarked}
-                returnPath={`/projects/${project.id}`}
-                errorPlacement="floating"
-              />
-            </div>
           </div>
           <div className="mt-6">
             <ProjectInformationCompleteness
               projectName={project.name}
               score={project.informationCompletenessScore}
+            />
+          </div>
+          <div className="mt-5 border-t border-slate-200 pt-4">
+            <ProjectBookmarkButton
+              projectId={project.id}
+              projectName={project.name}
+              initialBookmarked={project.viewer.bookmarked}
+              returnPath={`/projects/${project.id}`}
+              fullWidth
             />
           </div>
           {saleDetail ? (

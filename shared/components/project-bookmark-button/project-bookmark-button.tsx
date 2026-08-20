@@ -1,7 +1,6 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Star } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useAuthSession from "@/shared/auth/hooks/use-auth-session";
@@ -15,7 +14,7 @@ interface ProjectBookmarkButtonProps {
   projectName: string;
   initialBookmarked: boolean;
   returnPath: string;
-  errorPlacement?: "inline" | "floating";
+  fullWidth?: boolean;
 }
 
 export default function ProjectBookmarkButton({
@@ -23,7 +22,7 @@ export default function ProjectBookmarkButton({
   projectName,
   initialBookmarked,
   returnPath,
-  errorPlacement = "inline",
+  fullWidth = false,
 }: ProjectBookmarkButtonProps) {
   const { user, isInitialized } = useAuthSession();
   const router = useRouter();
@@ -55,7 +54,13 @@ export default function ProjectBookmarkButton({
   };
 
   return (
-    <div className="relative inline-flex flex-col items-start">
+    <div
+      className={
+        fullWidth
+          ? "relative flex w-full flex-col items-stretch"
+          : "relative inline-flex flex-col items-start"
+      }
+    >
       <button
         type="button"
         aria-pressed={bookmarked}
@@ -64,32 +69,25 @@ export default function ProjectBookmarkButton({
         title={bookmarked ? "관심 프로젝트 저장 취소" : "관심 프로젝트 저장"}
         onClick={handleClick}
         disabled={!isInitialized || mutation.isPending}
-        className={`inline-flex h-11 w-11 shrink-0 items-center justify-center border bg-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-accent disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transition-none ${
+        className={`inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 border px-4 text-sm font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-accent disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transition-none ${
+          fullWidth ? "w-full" : ""
+        } ${
           bookmarked
-            ? "border-brand text-brand"
-            : "border-slate-300 text-slate-700 hover:border-brand hover:text-brand"
+            ? "border-brand bg-brand text-white hover:bg-brand-hover"
+            : "border-slate-300 bg-white text-brand hover:border-brand hover:bg-brand-canvas"
         }`}
       >
-        {mutation.isPending ? (
-          <LoadingSpinner size={18} />
-        ) : (
-          <Star
-            aria-hidden="true"
-            size={21}
-            strokeWidth={2}
-            fill={bookmarked ? "currentColor" : "none"}
-          />
-        )}
+        {mutation.isPending ? <LoadingSpinner size={16} /> : null}
+        <span>
+          {mutation.isPending
+            ? "즐겨찾기 변경 중"
+            : bookmarked
+              ? "즐겨찾기 해제"
+              : "프로젝트 즐겨찾기"}
+        </span>
       </button>
       {mutation.isError ? (
-        <p
-          role="alert"
-          className={
-            errorPlacement === "floating"
-              ? "absolute right-0 top-full z-20 mt-2 w-56 border border-red-200 bg-white px-3 py-2 text-left text-xs leading-5 text-red-700"
-              : "mt-2 max-w-56 text-xs leading-5 text-red-700"
-          }
-        >
+        <p role="alert" className="mt-2 max-w-56 text-xs leading-5 text-red-700">
           {mutation.error.message}
         </p>
       ) : null}

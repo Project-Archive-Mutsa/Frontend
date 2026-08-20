@@ -75,9 +75,6 @@ export default function ZombieProjectItem({
         { label: "저장", value: project.stats.bookmarkCount },
       ]}
       headingLevel={headingLevel}
-      projectId={project.id}
-      bookmarked={project.bookmarked}
-      bookmarkReturnPath="/zombie-projects"
     >
       <section aria-label="프로젝트 상세 정보 안내">
         <h3 className="text-sm font-bold text-slate-900">프로젝트 상세 정보</h3>

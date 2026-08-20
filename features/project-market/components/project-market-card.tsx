@@ -72,9 +72,6 @@ export default function ProjectMarketCard({
       ]}
       representativeImage={project.representativeImage}
       informationCompletenessScore={project.informationCompletenessScore}
-      projectId={project.id}
-      bookmarked={project.bookmarked}
-      bookmarkReturnPath="/project-market"
       sideAction={
         project.registrationPurpose === "SELL" ? (
           project.price !== null && project.price > 0 ? (

@@ -71,9 +71,6 @@ export default function ProjectCatalogCard({
         { label: "저장", value: project.stats.bookmarkCount },
       ]}
       headingLevel={3}
-      projectId={project.id}
-      bookmarked={project.bookmarked}
-      bookmarkReturnPath="/projects"
     />
   );
 }
