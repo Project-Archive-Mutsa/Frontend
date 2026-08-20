@@ -1,11 +1,5 @@
 import MainAiSearchInput from "./main-ai-search-input";
 
-const searchExamples = [
-  "아이디어 중복 확인",
-  "비슷한 수상작 탐색",
-  "유사 프로젝트 비교",
-];
-
 export default function HomeHeroSection() {
   return (
     <section className="border-b border-[#dce8f4] bg-white">
@@ -24,21 +18,6 @@ export default function HomeHeroSection() {
 
         <div className="mx-auto mt-10 max-w-4xl">
           <MainAiSearchInput />
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-[#657b91]">
-            <span className="whitespace-nowrap font-semibold text-[#3f5f7d]">
-              검색 예시
-            </span>
-            <ul
-              className="flex flex-wrap justify-center gap-x-4 gap-y-1"
-              aria-label="검색 활용 예시"
-            >
-              {searchExamples.map((example) => (
-                <li key={example} className="whitespace-nowrap">
-                  {example}
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
       </div>
     </section>

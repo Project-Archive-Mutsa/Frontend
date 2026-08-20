@@ -11,7 +11,11 @@ interface ProjectDetailViewProps {
 
 export default function ProjectDetailView({ project }: ProjectDetailViewProps) {
   const showPointAccessPanel =
-    project.registrationPurpose === "ZOMBIE" && project.reportOffer.available;
+    project.detailAccess !== null
+      ? project.detailAccess.unlockMode === "POINT_ACCESS" &&
+        project.detailAccess.available
+      : project.registrationPurpose === "ZOMBIE" &&
+        project.reportOffer.available;
 
   return (
     <section className="flex-1 py-12 sm:py-16" aria-label={`${project.name} 프로젝트 상세`}>
@@ -33,6 +37,7 @@ export default function ProjectDetailView({ project }: ProjectDetailViewProps) {
                 projectId={project.id}
                 projectName={project.name}
                 offer={project.reportOffer}
+                detailAccess={project.detailAccess}
               />
             ) : null}
             {project.stats ? (

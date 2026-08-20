@@ -8,9 +8,11 @@ describe("mapOngoingContest", () => {
       contestName: "테스트 공모전",
       description: "테스트 설명",
       representativeImageUrl: "https://example.com/contest.svg",
+      images: [],
       startDate: "2026-08-20",
       endDate: "2026-09-30",
       status: "ACTIVE",
+      applyUrl: "https://example.com/contest",
       detailPath: "/contests/1",
     });
 
@@ -21,6 +23,7 @@ describe("mapOngoingContest", () => {
       imageUrl: "https://example.com/contest.svg",
       startDate: "2026-08-20",
       endDate: "2026-09-30",
+      applyUrl: "https://example.com/contest",
       detailUrl: "/contests/1",
     });
   });

@@ -67,8 +67,11 @@ export default function ProjectPurchaseButton({
   const balance = balanceQuery.data?.availablePoint ?? null;
   const insufficient = balance !== null && balance < price;
   const owner = viewerQuery.data?.owner === true;
+  const purchaseResult = mutation.data;
   const checkingPurchaseState =
     Boolean(user) && (balanceQuery.isPending || viewerQuery.isPending);
+  const hasRequestError =
+    balanceQuery.isError || viewerQuery.isError || mutation.isError;
 
   const handleStart = () => {
     if (!user) {
@@ -80,9 +83,19 @@ export default function ProjectPurchaseButton({
 
   return (
     <div>
-      {owner ? (
+      {purchaseResult ? (
+        <div role="status">
+          <p className="text-sm font-bold text-slate-900">
+            구매가 완료되어 내 프로젝트로 이전되었습니다.
+          </p>
+          <p className="mt-2 text-sm text-emerald-700">
+            {purchaseResult.paidPoint.toLocaleString("ko-KR")}P 결제 · 잔액{" "}
+            {purchaseResult.buyerBalance.toLocaleString("ko-KR")}P
+          </p>
+        </div>
+      ) : owner ? (
         <p className="text-sm font-bold text-slate-500">
-          본인 프로젝트는 구매할 수 없습니다.
+          현재 소유한 프로젝트입니다.
         </p>
       ) : disabled ? (
         <>
@@ -112,7 +125,6 @@ export default function ProjectPurchaseButton({
             !isInitialized ||
             checkingPurchaseState ||
             mutation.isPending ||
-            mutation.isSuccess ||
             (Boolean(user) &&
               (balance === null ||
                 viewerQuery.isError ||
@@ -123,34 +135,26 @@ export default function ProjectPurchaseButton({
           {checkingPurchaseState || mutation.isPending ? (
             <LoadingSpinner size={18} />
           ) : null}
-          {mutation.isSuccess
-            ? "구매 완료"
-            : checkingPurchaseState
-              ? "구매 조건 확인 중"
-              : mutation.isPending
-                ? "구매 중"
-                : "프로젝트 권리 구매"}
+          {checkingPurchaseState
+            ? "구매 조건 확인 중"
+            : mutation.isPending
+              ? "구매 중"
+              : "프로젝트 권리 구매"}
         </button>
       )}
-      {balance !== null ? (
+      {!purchaseResult && balance !== null ? (
         <p className="mt-2 text-xs text-slate-500">
           보유 포인트 {balance.toLocaleString("ko-KR")} P
         </p>
       ) : null}
-      {balanceQuery.isError || viewerQuery.isError || mutation.isError ? (
+      {!purchaseResult && hasRequestError ? (
         <p role="alert" className="mt-2 text-sm text-red-700">
           {mutation.error?.message ??
             viewerQuery.error?.message ??
             balanceQuery.error?.message}
         </p>
       ) : null}
-      {mutation.data ? (
-        <p role="status" className="mt-2 text-sm text-emerald-700">
-          {mutation.data.paidPoint.toLocaleString("ko-KR")}P 결제 완료 · 잔액{" "}
-          {mutation.data.buyerBalance.toLocaleString("ko-KR")}P
-        </p>
-      ) : null}
-      {open && balance !== null ? (
+      {!purchaseResult && open && balance !== null ? (
         <PurchaseConfirmationDialog
           open
           title="프로젝트 구매 확인"

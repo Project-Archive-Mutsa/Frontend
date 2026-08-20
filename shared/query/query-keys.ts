@@ -22,11 +22,13 @@ export const queryKeys = {
     projects: (userId: number) => ["mypage", "projects", userId] as const,
     wishlist: ["mypage", "wishlist"] as const,
     wishlistIds: ["mypage", "wishlist", "ids"] as const,
-    applications: ["mypage", "applications"] as const,
     messages: ["mypage", "messages"] as const,
     message: (messageId: number) => ["mypage", "messages", messageId] as const,
   },
   recruitments: {
     all: ["recruitments"] as const,
+    myApplications: ["recruitments", "my-applications"] as const,
+    myApplication: (recruitmentId: number) =>
+      ["recruitments", recruitmentId, "my-application"] as const,
   },
 } as const;

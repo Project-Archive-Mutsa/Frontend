@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ApiError } from "@/shared/api/api-error";
 import useAuthSession from "@/shared/auth/hooks/use-auth-session";
 import { createRecruitment, registerProject } from "../api/register-project";
 import { queryKeys } from "@/shared/query/query-keys";
@@ -59,6 +60,47 @@ function focusFirstError(errors: ProjectRegistrationFieldErrors) {
     field?.focus();
     field?.scrollIntoView({ behavior: "smooth", block: "center" });
   });
+}
+
+const backendRegistrationFieldMap: Record<
+  string,
+  { field: string; step: ProjectRegistrationStep }
+> = {
+  problemDefinition: { field: "problemDefinition", step: 3 },
+  targetAudience: { field: "targetAudience", step: 3 },
+  solution: { field: "solution", step: 3 },
+  coreFunctions: { field: "coreApproach", step: 3 },
+  differentiation: { field: "differentiation", step: 3 },
+  validationSummary: { field: "validation", step: 3 },
+  approaches: { field: "approaches", step: 4 },
+  constraints: { field: "constraints", step: 4 },
+  limitations: { field: "limitations", step: 4 },
+  terminationReason: { field: "endReason", step: 4 },
+  nextValidationTasks: { field: "nextValidationTasks", step: 4 },
+  materialDisclosureConsent: { field: "materialDisclosureConsent", step: 6 },
+};
+
+function getBackendRegistrationErrors(error: unknown) {
+  if (!(error instanceof ApiError)) return null;
+
+  const mappedErrors = Object.entries(error.fieldErrors)
+    .map(([backendField, message]) => {
+      const mapping = backendRegistrationFieldMap[backendField];
+      return mapping ? { ...mapping, message } : null;
+    })
+    .filter((entry) => entry !== null);
+
+  if (!mappedErrors.length) return null;
+
+  const step = Math.min(...mappedErrors.map((entry) => entry.step)) as
+    ProjectRegistrationStep;
+  const errors = Object.fromEntries(
+    mappedErrors
+      .filter((entry) => entry.step === step)
+      .map((entry) => [entry.field, entry.message]),
+  );
+
+  return { step, errors };
 }
 
 export function detectAssetLinkProvider(url: string): AssetLinkProvider {
@@ -140,6 +182,14 @@ export default function useProjectRegistrationWizard() {
         queryClient.invalidateQueries({ queryKey: queryKeys.mypage.all }),
         queryClient.invalidateQueries({ queryKey: queryKeys.recruitments.all }),
       ]);
+    },
+    onError: (error) => {
+      const backendErrors = getBackendRegistrationErrors(error);
+      if (!backendErrors) return;
+
+      setStep(backendErrors.step);
+      setErrors(backendErrors.errors);
+      focusFirstError(backendErrors.errors);
     },
   });
   const recruitmentRetryMutation = useMutation({

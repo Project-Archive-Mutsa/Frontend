@@ -40,7 +40,7 @@ const resultCounts = {
 };
 
 describe("ProjectDiscoverySummary", () => {
-  it("#38의 AI 요약과 비교·검증 문구를 그대로 표시한다", () => {
+  it("#38의 AI 요약과 공통점·차별화 지점을 표시한다", () => {
     render(
       <ProjectDiscoverySummary
         query="AI 광고"
@@ -63,6 +63,12 @@ describe("ProjectDiscoverySummary", () => {
     ).toBeDefined();
     expect(
       screen.getByText("백엔드가 생성한 실제 후보 기반 분석 요약입니다."),
+    ).toBeDefined();
+    expect(
+      screen.getByRole("heading", { name: "반복해서 발견된 공통점" }),
+    ).toBeDefined();
+    expect(
+      screen.getByRole("heading", { name: "차별화 가능성이 높은 지점" }),
     ).toBeDefined();
     expect(screen.getByText("성과 지표의 차이를 비교해 보세요.")).toBeDefined();
     expect(
@@ -94,7 +100,7 @@ describe("ProjectDiscoverySummary", () => {
       ),
     ).toBeDefined();
     expect(screen.getByText("AI·인공지능")).toBeDefined();
-    expect(screen.queryByText("결과를 비교할 때 볼 점")).toBeNull();
-    expect(screen.queryByText("추가로 검증할 점")).toBeNull();
+    expect(screen.queryByText("반복해서 발견된 공통점")).toBeNull();
+    expect(screen.queryByText("차별화 가능성이 높은 지점")).toBeNull();
   });
 });

@@ -54,6 +54,7 @@ function mapDetail(raw: RawProjectDetail): ProjectDetailViewModel {
       sectionCount: 0,
       sectionTitles: [],
     },
+    detailAccess: raw.detailAccess,
     purposeDetail: normalizePurposeDetail(raw.purposeDetail),
   };
 }

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { projectDetailResponseSchema } from "./project-detail-response-schema";
 
 describe("프로젝트 상세 응답 스키마", () => {
-  it("배포 계약의 null 리포트와 판매 자산 요약을 파싱한다", () => {
+  it("새 상세 접근 계약과 null 리포트·판매 자산 요약을 파싱한다", () => {
     const parsed = projectDetailResponseSchema.safeParse({
       success: true,
       data: {
@@ -29,11 +29,18 @@ describe("프로젝트 상세 응답 스키마", () => {
         projectPeriod: { startDate: null, endDate: null },
         awards: [],
         team: { memberCount: null, roles: [] },
-        assets: { publicCount: 0, paidCount: 0, categories: [] },
+        assets: { count: 3, categories: ["CODE"] },
         informationCompletenessScore: 35,
         stats: { viewCount: 0, likeCount: 0, bookmarkCount: 0 },
         viewer: { bookmarked: false, liked: false, owner: false },
         reportOffer: null,
+        detailAccess: {
+          unlockMode: "PROJECT_PURCHASE",
+          pricePoint: null,
+          purchaseEnabled: false,
+          available: true,
+          unavailableReason: null,
+        },
         purposeDetail: {
           purpose: "SELL",
           transferScope: null,
@@ -52,5 +59,15 @@ describe("프로젝트 상세 응답 스키마", () => {
     });
 
     expect(parsed.success).toBe(true);
+    if (parsed.success) {
+      expect(parsed.data.data.assets).toEqual({
+        publicCount: 3,
+        paidCount: 0,
+        categories: ["CODE"],
+      });
+      expect(parsed.data.data.detailAccess?.unlockMode).toBe(
+        "PROJECT_PURCHASE",
+      );
+    }
   });
 });

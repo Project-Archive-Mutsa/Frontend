@@ -71,16 +71,27 @@ export default function ProjectReportSection({
 }) {
   const { user, isInitialized } = useAuthSession();
   const pointAccessAvailable =
-    project.registrationPurpose === "ZOMBIE" && project.reportOffer.available;
+    project.detailAccess !== null
+      ? project.detailAccess.unlockMode === "POINT_ACCESS" &&
+        project.detailAccess.available
+      : project.registrationPurpose === "ZOMBIE" &&
+        project.reportOffer.available;
+  const shouldCheckAccess = Boolean(
+    user &&
+      (project.detailAccess !== null ||
+        pointAccessAvailable ||
+        project.viewer.owner),
+  );
   const accessQuery = useQuery({
     queryKey: queryKeys.projects.reportAccess(project.id),
     queryFn: ({ signal }) => getProjectReportAccess(project.id, signal),
-    enabled: Boolean(user),
+    enabled: shouldCheckAccess,
     retry: false,
   });
   const hasAccess =
     accessQuery.data?.status === "GRANTED" ||
-    accessQuery.data?.status === "OWNER";
+    accessQuery.data?.status === "OWNER" ||
+    accessQuery.data?.unlockMode === "ALREADY_GRANTED";
   const reportQuery = useQuery({
     queryKey: queryKeys.projects.report(project.id),
     queryFn: ({ signal }) => getProjectReport(project.id, signal),
@@ -97,7 +108,9 @@ export default function ProjectReportSection({
     ? project.reportOffer.sectionTitles
     : DEFAULT_OUTLINE;
   const isAccessChecking = Boolean(
-    user && accessQuery.isPending && accessQuery.fetchStatus === "fetching",
+    shouldCheckAccess &&
+      accessQuery.isPending &&
+      accessQuery.fetchStatus === "fetching",
   );
   const isContentLoading = Boolean(
     hasAccess &&
@@ -167,12 +180,24 @@ export default function ProjectReportSection({
         />
       ) : hasAccess && reportQuery.data && filesQuery.data ? (
         <div className="divide-y divide-slate-200">
-          {reportQuery.data.sections.map((section) => {
+          {reportQuery.data.sections.map((section, sectionIndex) => {
             const files = filesQuery.data.filter(
-              (file) => file.pageId === section.detailPageId,
+              (file) =>
+                section.detailPageId !== null &&
+                file.pageId === section.detailPageId,
+            );
+            const fields = section.fields.filter(
+              (field) => field.value?.trim(),
             );
             return (
-              <article key={section.detailPageId} className="py-9">
+              <article
+                key={
+                  section.sectionCode ??
+                  section.detailPageId ??
+                  `${section.title}-${sectionIndex}`
+                }
+                className="py-9"
+              >
                 <h3 className="font-display text-xl font-bold text-slate-950">
                   {section.title}
                 </h3>
@@ -181,7 +206,23 @@ export default function ProjectReportSection({
                     {section.intro}
                   </p>
                 ) : null}
-                {section.content ? (
+                {fields.length ? (
+                  <dl className="mt-5 divide-y divide-slate-200 border-y border-slate-300">
+                    {fields.map((field) => (
+                      <div
+                        key={field.fieldCode}
+                        className="grid gap-2 py-4 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-6"
+                      >
+                        <dt className="text-sm font-bold text-slate-900">
+                          {field.label}
+                        </dt>
+                        <dd className="whitespace-pre-line text-sm leading-7 text-slate-700">
+                          {field.value}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                ) : section.content ? (
                   <div className="mt-5 whitespace-pre-line text-sm leading-8 text-slate-700">
                     {section.content}
                   </div>

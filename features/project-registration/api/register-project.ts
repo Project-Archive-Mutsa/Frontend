@@ -63,68 +63,12 @@ function getMonthPeriod(monthValue: string) {
   };
 }
 
-function joinDetailFields(fields: ReadonlyArray<readonly [string, string]>) {
-  return fields
-    .filter(([, value]) => value.trim())
-    .map(([label, value]) => `${label}\n${value.trim()}`)
-    .join("\n\n");
-}
-
-function contentPages(draft: ProjectRegistrationDraft) {
-  return [
-    {
-      pageName: "문제 상황과 대상",
-      pageIntro: "문제가 발생한 맥락과 프로젝트가 대상으로 삼은 사용자·영역",
-      pageContent: joinDetailFields([
-        ["문제 상황", draft.problemDefinition],
-        ["대상 사용자·영역", draft.targetAudience],
-      ]),
-      visibility: "PAID",
-      sortOrder: 0,
-    },
-    {
-      pageName: "해결 방법과 핵심 기능",
-      pageIntro: "문제를 해결하기 위해 설계한 흐름과 핵심 작동 방식",
-      pageContent: joinDetailFields([
-        ["해결 방법", draft.solution],
-        ["핵심 기능·수행 방식", draft.coreApproach],
-      ]),
-      visibility: "PAID",
-      sortOrder: 1,
-    },
-    {
-      pageName: "차별점과 검증",
-      pageIntro: "기존 방식과 달랐던 선택과 이를 확인한 근거",
-      pageContent: joinDetailFields([
-        ["기존 방식과의 차이", draft.differentiation],
-        ["검증 방법과 결과", draft.validation],
-      ]),
-      visibility: "PAID",
-      sortOrder: 2,
-    },
-    {
-      pageName: "제약·한계와 후속 과제",
-      pageIntro: "수행 과정에서 확인된 조건과 추가로 검증해야 할 항목",
-      pageContent: joinDetailFields([
-        ["수행한 접근", draft.approaches],
-        ["발생한 제약 조건", draft.constraints],
-        ["확인된 한계", draft.limitations],
-        [draft.activityStatus === "ENDED" ? "종료 사유" : "중단 사유", draft.endReason],
-        ["후속 검증 과제", draft.nextValidationTasks],
-      ]),
-      visibility: "PAID",
-      sortOrder: 3,
-    },
-  ];
-}
-
-function assetPage(draft: ProjectRegistrationDraft, asset: ProjectAssetDraft, index: number) {
+function assetPage(asset: ProjectAssetDraft, index: number) {
   return {
     pageName: asset.title,
     pageIntro: asset.projectRole,
     pageContent: asset.description,
-    visibility: "PAID",
-    sortOrder: contentPages(draft).length + index,
+    sortOrder: index,
   };
 }
 
@@ -138,7 +82,7 @@ function createPayload(draft: ProjectRegistrationDraft, userId: number) {
     description: draft.summary,
     projectIdentityText,
     categories: draft.categories,
-    developmentStatus: draft.activityStatus === "ACTIVE" ? "IN_PROGRESS" : draft.activityStatus === "ENDED" ? "COMPLETED" : "PAUSED",
+    activityStatus: draft.activityStatus,
     developmentStartDate: draft.projectStartedAt || null,
     developmentEndDate: draft.projectEndedAt || null,
     awardHistory: draft.awards.map((award) => `${award.title}${award.awardedAt ? ` (${award.awardedAt})` : ""}`).join(", "),
@@ -150,16 +94,26 @@ function createPayload(draft: ProjectRegistrationDraft, userId: number) {
     eventEndedAt: eventPeriod.endedAt,
     problemAreas: draft.problemAreas,
     methods: draft.methods,
+    problemDefinition: draft.problemDefinition.trim(),
+    targetAudience: draft.targetAudience.trim(),
+    solution: draft.solution.trim(),
+    coreFunctions: draft.coreApproach.trim() ? [draft.coreApproach.trim()] : [],
+    differentiation: draft.differentiation.trim(),
+    validationSummary: draft.validation.trim(),
+    approaches: draft.approaches.trim(),
+    constraints: draft.constraints.trim() || null,
+    limitations: draft.limitations.trim(),
+    terminationReason: draft.endReason.trim() || null,
+    nextValidationTasks: draft.nextValidationTasks.trim(),
     materialDisclosureConsent: draft.materialDisclosureConsent,
     assetCategories: [...new Set(draft.assets.flatMap((asset) => asset.category ? [assetCategoryMap[asset.category]] : []))],
-    detailPages: [...contentPages(draft), ...draft.assets.map((asset, index) => assetPage(draft, asset, index))],
+    detailPages: draft.assets.map(assetPage),
     links: draft.assets.flatMap((asset) => asset.sources.filter((source) => source.kind === "EXTERNAL_LINK").map((source) => ({
       linkType: source.provider,
       url: source.url,
-      accessRequirement: draft.purpose === "ZOMBIE" ? "ENTITLEMENT" : "OWNER",
     }))),
   };
-  if (draft.purpose === "SELL") return { ...common, priceType: draft.pricingMode, price: Number(draft.desiredPoints), bankName: "", accountNumber: "", fullTransferConfirmed: draft.materialDisclosureConsent };
+  if (draft.purpose === "SELL") return { ...common, priceType: draft.pricingMode, price: Number(draft.desiredPoints) };
   if (draft.purpose === "TEAM_RECRUIT") return { ...common, teamMemberCount: Number(draft.recruitmentHeadcount), teamRoles: draft.recruitmentRoles };
   return common;
 }
@@ -211,7 +165,7 @@ export async function registerProject({ draft, userId, representativeImage, asse
   draft.assets.forEach((asset, index) => asset.sources.forEach((source) => {
     if (source.kind === "UPLOAD") {
       const file = assetFiles.get(source.id);
-        if (file) formData.append(`detailPageFiles[${index + contentPages(draft).length}]`, file);
+        if (file) formData.append(`detailPageFiles[${index}]`, file);
     }
   }));
 

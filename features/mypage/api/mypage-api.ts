@@ -52,18 +52,6 @@ const transactionSchema = z.object({
   createdAt: z.string(),
 });
 
-const applicationSchema = z.object({
-  applicationId: z.number().int().positive(),
-  recruitmentId: z.number().int().positive(),
-  projectId: z.number().int().positive(),
-  projectName: z.string(),
-  recruitmentTitle: z.string().optional(),
-  role: z.string(),
-  status: z.string(),
-  appliedAt: z.string().optional(),
-  createdAt: z.string().optional(),
-}).passthrough();
-
 const messageListItemSchema = z.object({
   messageId: z.number().int().positive(),
   senderId: z.number().int().positive(),
@@ -120,15 +108,6 @@ export async function getPointTransactions() {
   const parsed = z.array(transactionSchema).safeParse(await getPayload("/api/members/me/points/transactions"));
   if (!parsed.success) throw new Error("포인트 거래내역 응답 형식이 올바르지 않습니다.");
   return parsed.data;
-}
-
-export async function getMyRecruitmentApplications() {
-  const payload = await getPayload("/api/me/recruitment-applications?page=0&size=100");
-  const arrayEnvelope = envelope(z.array(applicationSchema)).safeParse(payload);
-  if (arrayEnvelope.success) return arrayEnvelope.data.data;
-  const pageEnvelope = envelope(z.object({ content: z.array(applicationSchema) })).safeParse(payload);
-  if (pageEnvelope.success) return pageEnvelope.data.data.content;
-  throw new Error("팀 지원내역 응답 형식이 올바르지 않습니다.");
 }
 
 export async function getMessages() {

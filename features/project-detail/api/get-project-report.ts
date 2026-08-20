@@ -9,19 +9,25 @@ const schema = z.object({
     projectId: z.number().int().positive(),
     reportVersion: z.number().int().nonnegative(),
     sections: z.array(z.object({
-      detailPageId: z.number().int().positive(),
+      detailPageId: z.number().int().positive().nullable().optional().catch(null),
+      sectionCode: z.string().nullable().optional().catch(null),
       title: z.string(),
       intro: z.string().nullable(),
       content: z.string().nullable(),
-      visibility: z.string(),
-      assetCount: z.number().int().nonnegative(),
+      visibility: z.string().optional(),
+      fields: z.array(z.object({
+        fieldCode: z.string(),
+        label: z.string(),
+        value: z.string().nullable(),
+      })).catch([]),
+      assetCount: z.number().int().nonnegative().catch(0),
     })),
     links: z.array(z.object({
       linkId: z.number().int().positive(),
       linkType: z.string(),
       url: z.string(),
-      accessRequirement: z.string().nullable(),
-    })),
+      accessRequirement: z.string().nullable().optional(),
+    })).catch([]),
   }),
 });
 

@@ -64,12 +64,12 @@ export default function ProjectDiscoverySummary({
     ? [
         {
           id: "project-discovery-comparison-points",
-          title: "결과를 비교할 때 볼 점",
+          title: "반복해서 발견된 공통점",
           items: analysis.comparisonPoints,
         },
         {
           id: "project-discovery-validation-points",
-          title: "추가로 검증할 점",
+          title: "차별화 가능성이 높은 지점",
           items: analysis.validationPoints,
         },
       ].filter((section) => section.items.length > 0)

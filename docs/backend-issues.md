@@ -5,9 +5,9 @@
 의존 관계를 파악하는 용도로 사용한다.
 
 - 대상 저장소: [Project-Archive-Mutsa/Backend](https://github.com/Project-Archive-Mutsa/Backend)
-- 마지막 동기화: 2026-08-20 KST
-- 동기화 범위: Backend 이슈 #5~#28, #31~#42, Frontend #10 및 PR #30
-- 동기화 시점 상태: Backend #5~#28·#31~#38 `CLOSED`, #39~#42 `OPEN`, Frontend #10 `OPEN`, PR #30 `MERGED`
+- 마지막 동기화: 2026-08-21 KST
+- 동기화 범위: Backend 이슈 #5~#28, #31~#47, Frontend #10 및 PR #30
+- 동기화 시점 상태: Backend #5~#28·#31~#43 `CLOSED`, #44~#47 `OPEN`, Frontend #10 `OPEN`, PR #30 `MERGED`
 - 병합 상태: PR #30은 2026-08-20 11:40 KST에 `main`으로 병합됨
 - 배포 상태: 2026-08-20 운영 Swagger `GET /v3/api-docs` 200 응답과 공개 목록·상세 실응답 확인.
   다만 운영 프로젝트 300건에는 구조화 수상·행사·자산·결과물 단계 seed가 반영되지 않음
@@ -108,6 +108,40 @@ GET /api/projects
   계약은 #42로 분리했다. 실제 접근 범위는 #40에 따라 서버가 목적에서 파생한다.
 - #38은 실제 후보 기반 문구 생성과 상태 계약이 반영됐다는 완료 댓글과 함께 닫혔다.
 
+## 2026-08-21 운영 지원 오류 후속
+
+- 운영 모집글 지원에서 첫 `POST /api/recruitments/{id}/applications`가 503을 반환한 뒤
+  동일 요청 재시도는 이미 지원됐다는 결과를 반환하는 사례가 확인됐다.
+- 프론트는 409·5xx·네트워크 오류 직후 내 지원 목록을 다시 조회해 실제 저장 여부를
+  확인하고, 확인되지 않은 결과를 성공으로 표시하지 않도록 보완했다.
+- 지원 생성의 원자성, 멱등 재시도, 모집글별 내 지원 상태 조회와 단계별 오류 추적은
+  [#43](https://github.com/Project-Archive-Mutsa/Backend/issues/43)으로 분리했다.
+- #39~#43은 2026-08-21 KST에 닫혔지만, 완료 댓글에는 로컬 구현·테스트만 완료했고
+  AWS 서버에는 SSH 키 권한 문제로 배포하지 못했다고 명시되어 있다.
+- 2026-08-21 04:39 KST 기준 원격 `main` 최신 커밋은 `d9b61d5e`다. 운영 프로젝트 3은
+  `registrationPurpose=ZOMBIE`로 정규화되고 유료 파일명·URL은 가려지지만, 공개 상세에
+  `detailAccess`가 없고 접근 상태 응답에도 `unlockMode`가 없다. #39~#43의 전체 계약이
+  같은 버전으로 배포됐다고 볼 수 없는 부분 반영 상태다.
+- 원격 `main` 반영, AWS 배포, Swagger와 운영 실응답 검증은
+  [#44](https://github.com/Project-Archive-Mutsa/Backend/issues/44)에서 추적한다.
+
+## 2026-08-21 상세정보 결제 503 후속
+
+- 프로젝트 3의 운영 `GET /api/projects/3/report-access`는 `LOCKED`, `price=1000`,
+  `purchaseEnabled=true`를 반환하므로 프론트가 상세정보 결제 버튼을 노출한 것은 계약과
+  일치한다.
+- 인증 사용자의 `POST /api/projects/3/report-purchases`가 503과
+  `Report purchase could not be completed.`를 반환하는 사례가 확인됐다.
+- 원격 `main`의 `ProjectReportFinanceService.purchase()`는 구매 트랜잭션 중 발생한
+  `SQLException`을 rollback한 뒤 위 `IllegalStateException`으로 변환하고, 전역 예외 처리기가
+  이를 503으로 반환한다. 실제 실패 SQL과 제약조건은 운영 서버 로그 확인이 필요하다.
+- 사용자가 본 오류만으로는 실패 단계를 추적할 수 없다. DB migration·테이블·컬럼·제약조건,
+  원자성·멱등성과 단계별 오류 추적은
+  [#46](https://github.com/Project-Archive-Mutsa/Backend/issues/46)에서 검증한다.
+- 프론트는 408·409·5xx·네트워크 오류 직후 결제 POST를 자동 재시도하지 않고 열람 권한을
+  GET으로 다시 확인한다. 권한 반영이 확인되면 성공 상태로 전환하고, 확인되지 않으면 확인창을
+  닫은 뒤 포인트 내역 확인과 동일 멱등 키 수동 재시도 경로를 제공한다.
+
 ## 화면별 빠른 찾기
 
 | 프론트 영역 | 먼저 볼 이슈 | 함께 볼 이슈 |
@@ -116,6 +150,7 @@ GET /api/projects
 | 아카이브·좀비·판매·모집 목적 입력 | #15 등록 | #5 좀비, #12 판매, #8 모집 |
 | 전체 프로젝트 탐색·검색·필터 | #13 통합 목록 | #14 충실도, #19 OpenAPI |
 | 홈 인기 프로젝트·최근 수상작 | #9 홈 집계 | #13 목록, #15 수상 이력 |
+| 홈 진행 중 공모전·공식 사이트 링크 | #45 공모전 상태·운영 데이터 | #9 홈 집계 |
 | 정보 충실도 점수 | #14 AI 평가 | #10 자산 분석, #15 등록 |
 | AI 유사 프로젝트 검색 | #11 유사 검색 | #16 종합 요약, #10 자산 분석 |
 | 좀비 프로젝트 | #5 공개 계승 | #6 자산, #13 목록 |
@@ -123,12 +158,15 @@ GET /api/projects
 | 프로젝트 실제 구매·권리 이전 | #17 거래 | #12 판매, #6 자산 |
 | 팀원 모집 목록 | #8 모집글 | #15 등록, #6 참고 자산 |
 | 지원·수락·거절 | #7 지원 흐름 | #8 모집글 |
+| 지원 생성 503·재시도 결과 확인 | #43 지원 안정성 | #7 지원 흐름, #8 모집글 |
 | Swagger 응답 타입 충돌 | #19 OpenAPI | #13 목록, AI 요약 API |
 | 운영 로그인 CORS | #20 인증/CORS | Vercel·Render 배포 설정 |
 | 마이페이지·상세페이지 범위 기록 | #18 범위 기록 | 상세 후속은 #26~#28 |
+| 관심 프로젝트 저장·해제 | #47 사용자별 즐겨찾기 | #13 목록, #26 상세 viewer 상태 |
 | 프로젝트 공개 상세 | #26 상세 조회 | #15 등록, #13 목록 |
 | 상세 리포트 접근 보안 | #27 유료 본문 보호 | #6 자산, #26 상세 |
 | 상세 리포트 포인트 이용권 기반 | #28 열람권 거래 | #36 공통 가격·정산 정책, #27 접근 보안 |
+| 상세 리포트 결제 503·결과 재확인 | #46 결제 트랜잭션 장애 | #28 멱등 구매, #36 정산 원장, #44 배포 |
 | 상세 리포트 공통 가격·정산 | #36 1,000P·충실도 배분 | #28 구매 기반, #14 충실도 평가 |
 | 내 프로젝트 콘텐츠 정산 | #37 등록자 정산 조회 | #36 정산 정책, Frontend #10 |
 | 프로젝트 전체 양도 판매 | #24 전체 양도 | #6 자산, #12 판매, #17 거래 |
@@ -146,6 +184,7 @@ GET /api/projects
 | 프로젝트 상세정보 잠금·해제 | #40 목적별 접근권한 | #27·#28·#36, #24 전체 양도 |
 | 객관적 상세정보 필드 | #41 구조화 섹션 | #15 등록, #14 충실도, #40 접근권한 |
 | 등록 자료 공통 공개 동의 | #42 자료별 설정 제거·공통 동의 | #6 자산, #39 목적, #40 접근권한, #41 상세정보 |
+| #39~#43 운영 배포·계약 동기화 | #44 main·AWS 배포 검증 | #39~#43 전체 |
 
 ## 이슈 목록
 
@@ -183,10 +222,15 @@ GET /api/projects
 | [#36](https://github.com/Project-Archive-Mutsa/Backend/issues/36) | CLOSED | 상세 리포트 가격·정산 | 공통 1,000P와 `INFO_COMPLETENESS_LINEAR_V1` 버전별 snapshot |
 | [#37](https://github.com/Project-Archive-Mutsa/Backend/issues/37) | CLOSED | 등록자 콘텐츠 정산 조회 | 현재·과거 소유 프로젝트의 본인 정산 합계·상세 API |
 | [#38](https://github.com/Project-Archive-Mutsa/Backend/issues/38) | CLOSED | AI 검색 분석 품질 | 고정 템플릿을 실제 후보 기반 공통점·차이점·검증/개선 문구로 교체 |
-| [#39](https://github.com/Project-Archive-Mutsa/Backend/issues/39) | OPEN | 등록 목적 통합 | `ARCHIVE·REGISTER·BASIC`을 `ZOMBIE`로 통합하고 활동 상태와 분리 |
-| [#40](https://github.com/Project-Archive-Mutsa/Backend/issues/40) | OPEN | 프로젝트 상세정보 접근 | 모든 상세정보 기본 잠금, `ZOMBIE` 1,000P·`SELL` 양도·`TEAM_RECRUIT` 소유자 해제 |
-| [#41](https://github.com/Project-Archive-Mutsa/Backend/issues/41) | OPEN | 객관적 상세정보 계약 | 문제·해결·검증·제약·한계를 구조화 저장하고 권한 조회에 제공 |
-| [#42](https://github.com/Project-Archive-Mutsa/Backend/issues/42) | OPEN | 등록 자료 공통 공개 동의 | 자료별 권리·접근 입력 제거, 프로젝트 단위 동의 snapshot과 목적별 서버 접근정책 |
+| [#39](https://github.com/Project-Archive-Mutsa/Backend/issues/39) | CLOSED | 등록 목적 통합 | `ARCHIVE·REGISTER·BASIC`을 `ZOMBIE`로 통합하고 활동 상태와 분리 |
+| [#40](https://github.com/Project-Archive-Mutsa/Backend/issues/40) | CLOSED | 프로젝트 상세정보 접근 | 모든 상세정보 기본 잠금, `ZOMBIE` 1,000P·`SELL` 양도·`TEAM_RECRUIT` 소유자 해제 |
+| [#41](https://github.com/Project-Archive-Mutsa/Backend/issues/41) | CLOSED | 객관적 상세정보 계약 | 문제·해결·검증·제약·한계를 구조화 저장하고 권한 조회에 제공 |
+| [#42](https://github.com/Project-Archive-Mutsa/Backend/issues/42) | CLOSED | 등록 자료 공통 공개 동의 | 자료별 권리·접근 입력 제거, 프로젝트 단위 동의 snapshot과 목적별 서버 접근정책 |
+| [#43](https://github.com/Project-Archive-Mutsa/Backend/issues/43) | CLOSED | 팀원 지원 안정성 | 간헐적 503, 생성 원자성·멱등 재시도·모집글별 내 지원 상태 조회와 오류 추적 |
+| [#44](https://github.com/Project-Archive-Mutsa/Backend/issues/44) | OPEN | 배포·계약 동기화 | #39~#43 구현의 원격 main·AWS 반영, Swagger와 운영 응답·migration 검증 |
+| [#45](https://github.com/Project-Archive-Mutsa/Backend/issues/45) | OPEN | 공모전 상태·운영 데이터 | 진행 중 1건 원인, 기간 의미·`ACTIVE` 판정·공식 `applyUrl`과 활성 seed 정비 |
+| [#46](https://github.com/Project-Archive-Mutsa/Backend/issues/46) | OPEN | 상세정보 결제 503 | 구매 트랜잭션·migration·원자성·멱등성과 단계별 오류 추적 |
+| [#47](https://github.com/Project-Archive-Mutsa/Backend/issues/47) | OPEN | 사용자별 즐겨찾기 | 전역 메모리 제거, 인증·DB 관계와 멱등 추가·해제 계약 |
 
 ## 기능별 계약 요약
 
@@ -554,6 +598,60 @@ GET /api/projects
   snapshot과 기존 권리 데이터는 보존한다.
 - 동의 누락은 `400 MATERIAL_DISCLOSURE_CONSENT_REQUIRED`, 전환 완료 뒤 자료별 접근
   필드 전송은 `400 MATERIAL_ACCESS_IS_SERVER_MANAGED`로 처리한다.
+
+### #43 팀원 지원 503·재시도 안정성
+
+- 운영에서 지원 생성 요청이 503을 반환했지만 동일 요청 재시도는 이미 지원됐다는
+  결과를 반환한 사례가 확인됐다. 클라이언트가 최초 응답만으로 저장 결과를 확정할 수 없다.
+- 지원 insert와 생성 결과 조회를 하나의 트랜잭션·연결에서 처리하고, 동일 사용자와
+  모집글 조합은 DB 유니크 제약과 안정적인 오류 코드로 멱등하게 보호한다.
+- 모집글 ID 기준의 현재 사용자 지원 상태를 단건으로 확인할 수 있는 조회 계약을
+  제공해 오류 직후 전체 지원 목록을 순회하지 않아도 실제 처리 결과를 확인하게 한다.
+- 503 응답에는 `requestId`와 안정적인 오류 코드를 포함하고, 서버 로그에는 SQLState와
+  실패 단계(`insert`, `readback`, `commit`)를 남겨 부분 성공 여부를 추적할 수 있게 한다.
+
+### #44 #39~#43 운영 배포·계약 동기화
+
+- #39~#43은 로컬 구현·테스트 완료 댓글로 닫혔지만 AWS 배포 실패가 함께 기록됐고,
+  원격 `main`과 운영 API에는 새 계약이 확인되지 않는다.
+- 구현 커밋 또는 PR을 `main`에 반영하고 동일 SHA를 AWS에 배포한 뒤 배포 SHA를 남긴다.
+- 운영 Swagger와 실제 응답에서 세 등록 목적, 구조화 상세정보, 공통 공개 동의,
+  `detailAccess.unlockMode`, 모집글별 내 지원 상태와 오류 추적 계약을 검증한다.
+- 비로그인 공개 상세에서 잠긴 본문, 페이지·자산 식별자, 파일명과 URL이 제거됐는지
+  확인하고 migration과 애플리케이션의 반쪽 배포를 방지한다.
+
+### #45 진행 중 공모전 상태·운영 데이터
+
+- 2026-08-21 AWS 운영 `GET /api/contests`는 전체 6건 중 `ACTIVE` 1건,
+  `CLOSED` 5건을 반환하고 활성 캐러셀도 `totalCount=1`을 반환한다.
+- 현재 서비스는 날짜가 아니라 저장된 `status == ACTIVE`만 필터링하므로 프론트 목록
+  제한이 아니라 운영 데이터와 상태 판정 결과다.
+- `startDate`·`endDate`의 의미와 `ACTIVE` 판정 정책을 명확히 하고, 실제 참여 가능한
+  공모전만 공식 이미지·`applyUrl`과 함께 운영 데이터로 제공한다.
+- 목록·활성 목록·캐러셀에서 `images`, `applyUrl`, `detailPath`를 포함한 동일 응답 계약과
+  실제 활성 개수에 맞는 캐러셀 인덱스를 유지한다.
+
+### #46 상세정보 결제 503·트랜잭션 안정성
+
+- `GET /api/projects/3/report-access`가 `purchaseEnabled=true`를 반환하지만 인증 사용자의
+  `POST /api/projects/3/report-purchases`가 503을 반환하는 운영 사례를 추적한다.
+- AWS 애플리케이션과 DB migration/schema 버전을 대조하고, 포인트·entitlement·purchase·
+  settlement·거래 원장 처리 중 실제 실패 SQL과 단계를 확인한다.
+- 결제 전체를 원자적으로 처리하며 동일 멱등 키 재요청과 이미 보유한 report version의
+  재요청에서 중복 차감·정산·권한 생성이 발생하지 않게 한다.
+- 5xx 응답에는 안정적인 `errorCode`와 `requestId`를 제공하고 AWS·Vercel 프록시에서
+  성공·응답 유실·DB 실패·포인트 부족·중복 요청을 통합 검증한다.
+
+### #47 사용자별 즐겨찾기·해제 안정성
+
+- 현재 북마크는 사용자 식별 없이 서버 전역 `ConcurrentHashMap<projectId, savedDate>`에
+  저장되고 비로그인 `/api/my/like-projects`도 200을 반환한다.
+- `(memberId, projectId)` DB 관계와 유니크 제약으로 전환하고 내 목록·목록 카드·상세의
+  `bookmarked` 상태를 같은 로그인 사용자 기준으로 계산한다.
+- 인증 없는 내 목록·변경 요청은 401로 거부하고, 추가·해제를 명시적인 멱등 요청으로
+  제공해 재시도·동시 요청·다중 인스턴스에서도 count와 최종 상태를 일치시킨다.
+- 기존 인메모리 데이터의 전환 정책, migration·배포 순서와 AWS·Vercel 운영 검증 결과를
+  이슈에 기록한다.
 
 ## 동기화 체크리스트
 

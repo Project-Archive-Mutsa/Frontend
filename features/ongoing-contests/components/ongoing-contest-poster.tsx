@@ -22,7 +22,7 @@ export default function OngoingContestPoster({
   const [hasImageError, setHasImageError] = useState(false);
   const fallbackStyle = fallbackStyles[index % fallbackStyles.length];
 
-  if (!hasImageError) {
+  if (contest.imageUrl && !hasImageError) {
     return (
       <Image
         src={contest.imageUrl}
@@ -36,7 +36,7 @@ export default function OngoingContestPoster({
     );
   }
 
-  if (contest.title === "애니멀리그") {
+  if (contest.id === 3) {
     return (
       <Image
         src="/contest-posters/animal-league-hackathon.png"

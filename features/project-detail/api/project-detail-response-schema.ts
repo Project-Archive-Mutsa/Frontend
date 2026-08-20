@@ -2,6 +2,12 @@ import { z } from "zod";
 
 const nullableText = z.string().nullable().catch(null);
 const purposeSchema = z.enum(["REGISTER", "ARCHIVE", "ZOMBIE", "SELL", "TEAM_RECRUIT"]);
+const unlockModeSchema = z.enum([
+  "POINT_ACCESS",
+  "PROJECT_PURCHASE",
+  "OWNER_ONLY",
+  "ALREADY_GRANTED",
+]);
 
 const eventSchema = z.object({
   name: nullableText,
@@ -76,6 +82,34 @@ const teamPurposeSchema = z.object({
   referenceAssetSummary: nullableText,
 });
 
+const assetSummarySchema = z
+  .union([
+    z.object({
+      publicCount: z.number().int().nonnegative(),
+      paidCount: z.number().int().nonnegative(),
+      categories: z.array(z.string()).catch([]),
+    }),
+    z
+      .object({
+        count: z.number().int().nonnegative(),
+        categories: z.array(z.string()).catch([]),
+      })
+      .transform((assets) => ({
+        publicCount: assets.count,
+        paidCount: 0,
+        categories: assets.categories,
+      })),
+  ])
+  .catch({ publicCount: 0, paidCount: 0, categories: [] });
+
+const detailAccessSchema = z.object({
+  unlockMode: unlockModeSchema,
+  pricePoint: z.number().int().nonnegative().nullable().catch(null),
+  purchaseEnabled: z.boolean(),
+  available: z.boolean(),
+  unavailableReason: nullableText,
+});
+
 export const projectDetailResponseSchema = z.object({
   success: z.literal(true),
   data: z.object({
@@ -99,7 +133,7 @@ export const projectDetailResponseSchema = z.object({
     awards: z.array(z.object({ title: z.string(), awardedAt: nullableText })).catch([]),
     awardHistory: nullableText.optional(),
     team: z.object({ memberCount: z.number().int().nonnegative().nullable().catch(null), roles: z.array(z.string()).catch([]) }).nullable().catch(null),
-    assets: z.object({ publicCount: z.number().int().nonnegative(), paidCount: z.number().int().nonnegative(), categories: z.array(z.string()).catch([]) }),
+    assets: assetSummarySchema,
     informationCompletenessScore: z.number().int().min(0).max(100).nullable().catch(null),
     stats: z.object({
       viewCount: z.number().int().nonnegative().catch(0),
@@ -113,6 +147,7 @@ export const projectDetailResponseSchema = z.object({
       sectionCount: z.number().int().nonnegative(),
       sectionTitles: z.array(z.string()).catch([]),
     }).nullable().catch(null),
+    detailAccess: detailAccessSchema.nullable().catch(null),
     purposeDetail: z.discriminatedUnion("purpose", [archivePurposeSchema, sellPurposeSchema, zombiePurposeSchema, teamPurposeSchema]),
     seller: z.object({ userId: z.number().int().positive().nullable().catch(null), loginId: nullableText, name: nullableText }).nullable().optional(),
     detailPages: z.array(detailPageSchema).catch([]),

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import useAuthSession from "@/shared/auth/hooks/use-auth-session";
 import LoginButton from "./components/login-button";
+import LogoutButton from "./components/logout-button";
 import RegisterButton from "./components/register-button";
 
 const AUTHENTICATED_ACTION_CLASS_NAME =
@@ -37,6 +38,8 @@ export default function AuthActions() {
             >
               프로젝트 등록
             </Link>
+            <span aria-hidden className="mx-1 h-4 w-px bg-white/20" />
+            <LogoutButton />
           </>
         ) : (
           <>

@@ -11,6 +11,20 @@ export type ProjectReportAccessStatus =
   | "OWNER"
   | "UNAVAILABLE";
 
+export type ProjectDetailUnlockMode =
+  | "POINT_ACCESS"
+  | "PROJECT_PURCHASE"
+  | "OWNER_ONLY"
+  | "ALREADY_GRANTED";
+
+export interface ProjectDetailAccessSummary {
+  unlockMode: ProjectDetailUnlockMode;
+  pricePoint: number | null;
+  purchaseEnabled: boolean;
+  available: boolean;
+  unavailableReason: string | null;
+}
+
 export interface ProjectDetailedInfoFile {
   id: number;
   pageId: number | null;
@@ -68,5 +82,6 @@ export interface ProjectDetailViewModel {
   informationCompletenessScore: number | null;
   assetSummary: { publicCount: number; paidCount: number; categories: readonly string[] };
   reportOffer: { available: boolean; price: number | null; sectionCount: number; sectionTitles: readonly string[] };
+  detailAccess: ProjectDetailAccessSummary | null;
   purposeDetail: ProjectPurposeDetail;
 }
