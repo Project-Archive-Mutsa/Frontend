@@ -1,6 +1,6 @@
 import { Suspense } from "react";
+import AiProcessingState from "@/shared/components/ai-processing-state/ai-processing-state";
 import SectionErrorBoundary from "@/shared/components/section-error-boundary/section-error-boundary";
-import SectionLoadingSpinner from "@/shared/components/section-loading-spinner/section-loading-spinner";
 import ProjectDiscoveryResults from "./project-discovery-results";
 import ProjectDiscoverySearchForm from "./project-discovery-search-form";
 
@@ -23,13 +23,22 @@ export default function ProjectDiscoverySection({
       </header>
 
       <div className="mt-8">
-        <ProjectDiscoverySearchForm defaultQuery={query} />
+        <ProjectDiscoverySearchForm key={query} defaultQuery={query} />
       </div>
 
       <div className="mt-10 sm:mt-12">
         {query ? (
           <SectionErrorBoundary message="AI 검색 결과를 불러오지 못했습니다.">
-            <Suspense key={query} fallback={<SectionLoadingSpinner />}>
+            <Suspense
+              key={query}
+              fallback={
+                <AiProcessingState
+                  title="AI가 생각 중입니다"
+                  description="검색어의 문제 정의·대상 사용자·해결 방식을 분석해 유사 프로젝트를 비교하고 있습니다."
+                  items={["문제 정의", "대상 사용자", "해결 방식"]}
+                />
+              }
+            >
               <ProjectDiscoveryResults query={query} />
             </Suspense>
           </SectionErrorBoundary>

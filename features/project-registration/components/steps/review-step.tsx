@@ -1,4 +1,5 @@
 import Image from "next/image";
+import AiProcessingState from "@/shared/components/ai-processing-state/ai-processing-state";
 import ProjectInformationCompleteness from "@/shared/components/project-information-completeness/project-information-completeness";
 import Link from "next/link";
 import LoadingSpinner from "@/shared/components/loading-spinner/loading-spinner";
@@ -100,7 +101,11 @@ export default function ReviewStep({
                 </div>
               )}
             </div>
-            <ProjectInformationCompleteness projectName={draft.projectName || "프로젝트"} score={null} />
+            <ProjectInformationCompleteness
+              projectName={draft.projectName || "프로젝트"}
+              score={result?.project.informationCompletenessScore ?? null}
+              isCalculating={isPending}
+            />
             <dl className="mt-5 border-t border-slate-200 pt-4 text-sm">
               <dt className="text-xs text-slate-500">수상 이력</dt>
               <dd className="mt-1 font-medium text-slate-800">
@@ -111,9 +116,23 @@ export default function ReviewStep({
         </article>
       </section>
 
-      <section aria-labelledby="completeness-review-title" className="border-t border-slate-200 pt-8">
-        <h2 id="completeness-review-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">정보 충실도</h2>
-        <p className="mt-2 text-sm leading-7 text-slate-600">등록 시 입력한 문제·해결 맥락, 검증 결과, 제약·한계와 자료 설명을 기준으로 정보 충실도가 자동 계산됩니다. 별도 미리보기 호출은 하지 않습니다.</p>
+      <section
+        aria-label={isPending ? "정보 충실도 계산" : undefined}
+        aria-labelledby={isPending ? undefined : "completeness-review-title"}
+        className="border-t border-slate-200 pt-8"
+      >
+        {isPending ? (
+          <AiProcessingState
+            title="정보 충실도를 계산하고 있습니다"
+            description="문제 정의·해결 방식·검증 근거와 자료 설명을 확인하고 있습니다."
+            items={["문제 정의·해결 방식", "검증 근거", "자료 설명"]}
+          />
+        ) : (
+          <>
+            <h2 id="completeness-review-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">정보 충실도</h2>
+            <p className="mt-2 text-sm leading-7 text-slate-600">등록 시 입력한 문제·해결 맥락, 검증 결과, 제약·한계와 자료 설명을 기준으로 정보 충실도가 자동 계산됩니다. 별도 미리보기 호출은 하지 않습니다.</p>
+          </>
+        )}
       </section>
 
       <section aria-labelledby="material-disclosure-title" className="border-t border-slate-300 pt-8">

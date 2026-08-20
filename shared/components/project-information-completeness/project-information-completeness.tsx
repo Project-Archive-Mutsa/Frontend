@@ -1,6 +1,7 @@
 interface ProjectInformationCompletenessProps {
   projectName: string;
   score?: number | null;
+  isCalculating?: boolean;
 }
 
 function normalizeScore(score: number | null | undefined): number | null {
@@ -14,19 +15,31 @@ function normalizeScore(score: number | null | undefined): number | null {
 export default function ProjectInformationCompleteness({
   projectName,
   score,
+  isCalculating = false,
 }: ProjectInformationCompletenessProps) {
   const normalizedScore = normalizeScore(score);
 
   return (
-    <div>
+    <div aria-busy={isCalculating || undefined}>
       <div className="flex items-baseline justify-between gap-4 text-xs">
         <span className="font-medium text-slate-600">정보 충실도</span>
         <strong className="whitespace-nowrap tabular-nums text-slate-900">
-          {normalizedScore === null ? "미산정" : `${normalizedScore} / 100`}
+          {isCalculating
+            ? "계산 중"
+            : normalizedScore === null
+              ? "미산정"
+              : `${normalizedScore} / 100`}
         </strong>
       </div>
 
-      {normalizedScore === null ? (
+      {isCalculating ? (
+        <div
+          aria-hidden="true"
+          className="mt-2 h-1.5 overflow-hidden bg-brand-soft"
+        >
+          <div className="ai-processing-scan h-full w-2/5 bg-brand-accent" />
+        </div>
+      ) : normalizedScore === null ? (
         <div
           aria-hidden="true"
           className="mt-2 h-1.5 bg-slate-200"

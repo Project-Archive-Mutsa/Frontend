@@ -24,9 +24,35 @@
   }
 }
 
+.ai-processing-scan {
+  animation: ai-processing-scan 1600ms ease-in-out infinite;
+}
+
+@keyframes ai-processing-scan {
+  from {
+    opacity: 0.35;
+    transform: translateX(-110%);
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0.35;
+    transform: translateX(260%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .loading-spinner {
     animation: none;
+  }
+
+  .ai-processing-scan {
+    animation: none;
+    opacity: 0.7;
+    transform: none;
   }
 }
 
