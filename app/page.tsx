@@ -3,6 +3,8 @@ import OngoingContestSection from "@/features/ongoing-contests/components/ongoin
 import PopularProjectSection from "@/features/popular-projects/components/popular-project-section";
 import RecentAwardProjectSection from "@/features/recent-award-projects/components/recent-award-project-section";
 
+export const dynamic = "force-dynamic";
+
 export default function Home() {
   return (
     <main className="overflow-hidden">
