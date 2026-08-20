@@ -31,7 +31,7 @@ function ProjectRegistrationWizard() {
       <header className="flex items-end justify-between gap-8 border-b border-slate-300 pb-7">
         <div>
           <h1 id="project-registration-title" className="font-display text-3xl font-bold tracking-[-0.025em] text-slate-950">프로젝트 등록</h1>
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">실제 출품했던 프로젝트의 배경, 결과와 남은 자산을 기록해 다음 실행으로 연결합니다.</p>
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">실제 출품했던 프로젝트의 배경, 결과와 남은 자료를 기록해 다음 실행으로 연결합니다.</p>
         </div>
         <div
           className="shrink-0 text-right text-xs leading-5 text-slate-500"
@@ -97,10 +97,10 @@ function ProjectRegistrationWizard() {
             <AssetsStep draft={wizard.draft} errors={wizard.errors} onUpdateField={wizard.updateField} onAddAsset={wizard.addAsset} onUpdateAsset={wizard.updateAsset} onRemoveAsset={wizard.removeAsset} onAddAssetFiles={wizard.addAssetFiles} onAddAssetLink={wizard.addAssetLink} onRemoveAssetSource={wizard.removeAssetSource} />
           ) : null}
           {wizard.step === 5 ? (
-            <PurposeStep draft={wizard.draft} errors={wizard.errors} onUpdateField={wizard.updateField} onToggleListField={wizard.toggleListField} onUpdateZombieAssetTerms={wizard.updateZombieAssetTerms} />
+            <PurposeStep draft={wizard.draft} errors={wizard.errors} onUpdateField={wizard.updateField} onToggleListField={wizard.toggleListField} />
           ) : null}
           {wizard.step === 6 ? (
-            <ReviewStep draft={wizard.draft} representativeImageUrl={wizard.representativeImageUrl} onReviewAllSteps={wizard.reviewAllSteps} />
+            <ReviewStep draft={wizard.draft} errors={wizard.errors} representativeImageUrl={wizard.representativeImageUrl} onReviewAllSteps={wizard.reviewAllSteps} onSubmit={wizard.submitRegistration} isPending={wizard.registrationMutation.isPending} error={wizard.registrationMutation.error?.message ?? null} result={wizard.registrationMutation.data ?? null} onRetryRecruitment={() => wizard.recruitmentRetryMutation.mutate()} isRetryingRecruitment={wizard.recruitmentRetryMutation.isPending} recruitmentRetrySucceeded={wizard.recruitmentRetryMutation.isSuccess} recruitmentRetryError={wizard.recruitmentRetryMutation.error?.message ?? null} onDisclosureConsentChange={(checked) => wizard.updateField("materialDisclosureConsent", checked)} />
           ) : null}
 
           {wizard.step < 6 ? (

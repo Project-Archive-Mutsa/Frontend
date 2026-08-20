@@ -16,13 +16,13 @@ export interface ZombieProjectResponseItem {
   viewCount: number;
   likeCount: number;
   bookmarkCount: number;
-  sellerName: string;
+  sellerName?: string;
   price: number;
   zipFile: ZombieProjectZipFileResponse | null;
   detailPath: string;
   informationCompletenessScore?: number | null;
   category?: string | null;
-  registrationPurpose?: ProjectRegistrationPurpose | null;
+  registrationPurpose?: ProjectRegistrationPurposeInput | null;
   eventName?: string | null;
   eventDate?: string | null;
   resultLevel?: ProjectResultLevel | null;
@@ -31,6 +31,7 @@ export interface ZombieProjectResponseItem {
   assetCategories?: readonly string[];
   awards?: readonly { title: string; awardedAt?: string | null }[];
   publicAssets?: readonly ZombiePublicAssetSummary[];
+  bookmarked?: boolean;
 }
 
 // 좀비 프로젝트 목록 API의 공통 응답 형식
@@ -57,7 +58,7 @@ export interface ZombieProject {
     likeCount: number;
     bookmarkCount: number;
   };
-  sellerName: string;
+  sellerName?: string;
   price: number;
   zipFile: {
     name: string;
@@ -73,7 +74,7 @@ export interface ZombieProject {
   assetCount?: number | null;
   assetCategories?: readonly string[];
   awardTitles?: readonly string[] | null;
-  publicAssets?: readonly ZombiePublicAssetSummary[] | null;
+  bookmarked?: boolean;
 }
 
 // 프로젝트 검색 API가 반환하는 분석 대상 파일
@@ -122,6 +123,7 @@ export interface ZombieProjectSearchResults {
 import type {
   ProjectActivityStatus,
   ProjectRegistrationPurpose,
+  ProjectRegistrationPurposeInput,
   ProjectResultLevel,
 } from "@/shared/project-summary/types";
 
@@ -130,4 +132,6 @@ export interface ZombiePublicAssetSummary {
   category: string;
   licenseName: string | null;
   reuseTerms: string | null;
+  attribution?: string | null;
+  publicSource?: string | null;
 }

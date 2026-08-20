@@ -3,27 +3,43 @@ export interface TeamRecruitmentResponseItem {
   title: string;
   description: string;
   roles: readonly string[];
+  headcount: number;
   deadline: string;
   detailUrl: string;
-  projectId?: number | null;
-  projectName?: string | null;
-  projectSummary?: string | null;
-  category?: string | null;
-  registeredDate?: string | null;
-  representativeImageUrl?: string | null;
-  tags?: readonly string[];
-  eventName?: string | null;
-  eventDate?: string | null;
-  resultLevel?: ProjectResultLevel | null;
-  activityStatus?: ProjectActivityStatus | null;
-  referenceAssetCount?: number | null;
-  referenceAssetCategories?: readonly string[];
-  awards?: readonly { title: string; awardedAt?: string | null }[];
-  informationCompletenessScore?: number | null;
-  skills?: string | null;
-  headcount?: number | null;
-  schedule?: string | null;
-  workMode?: string | null;
+  status: "OPEN" | "CLOSED";
+  ownerUserId: number;
+  projectId: number;
+  projectName: string;
+  representativeImageUrl: string | null;
+  createdAt: string;
+  requiredSkills: readonly string[];
+  activitySchedule: string | null;
+  workMode: string | null;
+  applicationGuide: string | null;
+  referenceAssetSummary: string | null;
+  event: {
+    name: string | null;
+    type: string | null;
+    hostOrganization: string | null;
+    startedAt: string | null;
+    endedAt: string | null;
+    participationTrack: string | null;
+  } | null;
+  categories: readonly string[];
+  resultLevel: ProjectResultLevel | null;
+  activityStatus: ProjectActivityStatus | null;
+  assets: { count: number; categories: readonly string[] };
+  awards: readonly { title: string; awardedAt?: string | null }[];
+  informationCompletenessScore: number | null;
+  publicReferenceAssets: readonly {
+    assetId: number;
+    title: string;
+    assetType: string | null;
+    role: string | null;
+    license: string | null;
+    reuseConditions: string | null;
+    publicSource: string | null;
+  }[];
 }
 
 export interface TeamRecruitmentsResponse {
@@ -57,6 +73,7 @@ export interface TeamRecruitment {
   headcount?: number | null;
   schedule?: string | null;
   workMode?: string | null;
+  status?: "OPEN" | "CLOSED";
 }
 import type {
   ProjectActivityStatus,

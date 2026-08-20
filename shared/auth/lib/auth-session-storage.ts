@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import type { AuthUser } from "../model/types";
 
-export const AUTH_SESSION_STORAGE_KEY = "project-archive.auth-user";
+export const AUTH_SESSION_STORAGE_KEY = "project-archive.auth-user.v2";
 
 const authUserSchema = z.object({
   userId: z.number(),

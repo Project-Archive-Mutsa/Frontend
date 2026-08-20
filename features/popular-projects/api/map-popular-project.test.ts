@@ -25,6 +25,7 @@ describe("mapPopularProject", () => {
       id: 1,
       name: "테스트 프로젝트",
       description: "테스트 설명",
+      category: "PROJECT",
       thumbnailUrl: "https://example.com/project.svg",
       viewCount: 100,
       likeCount: 20,
@@ -35,6 +36,14 @@ describe("mapPopularProject", () => {
       price: 53000,
       bookmarked: false,
       detailUrl: "/projects/1",
+      registrationPurpose: null,
+      eventName: null,
+      eventDate: null,
+      resultLevel: null,
+      activityStatus: null,
+      assetCount: null,
+      assetCategories: [],
+      awardTitles: null,
     });
   });
 });

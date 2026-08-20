@@ -19,6 +19,7 @@ vi.mock("../api/login", () => ({
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ replace: replaceMock }),
+  usePathname: () => "/login",
 }));
 
 const loginResponse = {
@@ -49,6 +50,7 @@ describe("로그인 세션 흐름", () => {
     loginMock.mockReset();
     replaceMock.mockReset();
     window.sessionStorage.clear();
+    window.localStorage.clear();
   });
 
   it("로그인 성공 후 사용자 정보를 저장하고 홈으로 이동한다", async () => {
@@ -109,5 +111,35 @@ describe("로그인 세션 흐름", () => {
     expect(
       screen.getByRole("link", { name: "프로젝트 등록" }),
     ).toBeTruthy();
+  });
+
+  it("로그인 상태 유지를 선택하면 다른 탭에서도 읽을 수 있게 저장한다", async () => {
+    loginMock.mockResolvedValue(loginResponse);
+
+    render(
+      <TestProviders>
+        <LoginSection />
+      </TestProviders>,
+    );
+
+    fireEvent.change(screen.getByLabelText("이메일"), {
+      target: { value: "user@example.com" },
+    });
+    fireEvent.change(screen.getByLabelText("비밀번호"), {
+      target: { value: "password" },
+    });
+    fireEvent.click(screen.getByLabelText("로그인 상태 유지"));
+    fireEvent.click(screen.getByRole("button", { name: "로그인" }));
+
+    await waitFor(() => expect(replaceMock).toHaveBeenCalledWith("/"));
+
+    expect(
+      JSON.parse(
+        window.localStorage.getItem(AUTH_SESSION_STORAGE_KEY) ?? "null",
+      ),
+    ).toEqual(loginResponse.data);
+    expect(
+      window.sessionStorage.getItem(AUTH_SESSION_STORAGE_KEY),
+    ).toBeNull();
   });
 });

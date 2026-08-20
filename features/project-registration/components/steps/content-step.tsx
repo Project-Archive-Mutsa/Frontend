@@ -22,7 +22,7 @@ export default function ContentStep({ draft, errors, onUpdateField }: ContentSte
     <div className="space-y-10">
       <section aria-labelledby="problem-solution-title">
         <h2 id="problem-solution-title" className="font-display text-lg font-bold tracking-[-0.015em] text-slate-950">문제와 해결 방식</h2>
-        <p className="mt-2 text-sm leading-6 text-slate-600">이 내용은 결제 후 상세 리포트의 핵심이 되며 AI 유사 프로젝트 검색에도 활용됩니다.</p>
+        <p className="mt-2 text-sm leading-6 text-slate-600">이 내용은 목적별 권한을 얻은 사용자에게 프로젝트 상세 정보로 제공되며 AI 유사 프로젝트 검색에도 활용됩니다.</p>
         <div className="mt-6 space-y-6">
           <Field id="problemDefinition" label="문제 정의" required helper="어떤 상황에서 누구에게 어떤 문제가 발생했는지 적어주세요." error={errors.problemDefinition}>
             <TextArea id="problemDefinition" value={draft.problemDefinition} error={errors.problemDefinition} placeholder="문제가 발생한 배경과 구체적인 불편을 설명해 주세요." onChange={(event) => onUpdateField("problemDefinition", event.target.value)} />

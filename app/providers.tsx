@@ -9,7 +9,15 @@ interface ProvidersProps {
 }
 
 export default function Providers({ children }: ProvidersProps) {
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: { retry: 1, refetchOnWindowFocus: false },
+          mutations: { retry: false },
+        },
+      }),
+  );
 
   return (
     <QueryClientProvider client={queryClient}>

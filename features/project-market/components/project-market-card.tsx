@@ -5,6 +5,7 @@ import {
   getProjectPurposeLabel,
   getProjectResultLevelLabel,
 } from "@/shared/project-summary/types";
+import ProjectPurchaseButton from "./project-purchase-button";
 
 interface ProjectMarketCardProps {
   project: ProjectMarketProject;
@@ -17,11 +18,11 @@ function getAssetSummary(project: ProjectMarketProject) {
       ? `${project.assetCount}개 · ${categories}`
       : `${project.assetCount}개`;
   }
-  return project.zipFile ? `1개 · ${project.zipFile.name}` : "연동 전";
+  return project.zipFile ? `1개 · ${project.zipFile.name}` : "미입력";
 }
 
 function getAwardSummary(project: ProjectMarketProject) {
-  if (project.awardTitles === null || project.awardTitles === undefined) return "연동 전";
+  if (project.awardTitles === null || project.awardTitles === undefined) return "미입력";
   return project.awardTitles.length > 0
     ? project.awardTitles.slice(0, 2).join(", ")
     : "없음";
@@ -35,6 +36,7 @@ export default function ProjectMarketCard({
   return (
     <ProjectListCard
       title={project.name}
+      href={`/projects/${project.id}`}
       summary={project.description}
       contextItems={[
         {
@@ -45,7 +47,7 @@ export default function ProjectMarketCard({
         {
           label: project.eventName
             ? `${project.eventName}${eventYear ? ` · ${eventYear}년 출품` : ""}`
-            : "출품 행사 연동 전",
+            : "출품 행사 미입력",
         },
         { label: `${project.registeredAt} 등록`, dateTime: project.registeredAt },
       ]}
@@ -70,6 +72,9 @@ export default function ProjectMarketCard({
       ]}
       representativeImage={project.representativeImage}
       informationCompletenessScore={project.informationCompletenessScore}
+      projectId={project.id}
+      bookmarked={project.bookmarked}
+      bookmarkReturnPath="/project-market"
       registrantName={project.sellerName}
       registrantLabel="판매자"
       stats={[
@@ -84,7 +89,7 @@ export default function ProjectMarketCard({
           <div>
             <dt className="text-xs text-slate-500">희망 판매가</dt>
             <dd className="mt-1 text-lg font-bold tabular-nums text-brand">
-              {project.price.toLocaleString("ko-KR")} P
+              {project.price === null ? "미입력" : `${project.price.toLocaleString("ko-KR")} P`}
             </dd>
           </div>
           <div>
@@ -94,16 +99,23 @@ export default function ProjectMarketCard({
                 ? "제시 가격"
                 : project.pricingMode === "NEGOTIABLE"
                   ? "협의 가능"
-                  : "연동 전"}
+                  : "미입력"}
             </dd>
           </div>
           <div>
             <dt className="text-xs text-slate-500">판매 권리 범위</dt>
             <dd className="mt-1 line-clamp-2 leading-6 text-slate-700">
-              {project.saleRightsSummary ?? "연동 전"}
+              {project.saleRightsSummary ?? "미입력"}
             </dd>
           </div>
         </dl>
+        {project.price !== null && project.price > 0 ? (
+          <ProjectPurchaseButton projectId={project.id} projectName={project.name} price={project.price} />
+        ) : (
+          <button type="button" disabled className="mt-5 min-h-11 cursor-not-allowed bg-slate-300 px-5 text-sm font-bold text-slate-600">
+            판매가 확인 필요
+          </button>
+        )}
       </section>
     </ProjectListCard>
   );

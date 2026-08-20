@@ -1,15 +1,21 @@
 import { getProjectExplorerItems } from "@/features/project-explorer/api/get-project-explorer-items";
-import BackendContractNotice from "@/shared/components/backend-contract-notice/backend-contract-notice";
+import Link from "next/link";
+import type { ProjectExplorerSearchState } from "@/features/project-explorer/model/types";
 import ProjectCatalogCard from "./project-catalog-card";
 
-interface ProjectExplorerResultsProps {
-  query: string;
+interface ProjectExplorerResultsProps { state: ProjectExplorerSearchState }
+
+function getPageHref(state: ProjectExplorerSearchState, page: number) {
+  const params = new URLSearchParams();
+  Object.entries({ ...state, page }).forEach(([key, value]) => {
+    if (value !== "" && !(key === "page" && value === 0)) params.set(key === "query" ? "q" : key, String(value));
+  });
+  return `/projects?${params.toString()}`;
 }
 
-export default async function ProjectExplorerResults({
-  query,
-}: ProjectExplorerResultsProps) {
-  const projects = await getProjectExplorerItems(query);
+export default async function ProjectExplorerResults({ state }: ProjectExplorerResultsProps) {
+  const { projects, totalElements, totalPages } = await getProjectExplorerItems(state);
+  const { query } = state;
   const resultLabel = query ? `“${query}” 검색 결과` : "현재 많이 본 프로젝트";
 
   if (projects.length === 0) {
@@ -39,18 +45,10 @@ export default async function ProjectExplorerResults({
         <p className="text-sm text-slate-600">
           총{" "}
           <strong className="font-bold tabular-nums text-slate-950">
-            {projects.length.toLocaleString("ko-KR")}개
+            {totalElements.toLocaleString("ko-KR")}개
           </strong>
         </p>
       </header>
-
-      <div className="mt-5">
-        <BackendContractNotice>
-          {query
-            ? "검색 결과에 출품 행사·등록 목적·결과물 단계·활동 상태·자산·수상 이력과 정보 충실도 응답 필드가 필요합니다."
-            : "필터 없는 전체 프로젝트 목록·페이지네이션 API가 없어 아래에는 인기 프로젝트 최대 4개만 미리 표시합니다."}
-        </BackendContractNotice>
-      </div>
 
       <ul className="mt-5 divide-y divide-slate-300 border-y border-slate-300">
         {projects.map((project) => (
@@ -59,6 +57,13 @@ export default async function ProjectExplorerResults({
           </li>
         ))}
       </ul>
+      {totalPages > 1 ? (
+        <nav aria-label="프로젝트 목록 페이지" className="mt-6 flex items-center justify-between text-sm">
+          {state.page > 0 ? <Link href={getPageHref(state, state.page - 1)} className="font-bold text-brand underline underline-offset-4">이전</Link> : <span />}
+          <span className="text-slate-600"><strong className="text-slate-900">{state.page + 1}</strong> / {totalPages}</span>
+          {state.page + 1 < totalPages ? <Link href={getPageHref(state, state.page + 1)} className="font-bold text-brand underline underline-offset-4">다음</Link> : <span />}
+        </nav>
+      ) : null}
     </section>
   );
 }

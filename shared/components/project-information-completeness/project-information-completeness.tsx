@@ -56,7 +56,7 @@ export function ProjectInformationCompletenessNotice() {
     <p className="text-xs leading-5 text-slate-500">
       정보 충실도는 문제 정의·해결 방식·근거와 자산 설명이 상세 확인에
       충분한지 보여줍니다. 현재 점수 데이터는{" "}
-      <strong className="font-semibold text-slate-700">백엔드 미구현</strong>
+      <strong className="font-semibold text-slate-700">아직 미산정</strong>
       입니다.
     </p>
   );

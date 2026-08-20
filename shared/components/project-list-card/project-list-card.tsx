@@ -1,6 +1,8 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { ReactNode } from "react";
 import ProjectInformationCompleteness from "@/shared/components/project-information-completeness/project-information-completeness";
+import ProjectBookmarkButton from "@/shared/components/project-bookmark-button/project-bookmark-button";
 
 export interface ProjectListCardContextItem {
   label: string;
@@ -33,6 +35,10 @@ interface ProjectListCardProps {
   registrantLabel?: string;
   stats?: readonly ProjectListCardStat[];
   headingLevel?: 2 | 3;
+  href?: string;
+  projectId?: number;
+  bookmarked?: boolean;
+  bookmarkReturnPath?: string;
   children?: ReactNode;
 }
 
@@ -51,6 +57,10 @@ export default function ProjectListCard({
   registrantLabel = "등록자",
   stats = [],
   headingLevel = 2,
+  href,
+  projectId,
+  bookmarked,
+  bookmarkReturnPath,
   children,
 }: ProjectListCardProps) {
   const Heading = headingLevel === 2 ? "h2" : "h3";
@@ -75,7 +85,16 @@ export default function ProjectListCard({
         ) : null}
 
         <Heading className="font-display mt-3 text-pretty break-keep text-2xl font-semibold tracking-[-0.02em] text-slate-950 [overflow-wrap:anywhere]">
-          {title}
+          {href ? (
+            <Link
+              href={href}
+              className="decoration-brand-accent underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+            >
+              {title}
+            </Link>
+          ) : (
+            title
+          )}
         </Heading>
         <p className="mt-3 line-clamp-3 max-w-3xl text-pretty break-keep text-sm leading-7 text-slate-600 [overflow-wrap:anywhere]">
           {summary}
@@ -124,6 +143,16 @@ export default function ProjectListCard({
             ))}
           </ul>
         ) : null}
+
+        {href ? (
+          <Link
+            href={href}
+            className="mt-5 inline-flex min-h-10 items-center border-b-2 border-brand-accent px-1 text-sm font-bold text-brand hover:border-brand hover:text-brand-hover focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+          >
+            프로젝트 기록 보기
+            <span className="sr-only">: {title}</span>
+          </Link>
+        ) : null}
       </div>
 
       <aside className="border-t border-slate-200 pt-6 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-7">
@@ -149,6 +178,17 @@ export default function ProjectListCard({
             projectName={title}
             score={informationCompletenessScore}
           />
+        ) : null}
+
+        {projectId && bookmarkReturnPath && bookmarked !== undefined ? (
+          <div className="mt-5 border-t border-slate-200 pt-4">
+            <ProjectBookmarkButton
+              projectId={projectId}
+              projectName={title}
+              initialBookmarked={bookmarked}
+              returnPath={bookmarkReturnPath}
+            />
+          </div>
         ) : null}
 
         {registrantName ? (

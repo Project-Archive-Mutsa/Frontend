@@ -2,6 +2,7 @@ import type {
   ProjectMarketProject,
   ProjectMarketProjectResponseItem,
 } from "@/features/project-market/types";
+import { normalizeProjectRegistrationPurpose } from "@/shared/project-summary/types";
 
 function getRepresentativeImageUrl(
   project: ProjectMarketProjectResponseItem,
@@ -27,7 +28,7 @@ export function mapProjectMarketProject(
   return {
     id: project.projectId,
     name: project.projectName,
-    description: project.description,
+    description: project.description.trim().slice(0, 100),
     category: project.category?.trim() || undefined,
     registeredAt: project.registeredDate,
     representativeImage: representativeImageUrl
@@ -44,7 +45,9 @@ export function mapProjectMarketProject(
     },
     sellerName: project.sellerName,
     price: project.price,
-    registrationPurpose: project.registrationPurpose ?? "SELL",
+    registrationPurpose: project.registrationPurpose
+      ? normalizeProjectRegistrationPurpose(project.registrationPurpose)
+      : "SELL",
     eventName: project.eventName?.trim() || null,
     eventDate: project.eventDate ?? null,
     resultLevel: project.resultLevel ?? null,
@@ -69,5 +72,7 @@ export function mapProjectMarketProject(
             project.informationCompletenessScore,
         }
       : {}),
+    bookmarked: project.bookmarked,
+    transferScope: project.transferScope ?? null,
   };
 }

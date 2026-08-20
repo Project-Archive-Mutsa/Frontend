@@ -12,7 +12,7 @@ const availableViews = [
   {
     id: "continuation",
     label: "좀비 프로젝트",
-    description: "공개 자산으로 계승 · 후속 개발 필요",
+    description: "기본정보 공개 · 상세 정보 1,000P 열람",
     href: "/zombie-projects",
   },
   {

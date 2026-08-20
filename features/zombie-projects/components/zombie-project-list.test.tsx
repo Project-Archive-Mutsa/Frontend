@@ -42,7 +42,7 @@ describe("ZombieProjectList", () => {
     getZombieProjectsMock.mockReset();
   });
 
-  it("전체 개수와 프로젝트 정보를 렌더링하고 없는 상세 링크는 만들지 않는다", async () => {
+  it("전체 개수와 프로젝트 정보 및 canonical 상세 링크를 렌더링한다", async () => {
     getZombieProjectsMock.mockResolvedValue([createProject(1), createProject(2)]);
 
     render(await ZombieProjectList());
@@ -50,9 +50,9 @@ describe("ZombieProjectList", () => {
     expect(screen.getByText("2")).toBeDefined();
     expect(screen.getByText("좀비 프로젝트 1")).toBeDefined();
     expect(screen.getAllByText("조회 1,234")).toHaveLength(2);
-    expect(screen.getAllByText("project.zip")).toHaveLength(2);
-    expect(screen.getAllByText(/1.5 KB/)).toHaveLength(2);
-    expect(screen.queryByRole("link")).toBeNull();
+    expect(screen.queryByText("project.zip")).toBeNull();
+    expect(screen.getAllByText("프로젝트 상세 정보")).toHaveLength(2);
+    expect(screen.getAllByRole("link")[0]?.getAttribute("href")).toBe("/projects/1");
   });
 
   it("프로젝트가 없으면 빈 상태를 렌더링한다", async () => {
@@ -79,6 +79,6 @@ describe("ZombieProjectList", () => {
 
     expect(screen.queryByRole("img")).toBeNull();
     expect(screen.queryByText("대표 이미지 없음")).toBeNull();
-    expect(screen.getByText("등록 자산 정보 없음")).toBeDefined();
+    expect(screen.getAllByText("미입력").length).toBeGreaterThan(0);
   });
 });

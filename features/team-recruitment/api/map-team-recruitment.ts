@@ -12,33 +12,34 @@ export function mapTeamRecruitment(
     description: recruitment.description,
     roles: recruitment.roles,
     deadline: recruitment.deadline,
+    status: recruitment.status,
     projectId: recruitment.projectId ?? null,
     projectName: recruitment.projectName?.trim() || null,
-    projectSummary: recruitment.projectSummary?.trim() || null,
-    category: recruitment.category?.trim() || null,
-    registeredDate: recruitment.registeredDate ?? null,
+    projectSummary: recruitment.description,
+    category: recruitment.categories[0]?.trim() || null,
+    registeredDate: recruitment.createdAt.slice(0, 10),
     representativeImage: recruitment.representativeImageUrl?.trim()
       ? {
           src: recruitment.representativeImageUrl,
           alt: `${recruitment.projectName || recruitment.title} 대표 이미지`,
         }
       : null,
-    tags: recruitment.tags ?? [],
-    eventName: recruitment.eventName?.trim() || null,
-    eventDate: recruitment.eventDate ?? null,
+    tags: recruitment.categories,
+    eventName: recruitment.event?.name?.trim() || null,
+    eventDate: recruitment.event?.startedAt ?? null,
     resultLevel: recruitment.resultLevel ?? null,
     activityStatus: recruitment.activityStatus ?? null,
-    referenceAssetCount: recruitment.referenceAssetCount ?? null,
-    referenceAssetCategories: recruitment.referenceAssetCategories ?? [],
+    referenceAssetCount: recruitment.assets.count,
+    referenceAssetCategories: recruitment.assets.categories,
     awardTitles:
       recruitment.awards === undefined
         ? null
         : recruitment.awards.map((award) => award.title).filter(Boolean),
     informationCompletenessScore:
       recruitment.informationCompletenessScore ?? null,
-    skills: recruitment.skills?.trim() || null,
+    skills: recruitment.requiredSkills.join(", ") || null,
     headcount: recruitment.headcount ?? null,
-    schedule: recruitment.schedule?.trim() || null,
+    schedule: recruitment.activitySchedule?.trim() || null,
     workMode: recruitment.workMode?.trim() || null,
   };
 }

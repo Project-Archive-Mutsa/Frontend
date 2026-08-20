@@ -2,6 +2,7 @@ import type {
   ProjectActivityStatus,
   ProjectPricingMode,
   ProjectRegistrationPurpose,
+  ProjectRegistrationPurposeInput,
   ProjectResultLevel,
 } from "@/shared/project-summary/types";
 
@@ -31,13 +32,13 @@ export interface ProjectMarketProjectResponseItem {
   viewCount: number;
   likeCount: number;
   bookmarkCount: number;
-  sellerName: string;
+  sellerName?: string;
   price: number;
   bookmarked: boolean;
   zipFile: ProjectMarketZipFileResponse | null;
   detailPath: string;
   informationCompletenessScore?: number | null;
-  registrationPurpose?: ProjectRegistrationPurpose | null;
+  registrationPurpose?: ProjectRegistrationPurposeInput | null;
   eventName?: string | null;
   eventDate?: string | null;
   resultLevel?: ProjectResultLevel | null;
@@ -47,6 +48,7 @@ export interface ProjectMarketProjectResponseItem {
   awards?: readonly { title: string; awardedAt?: string | null }[];
   pricingMode?: ProjectPricingMode | null;
   saleRightsSummary?: string | null;
+  transferScope?: string | null;
 }
 
 export interface ProjectMarketProjectsResponse {
@@ -71,8 +73,8 @@ export interface ProjectMarketProject {
     likeCount: number;
     bookmarkCount: number;
   };
-  sellerName: string;
-  price: number;
+  sellerName?: string;
+  price: number | null;
   registrationPurpose?: ProjectRegistrationPurpose | null;
   eventName?: string | null;
   eventDate?: string | null;
@@ -88,4 +90,6 @@ export interface ProjectMarketProject {
     sizeInBytes: number;
   } | null;
   informationCompletenessScore?: number | null;
+  bookmarked: boolean;
+  transferScope: string | null;
 }

@@ -1,14 +1,12 @@
 import Form from "next/form";
 import Link from "next/link";
+import type { ProjectExplorerSearchState } from "@/features/project-explorer/model/types";
 import ProjectExplorerSearchSubmitButton from "./project-explorer-search-submit-button";
 
-interface ProjectExplorerSearchProps {
-  query: string;
-}
+interface ProjectExplorerSearchProps { state: ProjectExplorerSearchState }
 
-export default function ProjectExplorerSearch({
-  query,
-}: ProjectExplorerSearchProps) {
+export default function ProjectExplorerSearch({ state }: ProjectExplorerSearchProps) {
+  const { query } = state;
   return (
     <section
       className="mt-9 border-y border-slate-300 bg-white px-5 py-6 sm:px-6"
@@ -46,6 +44,9 @@ export default function ProjectExplorerSearch({
         aria-describedby="project-search-description"
         className="mt-5 flex max-w-3xl items-center gap-2 border border-slate-300 bg-white p-2 focus-within:border-brand-accent focus-within:ring-2 focus-within:ring-brand-soft"
       >
+        {(["eventType", "eventYear", "category", "resultLevel", "activityStatus", "sort"] as const).map((name) =>
+          state[name] ? <input key={name} type="hidden" name={name} value={state[name]} /> : null,
+        )}
         <label className="min-w-0 flex-1">
           <span className="sr-only">프로젝트 이름</span>
           <input

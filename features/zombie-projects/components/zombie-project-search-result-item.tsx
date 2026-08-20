@@ -8,19 +8,13 @@ interface ZombieProjectSearchResultItemProps {
 export default function ZombieProjectSearchResultItem({
   project,
 }: ZombieProjectSearchResultItemProps) {
-  const assetNames = project.selectedFiles.map((file) => file.path);
   const assetTags = project.selectedFiles
     .map((file) => file.kind || file.extension)
     .filter(Boolean);
-  const summary =
+  const summary = (
     project.functionalSummary.join(" ") ||
-    "프로젝트 한 줄 소개를 제공하는 통합 응답이 필요합니다.";
-  const analysisNote = [
-    project.differentiators[0],
-    project.futureDirections[0],
-  ]
-    .filter(Boolean)
-    .join(" · ");
+    "프로젝트 공개 소개가 등록되지 않았습니다."
+  ).slice(0, 100);
 
   return (
     <ProjectListCard
@@ -35,7 +29,7 @@ export default function ZombieProjectSearchResultItem({
         { label: "결과물 단계", value: "연동 전" },
         { label: "현재 활동 상태", value: "연동 전" },
         {
-          label: "공개 재사용 자산",
+          label: "보유 자산",
           value: `${project.selectedFiles.length.toLocaleString("ko-KR")}개`,
         },
         { label: "수상 이력", value: "연동 전" },
@@ -44,26 +38,11 @@ export default function ZombieProjectSearchResultItem({
       informationCompletenessScore={null}
       headingLevel={3}
     >
-      <section aria-label="공개 계승 조건">
-        <h3 className="text-sm font-bold text-slate-900">공개 계승 조건</h3>
-        <dl className="mt-4 grid gap-x-7 gap-y-5 text-sm sm:grid-cols-3">
-          <div>
-            <dt className="text-xs text-slate-500">공개 자산</dt>
-            <dd className="mt-1 line-clamp-2 leading-6 text-slate-700">
-              {assetNames.slice(0, 3).join(", ") || "연동 전"}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-slate-500">라이선스·재사용 조건</dt>
-            <dd className="mt-1 font-bold text-slate-800">연동 전</dd>
-          </div>
-          <div>
-            <dt className="text-xs text-slate-500">기존 분석 참고</dt>
-            <dd className="mt-1 line-clamp-2 leading-6 text-slate-700">
-              {analysisNote || "연동 전"}
-            </dd>
-          </div>
-        </dl>
+      <section aria-label="프로젝트 상세 정보 안내">
+        <h3 className="text-sm font-bold text-slate-900">프로젝트 상세 정보</h3>
+        <p className="mt-3 text-sm leading-6 text-slate-600">
+          문제 상황, 해결 방법, 검증 결과와 자산 파일·링크는 상세 정보 열람 후 확인할 수 있습니다.
+        </p>
       </section>
     </ProjectListCard>
   );

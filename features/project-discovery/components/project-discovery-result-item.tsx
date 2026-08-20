@@ -1,4 +1,5 @@
 import type { ProjectDiscoveryResultItem as ProjectDiscoveryResultItemType } from "@/features/project-discovery/types";
+import Link from "next/link";
 import {
   getProjectActivityStatusLabel,
   getProjectPurposeLabel,
@@ -96,7 +97,16 @@ export default function ProjectDiscoveryResultItem({
           ))}
         </div>
         <h3 className="font-display mt-3 text-pretty break-keep text-2xl font-semibold tracking-[-0.02em] text-slate-950 [overflow-wrap:anywhere]">
-          {item.title}
+          {item.type === "PROJECT" ? (
+            <Link
+              href={`/projects/${item.id}`}
+              className="decoration-brand-accent underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+            >
+              {item.title}
+            </Link>
+          ) : (
+            item.title
+          )}
         </h3>
         <p className="mt-3 max-w-3xl text-pretty break-keep text-sm leading-7 text-slate-600 [overflow-wrap:anywhere]">
           {item.description}
@@ -129,7 +139,9 @@ export default function ProjectDiscoveryResultItem({
                 {comparison.label}
               </h4>
               <ul className="mt-3 space-y-2 text-sm leading-6 text-slate-600">
-                {(comparison.items?.length ? comparison.items : ["연동 전"])
+                {(comparison.items?.length
+                  ? comparison.items
+                  : ["제공된 분석 없음"])
                   .slice(0, 2)
                   .map((value) => (
                     <li key={value} className="flex gap-2">
@@ -143,6 +155,15 @@ export default function ProjectDiscoveryResultItem({
             </section>
           ))}
         </div>
+
+        {item.type === "PROJECT" ? (
+          <Link
+            href={`/projects/${item.id}`}
+            className="mt-6 inline-flex min-h-10 items-center border-b-2 border-brand-accent px-1 text-sm font-bold text-brand hover:border-brand hover:text-brand-hover"
+          >
+            프로젝트 기록 보기
+          </Link>
+        ) : null}
       </div>
     </article>
   );

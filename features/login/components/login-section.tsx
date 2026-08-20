@@ -5,9 +5,9 @@ import LoginButton from "./login-button";
 import EmailInput from "./login-email-input";
 import PasswordInput from "./login-password-input";
 
-export default function LoginSection() {
+export default function LoginSection({ returnPath = "/" }: { returnPath?: string }) {
   const { error, isPending, values, handleSubmit, updateField } =
-    useLoginForm();
+    useLoginForm(returnPath);
 
   return (
     <form className="w-full" onSubmit={handleSubmit}>
@@ -30,6 +30,18 @@ export default function LoginSection() {
           value={values.password}
           onValueChange={(password) => updateField("password", password)}
         />
+
+        <label className="inline-flex min-h-11 cursor-pointer items-center gap-3 text-sm font-medium text-slate-700">
+          <input
+            type="checkbox"
+            checked={values.rememberMe}
+            onChange={(event) =>
+              updateField("rememberMe", event.target.checked)
+            }
+            className="size-4 accent-brand"
+          />
+          로그인 상태 유지
+        </label>
       </div>
 
       <div className="mt-3 min-h-6">

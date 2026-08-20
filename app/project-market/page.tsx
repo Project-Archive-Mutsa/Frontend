@@ -9,18 +9,27 @@ export const metadata: Metadata = {
 interface ProjectMarketPageProps {
   searchParams: Promise<{
     q?: string | string[];
+    assetCategory?: string | string[];
+    category?: string | string[];
+    sort?: string | string[];
+    page?: string | string[];
   }>;
 }
 
 export default async function ProjectMarketPage({
   searchParams,
 }: ProjectMarketPageProps) {
-  const { q } = await searchParams;
+  const params = await searchParams;
+  const { q } = params;
   const query = (Array.isArray(q) ? q[0] : q)?.trim() ?? "";
+  const value = (name: "assetCategory" | "category" | "sort" | "page") => {
+    const raw = params[name];
+    return (Array.isArray(raw) ? raw[0] : raw)?.trim() ?? "";
+  };
 
   return (
     <main className="flex flex-1 bg-slate-50">
-      <ProjectMarketSection query={query} />
+      <ProjectMarketSection state={{ query, assetCategory: value("assetCategory"), category: value("category"), sort: value("sort") === "POPULAR" ? "POPULAR" : "RECENT", page: /^\d+$/.test(value("page")) ? Number(value("page")) : 0 }} />
     </main>
   );
 }

@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { PopularProject } from "@/features/popular-projects/types";
 import ProjectListCard from "@/shared/components/project-list-card/project-list-card";
 import {
@@ -17,36 +16,33 @@ export default function PopularProjectItem({
   const eventYear = project.eventDate?.slice(0, 4);
   const assetSummary =
     project.assetCount === null || project.assetCount === undefined
-      ? "연동 전"
+      ? "미입력"
       : project.assetCategories?.length
         ? `${project.assetCount}개 · ${project.assetCategories.slice(0, 2).join(" · ")}`
         : `${project.assetCount}개`;
   const awardSummary =
     project.awardTitles === undefined || project.awardTitles === null
-      ? "연동 전"
+      ? "미입력"
       : project.awardTitles.length > 0
         ? project.awardTitles.slice(0, 2).join(", ")
         : "없음";
 
   return (
-    <Link
-      href={`/project-market/${project.id}`}
-      aria-label={`${project.name} 상세 보기`}
-      className="block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
-    >
+    <div>
       <ProjectListCard
         title={project.name}
+        href={`/projects/${project.id}`}
         summary={project.description}
         contextItems={[
           {
             label:
               getProjectPurposeLabel(project.registrationPurpose) ??
-              "등록 목적 연동 전",
+              "등록 목적 미입력",
           },
           {
             label: project.eventName
               ? `${project.eventName}${eventYear ? ` · ${eventYear}년 출품` : ""}`
-              : "출품 행사 연동 전",
+              : "출품 행사 미입력",
           },
           {
             label: `${project.registeredDate} 등록`,
@@ -82,6 +78,6 @@ export default function PopularProjectItem({
         ]}
         headingLevel={3}
       />
-    </Link>
+    </div>
   );
 }

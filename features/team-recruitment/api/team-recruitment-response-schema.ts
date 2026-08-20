@@ -7,36 +7,50 @@ export const teamRecruitmentResponseItemSchema: z.ZodType<TeamRecruitmentRespons
     title: z.string(),
     description: z.string(),
     roles: z.array(z.string()),
+    headcount: z.number().int().positive(),
     deadline: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     detailUrl: z.string().min(1),
-    projectId: z.number().int().nonnegative().nullable().optional(),
-    projectName: z.string().nullable().optional(),
-    projectSummary: z.string().nullable().optional(),
-    category: z.string().nullable().optional(),
-    registeredDate: z.string().nullable().optional(),
-    representativeImageUrl: z.string().nullable().optional(),
-    tags: z.array(z.string()).optional(),
-    eventName: z.string().nullable().optional(),
-    eventDate: z.string().nullable().optional(),
+    status: z.enum(["OPEN", "CLOSED"]),
+    ownerUserId: z.number().int().positive(),
+    projectId: z.number().int().positive(),
+    projectName: z.string(),
+    representativeImageUrl: z.string().nullable(),
+    createdAt: z.string(),
+    requiredSkills: z.array(z.string()).catch([]),
+    activitySchedule: z.string().nullable().catch(null),
+    workMode: z.string().nullable().catch(null),
+    applicationGuide: z.string().nullable().catch(null),
+    referenceAssetSummary: z.string().nullable().catch(null),
+    event: z.object({
+      name: z.string().nullable().catch(null),
+      type: z.string().nullable().catch(null),
+      hostOrganization: z.string().nullable().catch(null),
+      startedAt: z.string().nullable().catch(null),
+      endedAt: z.string().nullable().catch(null),
+      participationTrack: z.string().nullable().catch(null),
+    }).nullable().catch(null),
+    categories: z.array(z.string()).catch([]),
     resultLevel: z
       .enum(["IDEA_PLAN", "DESIGNED", "INITIAL_OUTPUT", "SUBMISSION_OUTPUT", "APPLIED"])
-      .nullable()
-      .optional(),
-    activityStatus: z.enum(["ACTIVE", "PAUSED", "ENDED"]).nullable().optional(),
-    referenceAssetCount: z.number().int().nonnegative().nullable().optional(),
-    referenceAssetCategories: z.array(z.string()).optional(),
+      .nullable(),
+    activityStatus: z.enum(["ACTIVE", "PAUSED", "ENDED"]).nullable(),
+    assets: z.object({ count: z.number().int().nonnegative(), categories: z.array(z.string()) }),
     awards: z
       .array(z.object({ title: z.string(), awardedAt: z.string().nullable().optional() }))
-      .optional(),
+      .catch([]),
     informationCompletenessScore: z
       .number()
       .int()
       .min(0)
       .max(100)
-      .nullable()
-      .optional(),
-    skills: z.string().nullable().optional(),
-    headcount: z.number().int().positive().nullable().optional(),
-    schedule: z.string().nullable().optional(),
-    workMode: z.string().nullable().optional(),
+      .nullable(),
+    publicReferenceAssets: z.array(z.object({
+      assetId: z.number().int().positive(),
+      title: z.string(),
+      assetType: z.string().nullable().catch(null),
+      role: z.string().nullable().catch(null),
+      license: z.string().nullable().catch(null),
+      reuseConditions: z.string().nullable().catch(null),
+      publicSource: z.string().nullable().catch(null),
+    })).catch([]),
   });

@@ -48,7 +48,7 @@ describe("ZombieProjectSearchResults", () => {
     getSearchResultsMock.mockReset();
   });
 
-  it("프로젝트 설명과 파일 근거를 링크 없이 렌더링한다", async () => {
+  it("프로젝트 설명을 표시하고 파일 근거는 무료로 노출하지 않는다", async () => {
     getSearchResultsMock.mockResolvedValue(results);
 
     render(await ZombieProjectSearchResults({ query: "service" }));
@@ -58,8 +58,7 @@ describe("ZombieProjectSearchResults", () => {
     expect(
       screen.getByText("서비스 구조와 의존성을 분석합니다."),
     ).toBeDefined();
-    expect(screen.getByText("README.md")).toBeDefined();
-    expect(screen.getByText(/11.8 KB/)).toBeDefined();
+    expect(screen.queryByText("README.md")).toBeNull();
     expect(screen.queryByRole("link")).toBeNull();
   });
 
@@ -90,7 +89,7 @@ describe("ZombieProjectSearchResults", () => {
     render(await ZombieProjectSearchResults({ query: "접근성" }));
 
     expect(screen.getByText("날씨 반응형 접근성 예술 전시")).toBeDefined();
-    expect(screen.getByRole("link").getAttribute("href")).toBe(
+    expect(screen.getAllByRole("link")[0]?.getAttribute("href")).toBe(
       "/projects/1060",
     );
   });

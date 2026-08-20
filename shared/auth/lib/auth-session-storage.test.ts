@@ -17,6 +17,7 @@ const authUser: AuthUser = {
 describe("인증 세션 저장소", () => {
   beforeEach(() => {
     window.sessionStorage.clear();
+    window.localStorage.clear();
   });
 
   it("로그인 사용자를 저장하고 다시 읽는다", () => {

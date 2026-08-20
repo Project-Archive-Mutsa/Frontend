@@ -8,7 +8,8 @@ export function mapRecentAwardProject(
 ): RecentAwardProject {
   return {
     id: project.awardId,
-    detailPath: project.detailPath,
+    projectId: project.projectId,
+    detailPath: `/projects/${project.projectId}`,
     name: project.projectName,
     summary: project.description,
     representativeImage: project.representativeImageUrl?.trim()
@@ -27,16 +28,10 @@ export function mapRecentAwardProject(
       viewCount: project.viewCount,
       likeCount: project.likeCount,
     },
-    registrationPurpose: project.registrationPurpose ?? null,
-    resultLevel: project.resultLevel ?? null,
-    activityStatus: project.activityStatus ?? null,
-    assetCount: project.assetCount ?? null,
-    assetCategories: project.assetCategories ?? [],
-    ...(project.informationCompletenessScore !== undefined
-      ? {
-          informationCompletenessScore:
-            project.informationCompletenessScore,
-        }
-      : {}),
+    resultLevel: project.resultLevel,
+    activityStatus: project.activityStatus,
+    assetCount: project.assets.count,
+    assetCategories: project.assets.categories,
+    informationCompletenessScore: project.informationCompletenessScore,
   };
 }

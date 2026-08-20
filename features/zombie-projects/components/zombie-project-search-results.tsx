@@ -1,5 +1,4 @@
 import { getZombieProjectSearchResults } from "@/features/zombie-projects/api/get-zombie-project-search-results";
-import BackendContractNotice from "@/shared/components/backend-contract-notice/backend-contract-notice";
 import ZombieProjectItem from "./zombie-project-item";
 import ZombieProjectSearchResultItem from "./zombie-project-search-result-item";
 
@@ -43,12 +42,6 @@ export default async function ZombieProjectSearchResults({
           총 <strong className="font-bold text-slate-900">{results.totalCount.toLocaleString("ko-KR")}</strong>개
         </p>
       </header>
-
-      <div className="mt-4">
-        <BackendContractNotice>
-          현재 검색 응답은 파일 분석과 일반 프로젝트가 혼재합니다. 좀비 공개 자산·라이선스·출품 맥락·정보 충실도를 포함한 통합 검색 응답이 필요합니다.
-        </BackendContractNotice>
-      </div>
 
       <ol className="divide-y divide-slate-300 border-b border-slate-300">
         {results.projects.map((result, index) => (

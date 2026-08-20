@@ -1,3 +1,6 @@
+import { Suspense } from "react";
+import SectionErrorBoundary from "@/shared/components/section-error-boundary/section-error-boundary";
+import SectionLoadingSpinner from "@/shared/components/section-loading-spinner/section-loading-spinner";
 import ProjectDiscoveryResults from "./project-discovery-results";
 import ProjectDiscoverySearchForm from "./project-discovery-search-form";
 
@@ -25,7 +28,11 @@ export default function ProjectDiscoverySection({
 
       <div className="mt-10 sm:mt-12">
         {query ? (
-          <ProjectDiscoveryResults key={query} query={query} />
+          <SectionErrorBoundary message="AI 검색 결과를 불러오지 못했습니다.">
+            <Suspense key={query} fallback={<SectionLoadingSpinner />}>
+              <ProjectDiscoveryResults query={query} />
+            </Suspense>
+          </SectionErrorBoundary>
         ) : (
           <div className="border-y border-slate-300 py-16 text-center">
             <h2 className="font-display text-lg font-bold text-slate-900">

@@ -8,7 +8,7 @@ import useAuthSession from "@/shared/auth/hooks/use-auth-session";
 import { login } from "../api/login";
 import type { LoginRequest } from "../model/types";
 
-export default function useLoginForm() {
+export default function useLoginForm(returnPath = "/") {
   const router = useRouter();
   const { signIn } = useAuthSession();
   const [values, setValues] = useState<LoginRequest>({
@@ -19,8 +19,8 @@ export default function useLoginForm() {
   const loginMutation = useMutation({
     mutationFn: login,
     onSuccess: (response) => {
-      signIn(response.data);
-      router.replace("/");
+      signIn(response.data, values.rememberMe);
+      router.replace(returnPath);
     },
   });
 

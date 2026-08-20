@@ -17,7 +17,7 @@ const demoProjects: readonly ProjectDiscoveryResultItem[] = [
     detailPath: "/projects/9001",
     similarityScore: 0.92,
     informationCompletenessScore: 88,
-    registrationPurpose: "ARCHIVE",
+    registrationPurpose: "ZOMBIE",
     eventName: "2025 대학생 서비스 해커톤",
     eventDate: "2025-11-15",
     resultLevel: "SUBMISSION_OUTPUT",
@@ -124,7 +124,7 @@ export function getProjectDiscoveryDemoResults(
       validationPoints: [
         "같은 문제를 다뤄도 대상 사용자와 사용 시점이 다르면 필요한 기능과 데이터가 달라집니다.",
         "기존 결과물의 구현 범위와 중단 지점을 확인해 처음부터 다시 만들 필요가 있는지 판단해 보세요.",
-        "공개 자산의 실제 활용 가능 여부와 권리 조건은 프로젝트 상세 정보에서 별도로 확인해야 합니다.",
+        "자산의 실제 활용 가능 여부와 권리 조건은 권한을 얻은 뒤 프로젝트 상세 정보에서 확인해야 합니다.",
       ],
       interpretationNote:
         "유사도는 아이디어의 우수성이나 성공 가능성을 평가하는 점수가 아닙니다. 문제 정의와 해결 방식이 닮은 정도를 비교하기 위한 참고값입니다.",

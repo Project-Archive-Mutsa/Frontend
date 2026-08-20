@@ -32,17 +32,6 @@ export type ProjectAssetCategory =
   | "OFFLINE_OUTPUT"
   | "OTHER";
 
-export type AssetOwnershipStatus =
-  | "OWNED"
-  | "TEAM_OWNED"
-  | "THIRD_PARTY_INCLUDED"
-  | "UNCONFIRMED";
-
-export type AssetAccessRequirement =
-  | "PUBLIC"
-  | "PERMISSION_REQUIRED"
-  | "PRIVATE";
-
 export type AssetLinkProvider =
   | "FIGMA"
   | "GITHUB"
@@ -52,12 +41,6 @@ export type AssetLinkProvider =
   | "YOUTUBE"
   | "VIMEO"
   | "GENERAL";
-
-export type AssetUsage =
-  | "PAID_REPORT_EVIDENCE"
-  | "ZOMBIE_PUBLIC_RESOURCE"
-  | "SALE_INVENTORY"
-  | "RECRUITMENT_REFERENCE";
 
 export interface ProjectAwardDraft {
   id: string;
@@ -78,7 +61,6 @@ export interface LinkAssetSource {
   kind: "EXTERNAL_LINK";
   url: string;
   provider: AssetLinkProvider;
-  accessRequirement: AssetAccessRequirement;
 }
 
 export type AssetSource = UploadAssetSource | LinkAssetSource;
@@ -89,17 +71,9 @@ export interface ProjectAssetDraft {
   title: string;
   projectRole: string;
   description: string;
-  ownershipStatus: AssetOwnershipStatus | "";
-  rightsDescription: string;
   versionLabel: string;
   updatedAt: string;
   sources: AssetSource[];
-}
-
-export interface ZombieAssetTermsDraft {
-  licenseName: string;
-  attribution: string;
-  reuseTerms: string;
 }
 
 export interface ProjectRegistrationDraft {
@@ -131,21 +105,16 @@ export interface ProjectRegistrationDraft {
   resultLevel: ProjectResultLevel | "";
   activityStatus: ProjectActivityStatus | "";
 
-  attempts: string;
-  difficulties: string;
+  approaches: string;
+  constraints: string;
   limitations: string;
   endReason: string;
-  nextSteps: string;
+  nextValidationTasks: string;
   assets: ProjectAssetDraft[];
 
   purpose: ProjectRegistrationPurpose | "";
-  zombieAssetIds: string[];
-  zombieAssetTerms: Record<string, ZombieAssetTermsDraft>;
-  saleAssetIds: string[];
   pricingMode: ProjectPricingMode;
   desiredPoints: string;
-  saleRightsScope: string;
-  recruitmentReferenceAssetIds: string[];
   recruitmentTitle: string;
   recruitmentRoles: string[];
   recruitmentSkills: string;
@@ -154,6 +123,7 @@ export interface ProjectRegistrationDraft {
   recruitmentWorkMode: string;
   recruitmentDeadline: string;
   recruitmentApplicationNote: string;
+  materialDisclosureConsent: boolean;
 }
 
 export type ProjectRegistrationFieldErrors = Record<string, string>;

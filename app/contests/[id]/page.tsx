@@ -1,3 +1,5 @@
+import { getServerApiUrl } from "@/shared/api/server-api-url";
+
 export default async function DetailPage({
     params,
   }: {
@@ -5,10 +7,7 @@ export default async function DetailPage({
   }) {
     const { id } = await params;
   
-    const API_BASE_URL = "https://project-archive-api-zf90.onrender.com";
-    
-    // 데이터 조회 (필요에 따라 각 API 경로로 변경해서 사용하세요)
-    const res = await fetch(`${API_BASE_URL}/api/contests/${id}`);
+    const res = await fetch(getServerApiUrl(`/api/contests/${id}`));
     const result = await res.json();
     const data = result?.data;
   

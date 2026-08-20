@@ -7,6 +7,12 @@ import type {
 // AI 프로젝트 검색 대상
 export type ProjectDiscoveryTarget = "PROJECT" | "CONTEST" | "IDEA" | "AWARD";
 
+export type ProjectDiscoveryAnalysisStatus =
+  | "PENDING"
+  | "SUCCEEDED"
+  | "PARTIAL"
+  | "FAILED";
+
 // 검색 결과 이미지 정보
 export interface ProjectDiscoveryImage {
   imageId: number | null; // 이미지 식별자
@@ -40,6 +46,7 @@ export interface ProjectDiscoveryResultItem {
   similarityReasons?: readonly string[];
   differences?: readonly string[];
   validationSuggestions?: readonly string[];
+  metadataStatus?: "FULL" | "PARTIAL";
 }
 
 // AI 프로젝트 검색 결과 데이터
@@ -47,6 +54,8 @@ export interface ProjectDiscoveryResultsData {
   query: string; // 검색어
   matchedCategories: readonly string[]; // AI가 분류한 관련 카테고리
   targets: readonly ProjectDiscoveryTarget[]; // 검색 대상 목록
+  analysis: ProjectDiscoveryAnalysisSummary | null;
+  analysisStatus: ProjectDiscoveryAnalysisStatus;
   projects: readonly ProjectDiscoveryResultItem[]; // 프로젝트 결과
   contests: readonly ProjectDiscoveryResultItem[]; // 공모전 결과
   ideas: readonly ProjectDiscoveryResultItem[]; // 아이디어 결과
@@ -61,16 +70,8 @@ export interface ProjectDiscoveryAnalysisSummary {
   interpretationNote: string;
 }
 
-// 백엔드 연동 전 AI 검색 결과 화면에서 사용하는 데모 데이터
 export interface ProjectDiscoveryDemoResults {
   query: string;
   analysis: ProjectDiscoveryAnalysisSummary;
   projects: readonly ProjectDiscoveryResultItem[];
-}
-
-// AI 프로젝트 검색 API 공통 응답
-export interface ProjectDiscoveryResultsResponse {
-  success: boolean; // 요청 성공 여부
-  data: ProjectDiscoveryResultsData | null; // 검색 결과 데이터
-  message: string | null; // 서버 응답 메시지
 }
