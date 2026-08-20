@@ -75,6 +75,34 @@ export default function ProjectMarketCard({
       projectId={project.id}
       bookmarked={project.bookmarked}
       bookmarkReturnPath="/project-market"
+      sideAction={
+        project.registrationPurpose === "SELL" ? (
+          project.price !== null && project.price > 0 ? (
+            <ProjectPurchaseButton
+              projectId={project.id}
+              projectName={project.name}
+              price={project.price}
+              transferScope={
+                project.transferScope ??
+                "프로젝트 전체 자산과 등록된 권리"
+              }
+            />
+          ) : (
+            <div>
+              <button
+                type="button"
+                disabled
+                className="flex min-h-11 w-full cursor-not-allowed items-center justify-center bg-slate-300 px-4 text-sm font-bold text-slate-600"
+              >
+                프로젝트 권리 구매
+              </button>
+              <p className="mt-2 text-sm font-bold leading-6 text-slate-500">
+                판매가 확인이 필요합니다.
+              </p>
+            </div>
+          )
+        ) : undefined
+      }
       registrantName={project.sellerName}
       registrantLabel="판매자"
       stats={[
@@ -109,13 +137,6 @@ export default function ProjectMarketCard({
             </dd>
           </div>
         </dl>
-        {project.price !== null && project.price > 0 ? (
-          <ProjectPurchaseButton projectId={project.id} projectName={project.name} price={project.price} />
-        ) : (
-          <button type="button" disabled className="mt-5 min-h-11 cursor-not-allowed bg-slate-300 px-5 text-sm font-bold text-slate-600">
-            판매가 확인 필요
-          </button>
-        )}
       </section>
     </ProjectListCard>
   );

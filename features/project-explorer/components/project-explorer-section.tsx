@@ -34,7 +34,20 @@ export default function ProjectExplorerSection({
           </p>
         </div>
 
-        <ProjectExplorerSearch state={state} />
+        <ProjectExplorerSearch
+          action="/projects"
+          query={state.query}
+          description="공모전·대회·해커톤·캡스톤에 출품된 프로젝트를 찾습니다."
+          inputId="project-search"
+          hiddenFields={{
+            eventType: state.eventType,
+            eventYear: state.eventYear,
+            category: state.category,
+            resultLevel: state.resultLevel,
+            activityStatus: state.activityStatus,
+            sort: state.sort,
+          }}
+        />
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[15rem_minmax(0,1fr)]">
           <ProjectExplorerFilters state={state} />

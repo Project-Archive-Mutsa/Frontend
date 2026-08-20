@@ -1,8 +1,9 @@
 import { Suspense } from "react";
 import ProjectExplorerHeader from "@/features/project-explorer/components/project-explorer-header";
+import ProjectExplorerSearch from "@/features/project-explorer/components/project-explorer-search";
 import SectionErrorBoundary from "@/shared/components/section-error-boundary/section-error-boundary";
 import SectionLoadingSpinner from "@/shared/components/section-loading-spinner/section-loading-spinner";
-import ProjectMarketControls from "./project-market-controls";
+import ProjectMarketFilters from "./project-market-filters";
 import ProjectMarketList from "./project-market-list";
 
 interface ProjectMarketSectionProps {
@@ -16,7 +17,7 @@ export default function ProjectMarketSection({ state }: ProjectMarketSectionProp
       className="flex-1 py-12 sm:py-16"
       aria-labelledby="project-market-heading"
     >
-      <div className="mx-auto max-w-6xl px-5 sm:px-8 lg:px-10">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
         <ProjectExplorerHeader
           activeView="proposals"
           headingId="project-market-heading"
@@ -31,23 +32,36 @@ export default function ProjectMarketSection({ state }: ProjectMarketSectionProp
           </p>
         </div>
 
-        <ProjectMarketControls state={state} />
+        <ProjectExplorerSearch
+          action="/project-market"
+          query={state.query}
+          description="판매자가 공개한 프로젝트 이름을 검색합니다."
+          inputId="project-market-search"
+          hiddenFields={{
+            assetCategory: state.assetCategory,
+            category: state.category,
+            sort: state.sort,
+          }}
+        />
 
-        <div className="mt-10 grid min-h-[32rem]">
-          <SectionErrorBoundary
-            message={
-              query
-                ? "판매 프로젝트 검색 결과를 불러오지 못했습니다."
-                : "프로젝트 마켓을 불러오지 못했습니다."
-            }
-          >
-            <Suspense
-              key={JSON.stringify(state)}
-              fallback={<SectionLoadingSpinner />}
+        <div className="mt-10 grid gap-10 lg:grid-cols-[15rem_minmax(0,1fr)]">
+          <ProjectMarketFilters state={state} />
+          <div className="min-h-[32rem] min-w-0">
+            <SectionErrorBoundary
+              message={
+                query
+                  ? "판매 프로젝트 검색 결과를 불러오지 못했습니다."
+                  : "프로젝트 마켓을 불러오지 못했습니다."
+              }
             >
-              <ProjectMarketList state={state} />
-            </Suspense>
-          </SectionErrorBoundary>
+              <Suspense
+                key={JSON.stringify(state)}
+                fallback={<SectionLoadingSpinner />}
+              >
+                <ProjectMarketList state={state} />
+              </Suspense>
+            </SectionErrorBoundary>
+          </div>
         </div>
       </div>
     </section>

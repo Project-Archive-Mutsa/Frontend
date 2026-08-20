@@ -230,7 +230,7 @@ test.describe.serial("병합 백엔드 통합 흐름", () => {
 
   test("팀 지원·북마크 → 마이페이지 반영", async ({ page }) => {
     await login(page, credentials.buyer, `/projects/${reportProjectId}`);
-    await page.getByRole("button", { name: new RegExp(`${reportProjectName} 북마크 추가`) }).click();
+    await page.getByRole("button", { name: `${reportProjectName} 관심 프로젝트 저장` }).click();
     await page.goto("/mypage/wishlist");
     await expect(page.getByText(reportProjectName).first()).toBeVisible();
     await page.goto(`/team-recruitment?q=${encodeURIComponent(reportProjectName)}`);
@@ -247,7 +247,7 @@ test.describe.serial("병합 백엔드 통합 흐름", () => {
   test("AI 검색 성공·부분 성공과 프로젝트 이동", async ({ page }) => {
     await page.goto("/search?q=%ED%99%98%EA%B2%BD");
     await expect(page.getByText(/분석 완료|부분 분석|분석 중/).first()).toBeVisible();
-    const projectLink = page.getByRole("link", { name: "프로젝트 기록 보기" }).first();
+    const projectLink = page.locator('h3 a[href^="/projects/"]').first();
     await expect(projectLink).toHaveAttribute("href", /\/projects\/\d+/);
     await expect(page.getByText("유사한 이유").first()).toBeVisible();
   });

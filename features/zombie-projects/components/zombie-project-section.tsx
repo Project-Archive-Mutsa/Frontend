@@ -17,7 +17,7 @@ export default function ZombieProjectSection({ state }: ZombieProjectSectionProp
       className="flex-1 py-12 sm:py-16"
       aria-labelledby="zombie-project-heading"
     >
-      <div className="mx-auto max-w-6xl px-5 sm:px-8 lg:px-10">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
         <ProjectExplorerHeader
           activeView="continuation"
           headingId="zombie-project-heading"
@@ -35,24 +35,34 @@ export default function ZombieProjectSection({ state }: ZombieProjectSectionProp
         <ZombieProjectSearchForm
           key={query || "empty-query"}
           defaultQuery={query}
+          hiddenFields={{
+            category: state.category,
+            assetCategory: state.assetCategory,
+            resultLevel: state.resultLevel,
+            activityStatus: state.activityStatus,
+            eventType: state.eventType,
+            sort: state.sort,
+          }}
         />
-        <ZombieProjectFilterPreview state={state} />
 
-        <div className="mt-10 grid min-h-[32rem]">
-          <SectionErrorBoundary
-            message={
-              query
-                ? "검색 결과를 불러오지 못했습니다. 검색어를 확인하고 다시 시도해 주세요."
-                : "좀비 프로젝트를 불러오지 못했습니다."
-            }
-          >
-            <Suspense
-              key={JSON.stringify(state)}
-              fallback={<SectionLoadingSpinner />}
+        <div className="mt-10 grid gap-10 lg:grid-cols-[15rem_minmax(0,1fr)]">
+          <ZombieProjectFilterPreview state={state} />
+          <div className="min-h-[32rem] min-w-0">
+            <SectionErrorBoundary
+              message={
+                query
+                  ? "검색 결과를 불러오지 못했습니다. 검색어를 확인하고 다시 시도해 주세요."
+                  : "좀비 프로젝트를 불러오지 못했습니다."
+              }
             >
-              <ZombieProjectResults state={state} />
-            </Suspense>
-          </SectionErrorBoundary>
+              <Suspense
+                key={JSON.stringify(state)}
+                fallback={<SectionLoadingSpinner />}
+              >
+                <ZombieProjectResults state={state} />
+              </Suspense>
+            </SectionErrorBoundary>
+          </div>
         </div>
       </div>
     </section>

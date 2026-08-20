@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import ProjectPurchaseButton from "@/features/project-market/components/project-purchase-button";
 import ProjectInformationCompleteness from "@/shared/components/project-information-completeness/project-information-completeness";
 import ProjectBookmarkButton from "@/shared/components/project-bookmark-button/project-bookmark-button";
 import {
@@ -28,6 +29,11 @@ export default function ProjectDetailHeader({ project }: ProjectDetailHeaderProp
       ...project.tags,
     ]),
   ];
+  const saleDetail =
+    project.registrationPurpose === "SELL" &&
+    project.purposeDetail.purpose === "SELL"
+      ? project.purposeDetail
+      : null;
 
   return (
     <header>
@@ -99,22 +105,33 @@ export default function ProjectDetailHeader({ project }: ProjectDetailHeaderProp
         </div>
 
         <aside>
-          <div className="relative aspect-[4/3] overflow-hidden bg-brand-canvas">
-            {project.representativeImageUrl ? (
-              <Image
-                src={project.representativeImageUrl}
-                alt={`${project.name} 대표 이미지`}
-                fill
-                unoptimized
-                priority
-                sizes="304px"
-                className="object-cover"
+          <div className="relative aspect-[4/3] bg-brand-canvas">
+            <div className="absolute inset-0 overflow-hidden">
+              {project.representativeImageUrl ? (
+                <Image
+                  src={project.representativeImageUrl}
+                  alt={`${project.name} 대표 이미지`}
+                  fill
+                  unoptimized
+                  priority
+                  sizes="304px"
+                  className="object-cover"
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center px-6 text-center text-sm text-slate-500">
+                  대표 이미지 미등록
+                </div>
+              )}
+            </div>
+            <div className="absolute right-3 top-3 z-10">
+              <ProjectBookmarkButton
+                projectId={project.id}
+                projectName={project.name}
+                initialBookmarked={project.viewer.bookmarked}
+                returnPath={`/projects/${project.id}`}
+                errorPlacement="floating"
               />
-            ) : (
-              <div className="flex h-full items-center justify-center px-6 text-center text-sm text-slate-500">
-                대표 이미지 미등록
-              </div>
-            )}
+            </div>
           </div>
           <div className="mt-6">
             <ProjectInformationCompleteness
@@ -122,14 +139,36 @@ export default function ProjectDetailHeader({ project }: ProjectDetailHeaderProp
               score={project.informationCompletenessScore}
             />
           </div>
-          <div className="mt-5">
-            <ProjectBookmarkButton
-              projectId={project.id}
-              projectName={project.name}
-              initialBookmarked={project.viewer.bookmarked}
-              returnPath={`/projects/${project.id}`}
-            />
-          </div>
+          {saleDetail ? (
+            <div className="mt-5 border-t border-slate-200 pt-4">
+              {saleDetail.price !== null && saleDetail.price > 0 ? (
+                <ProjectPurchaseButton
+                  projectId={project.id}
+                  projectName={project.name}
+                  price={saleDetail.price}
+                  transferScope={
+                    saleDetail.transferScope ??
+                    "프로젝트 전체 자산과 등록된 권리"
+                  }
+                  disabled={!saleDetail.purchasable}
+                  returnPath={`/projects/${project.id}`}
+                />
+              ) : (
+                <div>
+                  <button
+                    type="button"
+                    disabled
+                    className="flex min-h-11 w-full cursor-not-allowed items-center justify-center bg-slate-300 px-4 text-sm font-bold text-slate-600"
+                  >
+                    프로젝트 권리 구매
+                  </button>
+                  <p className="mt-2 text-sm font-bold leading-6 text-slate-500">
+                    판매가 확인이 필요합니다.
+                  </p>
+                </div>
+              )}
+            </div>
+          ) : null}
           {project.registrant ? (
             <dl className="mt-5 border-t border-slate-200 pt-4 text-sm">
               <dt className="text-xs text-slate-500">등록자</dt>

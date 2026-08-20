@@ -155,15 +155,6 @@ export default function ProjectDiscoveryResultItem({
             </section>
           ))}
         </div>
-
-        {item.type === "PROJECT" ? (
-          <Link
-            href={`/projects/${item.id}`}
-            className="mt-6 inline-flex min-h-10 items-center border-b-2 border-brand-accent px-1 text-sm font-bold text-brand hover:border-brand hover:text-brand-hover"
-          >
-            프로젝트 기록 보기
-          </Link>
-        ) : null}
       </div>
     </article>
   );

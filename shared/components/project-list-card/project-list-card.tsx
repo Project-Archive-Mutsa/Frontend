@@ -39,6 +39,7 @@ interface ProjectListCardProps {
   projectId?: number;
   bookmarked?: boolean;
   bookmarkReturnPath?: string;
+  sideAction?: ReactNode;
   children?: ReactNode;
 }
 
@@ -61,6 +62,7 @@ export default function ProjectListCard({
   projectId,
   bookmarked,
   bookmarkReturnPath,
+  sideAction,
   children,
 }: ProjectListCardProps) {
   const Heading = headingLevel === 2 ? "h2" : "h3";
@@ -143,34 +145,37 @@ export default function ProjectListCard({
             ))}
           </ul>
         ) : null}
-
-        {href ? (
-          <Link
-            href={href}
-            className="mt-5 inline-flex min-h-10 items-center border-b-2 border-brand-accent px-1 text-sm font-bold text-brand hover:border-brand hover:text-brand-hover focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
-          >
-            프로젝트 기록 보기
-            <span className="sr-only">: {title}</span>
-          </Link>
-        ) : null}
       </div>
 
       <aside className="border-t border-slate-200 pt-6 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-7">
-        <div className="relative mb-5 aspect-[16/10] overflow-hidden bg-brand-canvas">
-          {representativeImage ? (
-            <Image
-              src={representativeImage.src}
-              alt={representativeImage.alt}
-              fill
-              unoptimized
-              sizes="240px"
-              className="object-cover"
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center px-4 text-center text-xs leading-5 text-slate-500">
-              대표 이미지 미등록
+        <div className="relative mb-5 aspect-[16/10] bg-brand-canvas">
+          <div className="absolute inset-0 overflow-hidden">
+            {representativeImage ? (
+              <Image
+                src={representativeImage.src}
+                alt={representativeImage.alt}
+                fill
+                unoptimized
+                sizes="240px"
+                className="object-cover"
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center px-4 text-center text-xs leading-5 text-slate-500">
+                대표 이미지 미등록
+              </div>
+            )}
+          </div>
+          {projectId && bookmarkReturnPath && bookmarked !== undefined ? (
+            <div className="absolute right-3 top-3 z-10">
+              <ProjectBookmarkButton
+                projectId={projectId}
+                projectName={title}
+                initialBookmarked={bookmarked}
+                returnPath={bookmarkReturnPath}
+                errorPlacement="floating"
+              />
             </div>
-          )}
+          ) : null}
         </div>
 
         {showInformationCompleteness ? (
@@ -180,19 +185,14 @@ export default function ProjectListCard({
           />
         ) : null}
 
-        {projectId && bookmarkReturnPath && bookmarked !== undefined ? (
+        {sideAction ? (
           <div className="mt-5 border-t border-slate-200 pt-4">
-            <ProjectBookmarkButton
-              projectId={projectId}
-              projectName={title}
-              initialBookmarked={bookmarked}
-              returnPath={bookmarkReturnPath}
-            />
+            {sideAction}
           </div>
         ) : null}
 
         {registrantName ? (
-          <dl className={`${showInformationCompleteness ? "mt-5 border-t pt-4" : ""} border-slate-200 text-sm`}>
+          <dl className="mt-5 border-t border-slate-200 pt-4 text-sm">
             <dt className="text-xs text-slate-500">{registrantLabel}</dt>
             <dd className="mt-1 truncate font-medium text-slate-800">
               {registrantName}

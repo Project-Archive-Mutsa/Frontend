@@ -1,6 +1,7 @@
 "use client";
 
 import Form from "next/form";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   useEffect,
@@ -17,6 +18,7 @@ const MAXIMUM_RECENT_SEARCHES = 5;
 
 interface ZombieProjectSearchFormProps {
   defaultQuery?: string;
+  hiddenFields?: Readonly<Record<string, string>>;
 }
 
 interface SearchSubmitButtonProps {
@@ -84,6 +86,7 @@ function SearchSubmitButton({
 
 export default function ZombieProjectSearchForm({
   defaultQuery = "",
+  hiddenFields = {},
 }: ZombieProjectSearchFormProps) {
   const router = useRouter();
   const [query, setQuery] = useState(defaultQuery);
@@ -133,7 +136,11 @@ export default function ZombieProjectSearchForm({
         return;
       }
 
-      const searchParams = new URLSearchParams({ q: normalizedQuery });
+      const searchParams = new URLSearchParams();
+      Object.entries(hiddenFields).forEach(([name, value]) => {
+        if (value) searchParams.set(name, value);
+      });
+      searchParams.set("q", normalizedQuery);
       router.push(`/zombie-projects?${searchParams.toString()}`, {
         scroll: false,
       });
@@ -154,20 +161,47 @@ export default function ZombieProjectSearchForm({
   }
 
   const hasRecentSearches = isDropdownOpen && recentSearches.length > 0;
+  const resetParams = new URLSearchParams();
+  Object.entries(hiddenFields).forEach(([name, value]) => {
+    if (value) resetParams.set(name, value);
+  });
+  const resetQueryString = resetParams.toString();
+  const resetHref = resetQueryString
+    ? `/zombie-projects?${resetQueryString}`
+    : "/zombie-projects";
 
   return (
-    <div className="mt-8" onBlur={handleFocusLeave}>
-      <label
-        htmlFor="zombie-project-search"
-        className="text-sm font-bold text-slate-700"
-      >
-        프로젝트 이름 검색
-      </label>
-      <p id="zombie-project-search-description" className="mt-1 text-sm text-slate-600">
-        입력한 문자열이 프로젝트명에 포함된 결과를 찾습니다.
-      </p>
+    <section
+      className="mt-9 border-y border-slate-300 bg-white px-5 py-6 sm:px-6"
+      aria-labelledby="zombie-project-search-heading"
+      onBlur={handleFocusLeave}
+    >
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2
+            id="zombie-project-search-heading"
+            className="text-lg font-bold text-slate-950"
+          >
+            프로젝트 이름 검색
+          </h2>
+          <p
+            id="zombie-project-search-description"
+            className="mt-2 text-sm leading-6 text-slate-600"
+          >
+            입력한 문자열이 프로젝트명에 포함된 결과를 찾습니다.
+          </p>
+        </div>
+        {defaultQuery ? (
+          <Link
+            href={resetHref}
+            className="text-sm font-bold text-brand underline decoration-brand-accent underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2"
+          >
+            검색 초기화
+          </Link>
+        ) : null}
+      </div>
 
-      <div className="relative mt-3">
+      <div className="relative mt-5 max-w-3xl">
         <Form
           action="/zombie-projects"
           scroll={false}
@@ -175,6 +209,11 @@ export default function ZombieProjectSearchForm({
           onSubmit={handleSubmit}
           className="flex items-center gap-2 border border-slate-300 bg-white p-2 focus-within:border-brand-accent focus-within:ring-2 focus-within:ring-brand-soft"
         >
+          {Object.entries(hiddenFields).map(([name, value]) =>
+            value ? (
+              <input key={name} type="hidden" name={name} value={value} />
+            ) : null,
+          )}
           <input
             id="zombie-project-search"
             type="search"
@@ -218,6 +257,6 @@ export default function ZombieProjectSearchForm({
           </div>
         ) : null}
       </div>
-    </div>
+    </section>
   );
 }

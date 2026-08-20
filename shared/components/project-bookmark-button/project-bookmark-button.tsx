@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Star } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useAuthSession from "@/shared/auth/hooks/use-auth-session";
@@ -14,6 +15,7 @@ interface ProjectBookmarkButtonProps {
   projectName: string;
   initialBookmarked: boolean;
   returnPath: string;
+  errorPlacement?: "inline" | "floating";
 }
 
 export default function ProjectBookmarkButton({
@@ -21,6 +23,7 @@ export default function ProjectBookmarkButton({
   projectName,
   initialBookmarked,
   returnPath,
+  errorPlacement = "inline",
 }: ProjectBookmarkButtonProps) {
   const { user, isInitialized } = useAuthSession();
   const router = useRouter();
@@ -52,20 +55,41 @@ export default function ProjectBookmarkButton({
   };
 
   return (
-    <div>
+    <div className="relative inline-flex flex-col items-start">
       <button
         type="button"
         aria-pressed={bookmarked}
-        aria-label={`${projectName} ${bookmarked ? "북마크 취소" : "북마크 추가"}`}
+        aria-label={`${projectName} 관심 프로젝트 ${bookmarked ? "저장 취소" : "저장"}`}
+        aria-busy={mutation.isPending}
+        title={bookmarked ? "관심 프로젝트 저장 취소" : "관심 프로젝트 저장"}
         onClick={handleClick}
         disabled={!isInitialized || mutation.isPending}
-        className="inline-flex min-h-10 items-center justify-center gap-2 border border-slate-300 px-3 text-xs font-bold text-slate-700 hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-50"
+        className={`inline-flex h-11 w-11 shrink-0 items-center justify-center border bg-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-accent disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transition-none ${
+          bookmarked
+            ? "border-brand text-brand"
+            : "border-slate-300 text-slate-700 hover:border-brand hover:text-brand"
+        }`}
       >
-        {mutation.isPending ? <LoadingSpinner size={14} /> : null}
-        {bookmarked ? "저장됨" : "관심 프로젝트 저장"}
+        {mutation.isPending ? (
+          <LoadingSpinner size={18} />
+        ) : (
+          <Star
+            aria-hidden="true"
+            size={21}
+            strokeWidth={2}
+            fill={bookmarked ? "currentColor" : "none"}
+          />
+        )}
       </button>
       {mutation.isError ? (
-        <p role="alert" className="mt-2 text-xs leading-5 text-red-700">
+        <p
+          role="alert"
+          className={
+            errorPlacement === "floating"
+              ? "absolute right-0 top-full z-20 mt-2 w-56 border border-red-200 bg-white px-3 py-2 text-left text-xs leading-5 text-red-700"
+              : "mt-2 max-w-56 text-xs leading-5 text-red-700"
+          }
+        >
           {mutation.error.message}
         </p>
       ) : null}

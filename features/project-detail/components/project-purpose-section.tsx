@@ -1,5 +1,4 @@
 import Link from "next/link";
-import ProjectPurchaseButton from "@/features/project-market/components/project-purchase-button";
 import RecruitmentApplicationForm from "@/features/team-recruitment/components/recruitment-application-form";
 import { getProjectPurposeLabel } from "@/shared/project-summary/types";
 import type { ProjectDetailViewModel } from "../model/types";
@@ -31,8 +30,6 @@ export default function ProjectPurposeSection({ project }: { project: ProjectDet
             <Definition label="판매 상태" value={detail.saleStatus ?? "미입력"} />
           </dl>
           {detail.includedAssets.count > 0 ? <div className="mt-7"><h4 className="text-sm font-bold text-slate-900">포함 자산</h4><p className="mt-3 text-sm leading-6 text-slate-600">총 {detail.includedAssets.count}개{detail.includedAssets.categories.length ? ` · ${detail.includedAssets.categories.join(", ")}` : ""}</p></div> : null}
-          {detail.price !== null ? <ProjectPurchaseButton projectId={project.id} projectName={project.name} price={detail.price} transferScope={detail.transferScope ?? "프로젝트 전체 자산과 등록된 권리"} disabled={!detail.purchasable} returnPath={`/projects/${project.id}`} /> : null}
-          {!detail.purchasable ? <p className="mt-4 text-sm font-bold text-slate-500">현재 구매할 수 없는 판매 상태입니다.</p> : null}
         </div>
       ) : (
         <div className="py-7">
