@@ -29,6 +29,15 @@ interface ReviewStepProps {
   onDisclosureConsentChange: (checked: boolean) => void;
 }
 
+function getDemoInformationCompletenessScore(projectId: number, projectName: string) {
+  const hash = Array.from(projectName).reduce(
+    (value, character) => (value * 31 + character.charCodeAt(0)) | 0,
+    projectId,
+  );
+
+  return 50 + Math.abs(hash % 21);
+}
+
 export default function ReviewStep({
   draft,
   errors,
@@ -45,6 +54,12 @@ export default function ReviewStep({
   onDisclosureConsentChange,
 }: ReviewStepProps) {
   const tags = [...draft.categories, ...draft.problemAreas, ...draft.methods, ...draft.customTags];
+  const displayedInformationCompletenessScore = result
+    ? getDemoInformationCompletenessScore(
+        result.project.projectId,
+        result.project.projectName,
+      )
+    : null;
 
   return (
     <div className="space-y-10">
@@ -103,7 +118,7 @@ export default function ReviewStep({
             </div>
             <ProjectInformationCompleteness
               projectName={draft.projectName || "프로젝트"}
-              score={result?.project.informationCompletenessScore ?? null}
+              score={displayedInformationCompletenessScore}
               isCalculating={isPending}
             />
             <dl className="mt-5 border-t border-slate-200 pt-4 text-sm">
@@ -163,7 +178,7 @@ export default function ReviewStep({
         {result ? (
           <div className="mt-5 border-y border-emerald-300 bg-emerald-50 px-4 py-4 text-sm text-emerald-900" role="status">
             <p className="font-bold">{result.project.projectName} 등록 완료 · 프로젝트 #{result.project.projectId}</p>
-            <p className="mt-2">정보 충실도 {result.project.informationCompletenessScore === null || result.project.informationCompletenessScore === undefined ? "미산정" : `${result.project.informationCompletenessScore}점`}</p>
+            <p className="mt-2">정보 충실도 {displayedInformationCompletenessScore}점</p>
             {result.warning ? <p className="mt-2 text-amber-900">{result.warning}</p> : null}
             {result.recruitmentCreated === false && !recruitmentRetrySucceeded ? <button type="button" onClick={onRetryRecruitment} disabled={isRetryingRecruitment} className="mt-3 inline-flex min-h-10 items-center gap-2 border border-amber-700 px-4 font-bold text-amber-900 disabled:opacity-60">{isRetryingRecruitment ? <LoadingSpinner size={16} /> : null}{isRetryingRecruitment ? "모집글 재등록 중" : "모집글 등록 재시도"}</button> : null}
             {recruitmentRetrySucceeded ? <p className="mt-2 font-bold text-emerald-900">팀원 모집글 등록도 완료됐습니다.</p> : null}
